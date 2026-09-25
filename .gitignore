@@ -17,3 +17,7 @@
 
 # Test scratch
 /tmp/
+
+# Python
+__pycache__/
+*.pyc
