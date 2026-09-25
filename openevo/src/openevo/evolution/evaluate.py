@@ -58,7 +58,10 @@ def rollout(weights: Params, arch: ArchGenome, spec: WorldSpec, n_inst: int,
     prev_a = np.zeros((copies, n_inst), dtype=np.int64)
     prev_r = np.zeros((copies, n_inst), dtype=np.int64)
     rews = np.zeros((CONTEXT, copies, n_inst), dtype=np.float32)
-    o_log = np.zeros((copies, n_inst, CONTEXT), dtype=np.int64)
+    # Trace buffers are only needed by the gradient channel; at large batch sizes they
+    # are three int64 arrays the size of the whole rollout.
+    shape = (copies, n_inst, CONTEXT) if record else (0, 0, 0)
+    o_log = np.zeros(shape, dtype=np.int64)
     a_log = np.zeros_like(o_log)
     r_log = np.zeros_like(o_log)
     acts = np.zeros((CONTEXT, copies, n_inst), dtype=np.int64)

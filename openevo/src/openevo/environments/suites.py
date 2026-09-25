@@ -28,6 +28,7 @@ information through their own choices just as surely as the fitness function wou
 
 from __future__ import annotations
 
+import functools
 import hashlib
 import itertools
 import json
@@ -135,9 +136,16 @@ _PARAM_OWNER = {
 
 
 # ------------------------------------------------------- reference measurements
+@functools.lru_cache(maxsize=65536)
 def reference_scores(spec: WorldSpec, n: int = 64, seed: int = 0
                      ) -> tuple[float, float]:
-    """(random_policy, reference_high) mean per-step reward on this world instance."""
+    """(random_policy, reference_high) mean per-step reward on this world instance.
+
+    Cached: a WorldSpec is frozen and the two reference rollouts are deterministic given
+    it, but the sampler re-proposes worlds every generation and each call costs two full
+    64-step rollouts over `n` instances. Measured uncached, this was a comparable share
+    of run time to evaluating the entire population.
+    """
     rng = np.random.default_rng(seed)
     wb = WorldBatch(spec, n, rng)
     lo = 0.0

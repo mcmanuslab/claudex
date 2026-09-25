@@ -21,13 +21,14 @@ that protection on as an explicit experimental condition.
 
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass, field
 
 import numpy as np
 
 from ..environments.suites import Scored
 from ..models.genome import ArchGenome
-from .evaluate import evaluate_group, group_by_arch
+from .evaluate import evaluate_group, group_by_arch, lifetime_learn
 from .organism import Organism, PhaseConfig, founder, recombine, reproduce
 
 SELECTION_MODES = ("ecological", "scalarised", "pareto", "global_topk")
@@ -50,6 +51,15 @@ class EvoConfig:
     archive_reentry: bool = False
     novelty_weight: float = 0.0
     resample_worlds_every: int = 1
+    lifetime_steps: int = 0
+    """Gradient steps each newborn takes on its own experience before being scored.
+
+    Zero by default: the *primary* adaptation metric is the gradient-free in-context
+    channel, precisely so that no evolved learning rate can confound it. Setting this
+    above zero switches on the slow, in-weights channel and its accounted training cost,
+    which is charged to the same island budget as evaluation -- so lifetime learning
+    competes with reproduction for compute, as it should.
+    """
     max_params: int = 1_000_000     # hard ceiling enforced by the scheduler
     seed: int = 0
 
@@ -70,13 +80,31 @@ class Archive:
         return s, b
 
     def insert(self, o: Organism) -> bool:
+        """Store an independent copy, never a reference to a living organism.
+
+        `Population.cull` frees the weight tensors of everything it kills. Aliasing a
+        live organism here would leave the archive holding empty tensors the moment that
+        organism died -- silently, and fatally if `archive_reentry` later tried to
+        reproduce from it. The archive is a fossil record; it has to own its fossils.
+        """
         k = self.key(o)
         cur = self.cells.get(k)
         if cur is None or o.fitness > cur.fitness:
-            self.cells[k] = o
+            fossil = copy.copy(o)
+            fossil.weights = {kk: vv.copy() for kk, vv in o.weights.items()}
+            self.cells[k] = fossil
             self.n_insertions += 1
             return True
         return False
+
+    def novelty(self, behaviour: tuple[float, ...], k: int = 5) -> float:
+        """Mean distance to the k nearest archived behaviours."""
+        if not behaviour or len(self.cells) < 2:
+            return 0.0
+        b = np.asarray(behaviour)
+        d = np.sort([float(np.linalg.norm(b - np.asarray(o.behaviour)))
+                     for o in self.cells.values() if o.behaviour])
+        return float(d[: min(k, len(d))].mean()) if len(d) else 0.0
 
     def coverage(self) -> int:
         return len(self.cells)
@@ -142,6 +170,8 @@ class Population:
             # information. Any trend that survives this is an artefact of the mechanics.
             return float(self.rng.random())
         s = o.fitness_components["score"]
+        if self.cfg.novelty_weight:
+            s += self.cfg.novelty_weight * self.archive.novelty(o.behaviour)
         if self.cfg.selection == "scalarised":
             s -= self.cfg.lambda_compute * np.log10(max(1, o.eval_flops))
         return float(s)
@@ -153,9 +183,14 @@ class Population:
         return max(cand, key=lambda o: o.fitness)
 
     def _estimate_flops(self, o: Organism) -> int:
+        """Accounted cost of one offspring: evaluation plus any lifetime learning."""
         from ..environments.worlds import CONTEXT
-        return (self.cfg.credited_worlds * self.cfg.instances_per_world
-                * o.arch.flops_forward(CONTEXT))
+        cfg = self.cfg
+        cost = cfg.credited_worlds * cfg.instances_per_world * o.arch.flops_forward(CONTEXT)
+        if cfg.lifetime_steps:
+            cost += (cfg.lifetime_steps * cfg.instances_per_world
+                     * o.arch.flops_train_step(CONTEXT))
+        return int(cost)
 
     def breed(self, isl: Island) -> list[Organism]:
         """Produce offspring until the island's generation compute budget is spent.
@@ -191,6 +226,28 @@ class Population:
         isl.flops_spent = spent
         self.total_births += len(kids)
         return kids
+
+    def develop(self, kids: list[Organism], worlds: list[Scored]) -> None:
+        """Lifetime learning: genotype + experience -> adult phenotype.
+
+        Each newborn takes `lifetime_steps` REINFORCE steps on one of its own worlds,
+        at its own heritable learning rate. The training FLOPs are accounted and added
+        to the organism's compute cost, so an organism that learns more pays for it.
+        """
+        cfg = self.cfg
+        if not worlds:
+            return
+        for o in kids:
+            spec = worlds[int(self.rng.integers(0, len(worlds)))][0]
+            temps = np.array([o.gene("temperature")], dtype=np.float32)
+            w, flops, curve = lifetime_learn(
+                o.weights, o.arch, spec, cfg.instances_per_world,
+                o.gene("lr"), cfg.lifetime_steps, temps, self.rng)
+            o.weights = w
+            o.eval_flops += flops
+            self.total_flops += flops
+            if curve:
+                o.fitness_components["learn_gain"] = float(curve[-1] - curve[0])
 
     # ----------------------------------------------------------------- culling
     def cull(self, isl: Island, kids: list[Organism]) -> None:
@@ -240,6 +297,8 @@ class Population:
         for isl in self.islands:
             self.evaluate(isl.members, isl.worlds)
             kids = self.breed(isl)
+            if cfg.lifetime_steps:
+                self.develop(kids, isl.worlds)
             self.evaluate(kids, isl.worlds)
             self.cull(isl, kids)
         self.migrate()
