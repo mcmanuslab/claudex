@@ -126,6 +126,54 @@ choice is the wrong one.
 
 ---
 
+## 3b. Aggregate metrics cannot tell you whether the system is working
+
+This was not anticipated, and it is the most transferable lesson from the build.
+
+The first complete pilot produced: mean fitness rising 0.019 → 0.206; Class C-dev
+adaptation AUC rising from ~0 to +0.155; 246 distinct architectures over 3,449 births; the
+neutral arm flat at 0.007 throughout; exploration temperature collapsing 1.00 → 0.18 while
+the neutral arm drifted to 1.22. A clean, internally consistent, publishable-looking set of
+curves with a working control.
+
+The transformer was doing nothing at all.
+
+Weight mutation perturbed each tensor by `sigma * rms(tensor)`. That is scale-invariant,
+which is desirable, but it makes **zero an absorbing state** — and both `init_params` and
+every function-preserving growth operator deliberately start each block's output path
+(`Wo`, `W2`) at exactly zero, because that is what makes a new block an exact identity.
+Those tensors therefore had an effective mutation size of about 5e-6 and never left zero.
+Attention and the FFN stayed pinned at the identity for the entire run, and evolution was
+optimising the embeddings and the output head and nothing else.
+
+Measured on the champion: ablating **every** block output path changed the action
+distribution by a total variation of **0.00019**. Individual unit ablations came in at
+~1e-5, four orders of magnitude below any threshold one might pick, so 0 of 99 units
+counted as effective.
+
+Nothing in fitness, the architecture statistics, the species counts, the gene trajectories
+or the adaptation probes revealed this. The only instrument that did was the
+effective-parameter ablation — which existed only because `PREREGISTRATION.md` H3 demanded
+it as a *bloat* check, for a completely different reason.
+
+Two consequences beyond the fix itself:
+
+* That run's `no_feedback` result — improvement attributable to a reactive prior rather
+  than in-context learning — is exactly what a policy with no working attention produces.
+  It must not be read as a finding about evolution. The decomposition was reporting
+  correctly; the substrate was broken.
+* An ablation-based health check belongs in the standard metric set for any system with
+  function-preserving growth, not just as a bloat control. Zero-initialised output paths
+  are the *standard* construction for identity-preserving growth (Net2Net, network
+  morphism, and this repository), and any mutation operator whose step size vanishes with
+  the tensor will silently freeze them.
+
+Fixed at `evolution/organism.py:_perturb_weights` by flooring the step at the scale the
+tensor would have had at initialisation. Regression tests cover the operator and an
+end-to-end lineage. The broken run is kept at `results/pilot_inert_stack/`.
+
+---
+
 ## 4. `λ·FLOPs` is a free parameter that decides the answer
 
 The brief proposes fitness ≈ `performance − λ·inference − α·learning − β·memory`, while

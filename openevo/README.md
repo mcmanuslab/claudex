@@ -26,7 +26,7 @@ parameter count. Architectures may grow, shrink, diversify into size niches, or 
 
 ---
 
-## Three findings from building it
+## Four findings from building it
 
 **1. The naive design would have reported a result that wasn't there.** Under *no selection
 at all*, with growth and shrinkage equally likely, parameter count drifts upward at
@@ -43,7 +43,19 @@ previous-reward tokens. An organism blinded to the consequences of its own actio
 still improving across a context was never adapting; it had a better reactive prior.
 ([DESIGN.md §1](DESIGN.md))
 
-**3. A 983-parameter transformer already expresses a near-reference policy** (0.919 on the
+**3. A pilot can look entirely healthy while most of the system does nothing.** The first
+full pilot showed fitness rising 0.019 → 0.206, alien-world adaptation AUC rising from ~0
+to +0.155, 246 distinct architectures, and a flat neutral arm. Every aggregate curve said
+it was working. The transformer was inert: weight mutation scaled each step by the
+tensor's own magnitude, which makes **zero an absorbing state**, and function-preserving
+growth deliberately starts every block output path at exactly zero. Attention and FFN
+never left the identity; evolution was optimising the embeddings and output head and
+nothing else. Only the effective-parameter ablation caught it — 0 of 99 units in the
+champion had any behavioural effect. The run is kept at
+[`results/pilot_inert_stack/`](results/pilot_inert_stack/) as the clearest argument for
+measuring *effective* rather than raw capacity.
+
+**4. A 983-parameter transformer already expresses a near-reference policy** (0.919 on the
 random-to-reference scale). Representational capacity is not the binding constraint
 anywhere near 5K — in-context *inference* is. So if architectures grow in this system, it
 cannot be in order to represent a better policy, which makes the hypothesis sharper and

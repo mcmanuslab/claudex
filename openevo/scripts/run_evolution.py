@@ -32,7 +32,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from openevo.environments.suites import SuiteSplit, build_suite, sample_spec, reference_scores  # noqa: E402
 from openevo.evolution.organism import PhaseConfig  # noqa: E402
 from openevo.evolution.population import EvoConfig, Population  # noqa: E402
-from openevo.metrics.complexity import effective_params, probe_batch  # noqa: E402
+from openevo.metrics.complexity import (  # noqa: E402
+    effective_params, probe_batch, stack_activity,
+)
 from openevo.metrics.probe import CONDITIONS, run_probes  # noqa: E402
 from openevo.models.genome import scale_to_params  # noqa: E402
 from openevo.storage.run import RunStore  # noqa: E402
@@ -164,10 +166,19 @@ def main() -> None:
     if not args.quiet:
         print(f"run={cfg['name']} hash={cfg_hash} phase={phase} seal={split.seal()[:12]}")
         print(f"{'gen':>4} {'alive':>5} {'med.par':>8} {'p_min':>7} {'p_max':>8} "
-              f"{'score':>7} {'gain':>6} {'grow':>5} {'spp':>4} {'qd':>4} {'sec':>6}")
+              f"{'score':>7} {'gain':>6} {'grow':>5} {'spp':>4} {'qd':>4} "
+              f"{'stack':>6} {'sec':>6}")
 
     for _ in range(cfg["generations"]):
         snap = pop.step(sampler)
+        # Standing health check: is the transformer stack doing anything at all? One
+        # extra forward pass. The first pilot ran to completion with an inert stack and
+        # no aggregate metric noticed, so this is logged every generation.
+        live = pop.living()
+        if live:
+            champ = max(live, key=lambda o: o.fitness)
+            ob, pa, pr = probe_batch(champ.arch, np.random.default_rng(31337), batch=4)
+            snap["stack_activity"] = stack_activity(champ.weights, champ.arch, ob, pa, pr)
         store.add_generation(snap)
         store.add_organisms(pop.records)
         pop.records.clear()
@@ -204,7 +215,7 @@ def main() -> None:
                   f"{snap['params_max']:>8.0f} {snap['score_mean']:>7.3f} "
                   f"{snap['gain_mean']:>6.3f} {snap['gene_p_growth_bias']:>5.2f} "
                   f"{snap['n_species']:>4} {snap['archive_coverage']:>4} "
-                  f"{time.time() - t0:>6.1f}")
+                  f"{snap.get('stack_activity', 0.0):>6.3f} {time.time() - t0:>6.1f}")
 
     store.commit()
     store.close()

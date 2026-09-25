@@ -109,3 +109,20 @@ def probe_batch(arch: ArchGenome, rng: np.random.Generator, batch: int = 8,
     return (rng.integers(0, arch.n_obs, (1, batch, seq)),
             rng.integers(0, arch.n_act, (1, batch, seq)),
             rng.integers(0, arch.n_rew, (1, batch, seq)))
+
+
+def stack_activity(weights: Params, arch: ArchGenome, obs: np.ndarray,
+                   prev_act: np.ndarray, prev_rew: np.ndarray) -> float:
+    """Total-variation change from ablating *every* block output path at once.
+
+    A cheap standing health check: it answers "is the transformer doing anything at all?"
+    in one extra forward pass. Near zero means the attention and FFN stacks are inert and
+    the organism is an embedding-to-head lookup table, however healthy its fitness curve
+    looks. Logged every generation because the first pilot ran to completion in exactly
+    that state without any aggregate metric noticing.
+    """
+    intact = _probs(forward_full(weights, arch, obs, prev_act, prev_rew)[0])
+    inert = {k: (np.zeros_like(v) if k.endswith(("Wo", "W2")) else v)
+             for k, v in weights.items()}
+    ablated = _probs(forward_full(inert, arch, obs, prev_act, prev_rew)[0])
+    return float(0.5 * np.abs(intact - ablated).sum(axis=-1).mean())

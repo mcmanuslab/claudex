@@ -105,7 +105,8 @@ def main() -> None:
                        ("archive_coverage", "archive cells"),
                        ("gene_p_growth_bias", "growth-bias gene"),
                        ("gene_p_structural", "structural-mutation gene"),
-                       ("gene_temperature", "temperature gene")]:
+                       ("gene_temperature", "temperature gene"),
+                       ("stack_activity", "stack activity (0 = inert)")]:
         v = [g[key] for g in gens if key in g]
         if not v:
             continue
@@ -113,6 +114,20 @@ def main() -> None:
     A("")
 
     # -------------------------------------------------------------- complexity
+    act = [g.get("stack_activity") for g in gens if g.get("stack_activity") is not None]
+    if act:
+        A("### Health check: is the transformer stack doing anything?")
+        A("")
+        A(f"- champion stack activity {act[0]:.4f} -> {act[-1]:.4f} "
+          f"(total variation from ablating every block output path)")
+        if act[-1] < 0.01:
+            A("")
+            A("**WARNING: the stack is inert.** The champion is an embedding-to-head "
+              "lookup table and attention is contributing nothing. Every other number in "
+              "this report is about that, not about evolution. See "
+              "`results/pilot_inert_stack/README.md`.")
+        A("")
+
     A("## Complexity: is the trend driven or passive?")
     A("")
     sel = drift_per_gen(gens)
