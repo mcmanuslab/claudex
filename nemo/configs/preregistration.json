@@ -1,0 +1,112 @@
+{
+  "_": "Frozen phase-1 pre-registration. Generated from the code, so it cannot drift from it. Any change here is a deviation and belongs in EXPERIMENTS.md section 5.",
+  "generated_from": "nemo.config.ExperimentConfig + factorial_runs(12)",
+  "design": {
+    "factors": {
+      "G_goal_structure": [
+        "MVG",
+        "RVG",
+        "FIX"
+      ],
+      "M_metabolism": [
+        true,
+        false
+      ],
+      "D_duplication": [
+        true,
+        false
+      ]
+    },
+    "replicates": 12,
+    "n_cells": 12,
+    "n_runs_total": 156,
+    "drift_controls": 12,
+    "drift_seeds_mirror": "MVG_M1_D1"
+  },
+  "primary_outcome": {
+    "metric": "duplication->specialisation event rate",
+    "definition": "JS divergence between a duplicate pair's subgoal contribution vectors exceeds the 95th percentile of the seed-matched fitness-shuffled drift control at matched age",
+    "implementation": "nemo.metrics.definitions.duplication_specialised_vs_drift",
+    "window": "final 25% of generations",
+    "min_age_generations": 20
+  },
+  "decision_rule": {
+    "effect_size": "Cliff's delta >= 0.47",
+    "significance": "Mann-Whitney p < 0.01, Holm-Bonferroni across cells",
+    "n_per_cell": 12,
+    "both_required": true
+  },
+  "architecture": {
+    "module": {
+      "attention": 1024,
+      "ffn": 1072,
+      "norm": 32,
+      "gate": 17,
+      "total": 2145,
+      "d_model": 16,
+      "d_ff": 32,
+      "max_in_degree": 4,
+      "flops_forward": 7540
+    },
+    "organism": {
+      "modules": 8580,
+      "sensor": 256,
+      "actuator": 136,
+      "neural_total": 8972,
+      "regulatory_scalars": 44,
+      "n_genes_init": 4
+    },
+    "genome_capacity": {
+      "n_rounds": 4,
+      "slots_per_round": 4,
+      "g_max": 16
+    },
+    "monolithic_control": {
+      "target_params": 8580,
+      "matched_params": 8385,
+      "param_error": -0.022727272727272728,
+      "target_flops": 30160,
+      "matched_flops": 29396,
+      "flop_error": -0.0253315649867374,
+      "d_model": 32,
+      "d_ff": 64
+    }
+  },
+  "mutation_bootstrap": {
+    "p_weight": 0.7,
+    "p_regulatory": 0.09,
+    "p_wiring": 0.15,
+    "p_duplicate": 0.02,
+    "p_delete": 0.02,
+    "p_subsystem_dup": 0.01,
+    "p_encapsulate": 0.01,
+    "weight_sigma": 0.08,
+    "_note": "duplication and deletion are matched so the neutral expectation on genome length is flat, not upward"
+  },
+  "environment": {
+    "subgoal_basis": [
+      "RECALL",
+      "XOR",
+      "SWITCH",
+      "DECOY",
+      "GATE",
+      "DELAY"
+    ],
+    "alien_pool": [
+      "COUNT",
+      "IRREV",
+      "DRIFT"
+    ],
+    "modifiers": [
+      "NOISE"
+    ],
+    "goal_arity": 3,
+    "n_goals_mvg": 20,
+    "switch_every_generations": 50,
+    "mvg_vs_rvg": "identical goal sequence, difficulty and switching rate; RVG resamples subgoal PARAMETERS each switch so no subgoal ever recurs identically"
+  },
+  "resource_ceilings_gb": {
+    "soft": 32.0,
+    "hard": 64.0
+  }
+}
