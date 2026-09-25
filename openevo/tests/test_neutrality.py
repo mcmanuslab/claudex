@@ -99,3 +99,50 @@ def test_weight_inheritance_modes_keep_tensors_consistent(mode):
     for gen in range(25):
         o = reproduce(o, rng, phase, gen)
         assert count_params(o.weights) == o.arch.n_params, f"{mode} desynced at gen {gen}"
+
+
+def test_zero_tensors_can_escape_zero_under_mutation():
+    """Zero must not be an absorbing state for weight mutation.
+
+    Function-preserving growth starts every block output path at exactly zero, so a
+    purely scale-relative perturbation would pin the whole transformer stack at the
+    identity forever and evolution would optimise only the embeddings and output head.
+    The first pilot did exactly that, and fitness rose the whole time without revealing
+    it -- only the effective-parameter ablation caught it.
+    """
+    from openevo.evolution.organism import _perturb_weights
+    from openevo.models.transformer import init_params
+    arch = scale_to_params(5000)
+    rng = np.random.default_rng(0)
+    w = init_params(arch, rng, n=1)
+    zero_keys = [k for k, v in w.items() if not np.any(v)]
+    assert zero_keys, "expected zero-initialised output projections"
+    for _ in range(5):
+        w = _perturb_weights(w, 0.05, rng)
+    for k in zero_keys:
+        scale = float(np.sqrt(np.mean(np.square(w[k]))))
+        assert scale > 1e-3, f"{k} is still pinned at zero (rms {scale:.2e})"
+
+
+def test_evolved_lineage_actually_uses_its_transformer():
+    """End-to-end guard on the same failure: after a lineage of births, ablating every
+    block output path must change behaviour. If it does not, the stack is inert."""
+    from openevo.metrics.complexity import probe_batch
+    from openevo.models.transformer import forward_full
+    phase = PhaseConfig(structural_mutation=False)
+    rng = np.random.default_rng(5)
+    o = founder(scale_to_params(5000), rng)
+    for gen in range(30):
+        o = reproduce(o, rng, phase, gen)
+    ob, pa, pr = probe_batch(o.arch, np.random.default_rng(31337))
+
+    def probs(weights):
+        lg = forward_full(weights, o.arch, ob, pa, pr)[0]
+        z = lg - lg.max(-1, keepdims=True)
+        e = np.exp(z)
+        return e / e.sum(-1, keepdims=True)
+
+    inert = {k: (np.zeros_like(v) if k.endswith(("Wo", "W2")) else v)
+             for k, v in o.weights.items()}
+    tv = float(0.5 * np.abs(probs(inert) - probs(o.weights)).sum(-1).mean())
+    assert tv > 0.01, f"transformer stack is inert (total variation {tv:.5f})"

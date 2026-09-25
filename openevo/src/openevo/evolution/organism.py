@@ -130,12 +130,34 @@ def _mutate_genes(genes: dict[str, float], heritable: tuple[str, ...],
     return out
 
 
+def _reference_scale(v: np.ndarray) -> float:
+    """The magnitude a tensor of this shape *would* have at initialisation."""
+    if v.ndim >= 3:                      # (organisms, fan_in, fan_out) projection
+        return 1.0 / np.sqrt(max(1, v.shape[-2]))
+    return 0.1                           # gains and biases
+
+
 def _perturb_weights(w: Params, sigma: float, rng: np.random.Generator) -> Params:
-    """Scale-relative Gaussian perturbation, so the step is invariant to tensor scale."""
+    """Gaussian perturbation, scaled by the tensor but floored at its natural scale.
+
+    A purely scale-relative step (``sigma * rms(v)``) makes **zero an absorbing state**,
+    which is fatal here rather than merely inelegant: function-preserving growth and
+    `init_params` both start every block's output path (``Wo``, ``W2``) at exactly zero,
+    so those tensors would have an effective mutation size of ~5e-6 and could never
+    leave zero. The attention and FFN stacks would stay pinned at the identity for the
+    whole run, and evolution would silently optimise nothing but the embeddings and the
+    output head -- which is precisely what the first pilot did. It was invisible in
+    fitness (which rose steadily) and was caught only by the effective-parameter
+    ablation, which found 0 of 99 units doing anything.
+
+    Flooring the step at the scale the tensor would have had at initialisation keeps the
+    perturbation scale-invariant where that is meaningful, while leaving zero escapable.
+    """
     out: Params = {}
     for k, v in w.items():
-        rms = float(np.sqrt(np.mean(np.square(v)))) + 1e-4
-        out[k] = (v + rng.normal(0.0, sigma * rms, size=v.shape)).astype(DTYPE)
+        rms = float(np.sqrt(np.mean(np.square(v))))
+        out[k] = (v + rng.normal(0.0, sigma * max(rms, _reference_scale(v)),
+                                 size=v.shape)).astype(DTYPE)
     return out
 
 
