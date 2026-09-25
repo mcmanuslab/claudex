@@ -20,6 +20,7 @@ from ..environments.world import Calibration, GoalSchedule
 from ..genome.population import Population, init_population
 from ..metrics.assays import realised_graph
 from ..metrics.definitions import q_structural
+from ..metrics.tracking import run_assay
 from ..modules.spec import ModuleSpec
 from ..mutation.operators import InnovationRegistry, mutate
 from ..organisms.execute import active_modules, metabolic_flops, new_state, step
@@ -187,8 +188,6 @@ class Experiment:
         Costs one extra rollout per gene, so it runs on a sample of lanes at a
         cadence set by the caller, not every generation.
         """
-        from ..metrics.tracking import run_assay
-
         pairs, orgs = run_assay(self, n_lanes_per_run=n_lanes_per_run,
                                 episodes=episodes, lifetime=lifetime)
         self.pair_obs.extend(pairs)
