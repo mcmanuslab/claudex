@@ -24,6 +24,8 @@
     "open_test_set": false,
     "checkpoint_every": 20,
     "island_family_fraction": 0.6,
+    "effective_params": true,
+    "effective_cohort": 3,
     "evo": {
       "n_islands": 6,
       "island_capacity": 16,
@@ -36,7 +38,8 @@
       "migration_interval": 10,
       "migrants": 1,
       "selection": "ecological",
-      "max_params": 1000000
+      "max_params": 1000000,
+      "resample_worlds_every": 3
     },
     "phase": {
       "structural_mutation": true,
@@ -61,7 +64,8 @@
     "lambda_compute": 0.0,
     "archive_reentry": false,
     "novelty_weight": 0.0,
-    "resample_worlds_every": 1,
+    "resample_worlds_every": 3,
+    "lifetime_steps": 0,
     "max_params": 1000000,
     "seed": 0
   },
@@ -118,10 +122,10 @@
       "n_rew": 4
     }
   ],
-  "git_commit": "1f7161d4e806861f901b4c67ceb3ca02fe27ac1a",
-  "started_at": "2026-09-25T20:52:16Z",
+  "git_commit": "8e8064590cfd4ec32d9b8ebdea64932757146bb6",
+  "started_at": "2026-09-25T21:36:50Z",
   "python": "3.11.15",
   "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
   "machine": "x86_64",
-  "config_hash": "ebf90c6ca35088bd"
+  "config_hash": "a5d489cbe0364686"
 }

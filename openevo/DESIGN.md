@@ -280,6 +280,9 @@ representational capacity with in-context inference. With a *stable* world
 | 983 | 0.209 | **0.919** |
 | 2238 | 0.110 | **0.972** |
 
+(Re-measured after per-block normalisation was introduced in §6: 983 → 0.868,
+5360 → 0.967. Slightly lower, same conclusion.)
+
 **A 983-parameter transformer expresses a near-reference policy.** Representational
 capacity is not the binding constraint anywhere near 5K; the constraint is in-context
 inference of the instance. Consequences:

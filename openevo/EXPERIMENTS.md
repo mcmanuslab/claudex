@@ -38,6 +38,10 @@ Behaviour cloning against the reference policy, then scored by *acting*.
 | 983 | 0.209 | 0.919 |
 | 2238 | 0.110 | 0.972 |
 | 5360 | 0.042 | 0.978 |
+| 20550 | 0.031 | 0.976 |
+
+Re-measured after per-block normalisation was introduced (`results/min_viable_size_recheck.json`):
+983 → 0.868, 5360 → 0.967. Slightly lower, same conclusion.
 
 **Variable worlds (`n_variants=0`), held-out worlds — in-context inference:**
 
