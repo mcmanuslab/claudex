@@ -137,3 +137,43 @@ def test_effective_params_detects_dead_capacity():
     bloated = effective_params(dead, arch, ob, pa, pr)
     assert bloated["effective"] < live["effective"]
     assert bloated["n_effective"] < live["n_effective"]
+
+
+def test_recombination_produces_a_valid_child_from_compatible_parents():
+    from openevo.evolution.organism import recombine
+    rng = np.random.default_rng(2)
+    arch = scale_to_params(2000)
+    a, b = founder(arch, rng), founder(arch, rng)
+    child = recombine(a, b, rng, PhaseConfig(recombination=True), generation=1)
+    assert child is not None
+    assert count_params(child.weights) == child.arch.n_params
+    assert set(child.parents) == {a.oid, b.oid}
+    # every module must come intact from one parent or the other, never be blended
+    for k, v in child.weights.items():
+        assert np.array_equal(v, a.weights[k]) or np.array_equal(v, b.weights[k]), k
+
+
+def test_recombination_refuses_incompatible_architectures():
+    """Crossover between differently-shaped networks is meaningless, not merely risky."""
+    from openevo.evolution.organism import recombine
+    rng = np.random.default_rng(2)
+    a = founder(scale_to_params(2000), rng)
+    b = founder(scale_to_params(40000), rng)
+    assert recombine(a, b, rng, PhaseConfig(recombination=True), generation=1) is None
+
+
+def test_checkpoint_round_trips():
+    """A long run must survive interruption without losing lineage state."""
+    import pickle
+    pop = _pop()
+    s = _sampler()
+    pop.step(s)
+    pop.records.clear()
+    blob = pickle.dumps(pop)
+    restored = pickle.loads(blob)
+    assert restored.generation == pop.generation
+    assert [o.oid for o in restored.living()] == [o.oid for o in pop.living()]
+    assert restored.total_births == pop.total_births
+    restored.step(s)                     # must keep running after a restore
+    assert restored.generation == pop.generation + 1
+    assert all(count_params(o.weights) == o.arch.n_params for o in restored.living())
