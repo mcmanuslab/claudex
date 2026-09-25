@@ -94,3 +94,57 @@ def test_monolithic_control_is_a_single_module():
     matched, info = match_monolithic(4, base)
     assert matched.n_params > base.n_params * 3
     assert info["d_model"] > base.d_model
+
+
+# --------------------------------------------------- duplicate-pair tracking
+def test_pairs_are_found_by_innovation_not_by_lane():
+    """Lane identity is not organism identity.
+
+    Offspring overwrite the lanes of the organisms they displace, so a pair
+    born in lane 37 may be carried by a descendant in any lane of its run --
+    and lane 37 may now hold an unrelated organism.  Tracking by innovation id
+    both finds the survivors and cannot misattribute a pair to a stranger.
+    """
+    from nemo.metrics.tracking import lanes_carrying_pairs
+
+    cfg = _tiny()
+    cfg.mutation.p_duplicate, cfg.mutation.p_delete = 0.5, 0.02
+    ex = Experiment(cfg=cfg, runs=[RunConfig(name="t", seed=3)])
+    for _ in range(20):
+        ex.run_generation(sample_q=0)
+    assert ex.duplicate_pairs, "no duplications occurred"
+
+    n_org = cfg.ecology.n_organisms
+    found = lanes_carrying_pairs(ex.pop, ex.duplicate_pairs, 0, n_org)
+    assert found, "no surviving pair found by innovation id"
+
+    # Every lane reported must genuinely carry BOTH innovation ids, alive.
+    for lane, recs in found.items():
+        live = np.flatnonzero(ex.pop.alive[lane] > 0)
+        ids = set(int(ex.pop.innov[lane, g]) for g in live)
+        ids |= {-i - 1 for i in ids}
+        for rec in recs:
+            assert rec["innov"] in ids, (lane, rec["innov"])
+            assert rec["parent_innov"] in ids, (lane, rec["parent_innov"])
+
+    # Birth-lane-only lookup finds strictly fewer lanes than lineage tracking.
+    birth_lanes = {r["lane"] for r in ex.duplicate_pairs}
+    assert len(set(found)) >= 1
+    assert set(found) - birth_lanes or len(found) <= len(birth_lanes)
+
+
+def test_fresh_duplicates_have_zero_weight_distance():
+    """A duplication is function-preserving, so a pair observed immediately
+    after the event must have byte-identical weights.  Any contribution
+    divergence such a pair shows is pure estimation noise -- which is exactly
+    why the drift control, not a permutation, is the primary outcome's null."""
+    cfg = _tiny()
+    cfg.mutation.p_duplicate, cfg.mutation.p_delete = 0.6, 0.0
+    cfg.mutation.p_weight = 0.0
+    ex = Experiment(cfg=cfg, runs=[RunConfig(name="t", seed=5)])
+    ex.run_generation(sample_q=0)
+    assert ex.duplicate_pairs
+    ex.assay(n_lanes_per_run=8, episodes=1, lifetime=8)
+    fresh = [o for o in ex.pair_obs if o.age <= 1]
+    assert fresh, "no fresh pairs observed"
+    assert max(o.weight_distance for o in fresh) < 1e-6

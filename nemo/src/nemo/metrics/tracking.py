@@ -129,14 +129,48 @@ def assay_organisms(pop: Population, contrib: np.ndarray, lanes: np.ndarray,
     return out
 
 
+def lanes_carrying_pairs(pop: Population, records: list[dict],
+                         lo: int, hi: int) -> dict[int, list[dict]]:
+    """Find every lane in [lo, hi) where BOTH copies of a tracked pair are live.
+
+    A duplication record stores the lane the event happened in, but lane
+    identity is not organism identity: offspring overwrite the lanes of the
+    organisms they displace, and a descendant carrying the pair may end up in
+    any lane of its run.  Looking only in the birth lane therefore both misses
+    most surviving pairs and would silently attribute a pair to whatever
+    unrelated organism now occupies that lane.
+
+    Searching by innovation id instead is correct by construction: an
+    innovation id is unique to one module lineage, so a lane that carries both
+    ids carries that pair, wherever it drifted to.
+    """
+    live = pop.alive[lo:hi] > 0
+    innov = pop.innov[lo:hi]
+    out: dict[int, list[dict]] = {}
+    for rec in records:
+        a, b = rec["innov"], rec["parent_innov"]
+        # Encapsulated genes carry a negated id (mutation.operators._encapsulate).
+        has_a = ((innov == a) | (innov == -a - 1)) & live
+        has_b = ((innov == b) | (innov == -b - 1)) & live
+        both = np.flatnonzero(has_a.any(axis=1) & has_b.any(axis=1))
+        for local in both:
+            out.setdefault(lo + int(local), []).append(rec)
+    return out
+
+
 def run_assay(experiment, n_lanes_per_run: int = 8,
               episodes: int = 2, lifetime: int = 24
               ) -> tuple[list[PairObservation], list[OrganismObservation]]:
     """One full assay pass over the experiment's current population.
 
-    Uses a shorter lifetime than selection does: the assay is measuring the
-    *shape* of each module's contribution, not estimating fitness precisely,
-    and it costs one rollout per gene.
+    Lanes are sampled *preferentially from those carrying a tracked duplicate
+    pair*, padded out with random lanes so the organism-level statistics stay
+    representative.  Without that targeting almost every sampled lane carries
+    no observable pair and the primary outcome has no data.
+
+    Uses a shorter lifetime than selection does: the assay measures the SHAPE
+    of each module's contribution, not fitness, and it costs one rollout per
+    gene.
     """
     pop = experiment.pop
     cfg = experiment.cfg
@@ -147,24 +181,35 @@ def run_assay(experiment, n_lanes_per_run: int = 8,
     orgs: list[OrganismObservation] = []
     by_run: dict[int, list[dict]] = {}
     for rec in experiment.duplicate_pairs:
-        by_run.setdefault(rec["run"], []).append(rec)
+        if experiment.generation - rec["generation"] >= 1:
+            by_run.setdefault(rec["run"], []).append(rec)
 
     for ri, sch in enumerate(experiment.schedules):
-        lo = ri * n_org
-        lanes = lo + rng.permutation(n_org)[:n_lanes_per_run]
+        lo, hi = ri * n_org, (ri + 1) * n_org
+        carrying = lanes_carrying_pairs(pop, by_run.get(ri, []), lo, hi)
+
+        want = list(carrying)
+        rng.shuffle(want)
+        want = want[:n_lanes_per_run]
+        if len(want) < n_lanes_per_run:
+            rest = [l for l in range(lo, hi) if l not in set(want)]
+            want += list(rng.permutation(rest)[:n_lanes_per_run - len(want)])
+        lanes = np.array(sorted(want), dtype=int)
+
         goal = sch.goal_at(experiment.generation)
         params = sch.params_at(experiment.generation, len(lanes))
-
         sub = _slice_population(pop, lanes)
         contrib_sub = contribution_matrix(sub, goal, params, episodes, lifetime,
                                           cfg, rng)
         contrib = np.zeros((pop.L, pop.G, len(goal)))
         contrib[lanes] = contrib_sub
+
         orgs += assay_organisms(pop, contrib, lanes, experiment.generation)
-        lane_set = set(int(x) for x in lanes)
-        pairs += assay_duplicate_pairs(
-            pop, [r for r in by_run.get(ri, []) if r["lane"] in lane_set],
-            contrib, experiment.generation)
+        for lane in lanes:
+            for rec in carrying.get(int(lane), []):
+                obs = assay_duplicate_pairs(pop, [dict(rec, lane=int(lane))],
+                                            contrib, experiment.generation)
+                pairs += obs
     return pairs, orgs
 
 

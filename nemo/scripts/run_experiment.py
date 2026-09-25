@@ -34,7 +34,7 @@ PRESETS = {
     # name:        islands, size, episodes, lifetime, generations, replicates
     "smoke":      (2,  8,  2,  16,   30, 1),
     "tiny":       (4,  8,  2,  24,  150, 2),
-    "pilot":      (4, 16,  4,  40,  250, 4),
+    "pilot":      (4, 16,  4,  32,  180, 4),
     "main":       (8, 32, 16, 512, 5000, 12),
 }
 
