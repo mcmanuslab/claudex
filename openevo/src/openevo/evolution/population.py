@@ -130,8 +130,16 @@ class Population:
         self.archive = Archive()
         self.islands: list[Island] = []
         for i in range(cfg.n_islands):
-            arch = founders[i % len(founders)]
-            members = [founder(arch, rng, island=i) for _ in range(cfg.island_capacity)]
+            # Every ancestral scale is seeded into *every* island, rather than giving
+            # each island a single founder size. The subclade test -- do lineages founded
+            # above the bulk keep growing, or regress toward it? -- only discriminates
+            # driven from passive trends if the displaced lineages actually compete with
+            # the bulk. With one founder size per island and migration every 10
+            # generations they largely do not, and large-founded lineages stay large for
+            # want of anyone to lose to. The pilot hit exactly this and its subclade
+            # result had to be reported as inconclusive.
+            members = [founder(founders[j % len(founders)], rng, island=i)
+                       for j in range(cfg.island_capacity)]
             self.islands.append(Island(i, members))
         self.records: list[dict] = []
         self.total_births = cfg.n_islands * cfg.island_capacity

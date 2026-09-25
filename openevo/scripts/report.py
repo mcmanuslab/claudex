@@ -147,28 +147,59 @@ def main() -> None:
     A("")
     pmin = [g["params_min"] for g in gens]
     pmed = [g["params_median"] for g in gens]
+    gen_ix = list(range(len(pmin)))
+    s_min, s_med = slope(gen_ix, pmin), slope(gen_ix, pmed)
     A("McShea's driven-trend test asks whether the *minimum* of the distribution moves, "
-      "not just the mean:")
+      "not just the mean: a driven trend moves the whole distribution, passive diffusion "
+      "off a lower bound moves only its upper part.")
     A("")
-    A(f"- min params {pmin[0]:.0f} -> {pmin[-1]:.0f} (slope {slope(range(len(pmin)), pmin):+.2f}/gen)")
-    A(f"- median params {pmed[0]:.0f} -> {pmed[-1]:.0f} (slope {slope(range(len(pmed)), pmed):+.2f}/gen)")
+    A(f"- min params {pmin[0]:.0f} -> {pmin[-1]:.0f} (slope {s_min:+.2f}/gen)")
+    A(f"- median params {pmed[0]:.0f} -> {pmed[-1]:.0f} (slope {s_med:+.2f}/gen)")
     A("")
-    A("A rising median with a stationary minimum is the signature of **passive diffusion**, "
-      "not a driven trend.")
+    # Direction-aware reading. Canned text that contradicts the data is worse than none.
+    moved = abs(s_min) > 0.25 * abs(s_med) and s_min * s_med > 0
+    if s_med > 0 and not moved:
+        A("The median rises while the minimum does not: the signature of **passive "
+          "diffusion**, not a driven trend.")
+    elif s_med > 0:
+        A("Median and minimum both rise: consistent with a **driven** trend. Check this "
+          "against the neutral arm and the subclade test below before believing it.")
+    elif s_med < 0 and moved:
+        A("Median and minimum both fall: the whole distribution is moving **down**. "
+          "Selection is actively favouring smaller architectures, not merely failing to "
+          "favour larger ones.")
+    else:
+        A("The median falls while the minimum is roughly stationary: the distribution is "
+          "**compressing from above** rather than shifting wholesale.")
     A("")
+
     eff = probes.get(("-", "effective_params", "effective"), [])
     frac = probes.get(("-", "effective_params", "fraction"), [])
     if eff:
-        A("### Effective vs raw parameters (bloat check)")
+        A("### Effective vs raw parameters")
         A("")
+        s_eff = slope([g for g, _ in eff], [v for _, v in eff])
         A(f"- effective parameters {eff[0][1]:.0f} -> {eff[-1][1]:.0f} "
-          f"(slope {slope([g for g, _ in eff], [v for _, v in eff]):+.1f}/gen)")
+          f"(slope {s_eff:+.1f}/gen)")
         if frac:
+            s_frac = slope([g for g, _ in frac], [v for _, v in frac])
             A(f"- effective fraction {frac[0][1] * 100:.1f}% -> {frac[-1][1] * 100:.1f}% "
               f"`{spark([v for _, v in frac])}`")
-        A("")
-        A("Raw parameters growing while the effective fraction falls is **bloat**, not "
-          "complexity: capacity accumulating with no behavioural effect.")
+            A("")
+            if s_med > 0 and s_frac < 0:
+                A("Raw parameters rising while the effective fraction falls is **bloat**: "
+                  "capacity accumulating with no behavioural effect. A complexity claim "
+                  "cannot rest on the raw count here.")
+            elif s_med > 0 and s_frac >= 0:
+                A("Raw parameters and effective fraction both rising: growth is being "
+                  "**used**, not merely accumulated.")
+            elif s_frac > 0:
+                A("Raw parameters fall while the effective fraction *rises*: organisms "
+                  "are becoming **denser**, shedding capacity that was doing nothing. "
+                  "This is the opposite of bloat.")
+            else:
+                A("Raw parameters and effective fraction both falling: capacity is being "
+                  "shed faster than it is being used.")
         A("")
 
     # ------------------------------------------------------- displaced founders
@@ -259,6 +290,70 @@ def main() -> None:
     A(f"- organisms recorded: {db.execute('SELECT COUNT(*) FROM organism').fetchone()[0]}")
     A(f"- extinctions: {db.execute('SELECT COUNT(*) FROM organism WHERE alive=0').fetchone()[0]}")
     A("")
+
+    # ------------------------------------------------- pre-registered criteria
+    A("## Pre-registered criteria (PREREGISTRATION.md)")
+    A("")
+    A("Reported whether or not they are supported. Single seed unless stated; these are "
+      "machinery checks, not confirmations.")
+    A("")
+
+    def verdict(ok: bool | None) -> str:
+        return {True: "met", False: "**not met**", None: "n/a"}[ok]
+
+    cls_c = "C_test" if ("C_test", "full", "score") in probes else "C_dev"
+
+    def sl(cond: str, c: str = cls_c) -> float | None:
+        pts = probes.get((c, cond, "score"), [])
+        return slope([g for g, _ in pts], [v for _, v in pts]) if len(pts) > 1 else None
+
+    full_s, nof_s = sl("full"), sl("no_feedback")
+    cap_s, fix_s = sl("capacity_matched"), sl("fixed_hparams")
+    A(f"**H1 — adaptation on novel structure improves** (class `{cls_c}`)")
+    A("")
+    A("| # | criterion | value | verdict |")
+    A("|---|---|---|---|")
+    A(f"| 1 | slope on `full` > 0 | {full_s:+.5f} | "
+      f"{verdict(None if full_s is None else full_s > 0)} |")
+    A(f"| 2 | `full` > `no_feedback` (not a reactive prior) | "
+      f"{full_s:+.5f} vs {nof_s:+.5f} | "
+      f"{verdict(None if nof_s is None else full_s > nof_s)} |")
+    A(f"| 3 | `full` > `capacity_matched` (not capacity) | "
+      f"{full_s:+.5f} vs {cap_s:+.5f} | "
+      f"{verdict(None if cap_s is None else full_s > cap_s)} |")
+    A(f"| 4 | `fixed_hparams` > 0 (not hyperparameter tuning) | {fix_s:+.5f} | "
+      f"{verdict(None if fix_s is None else fix_s > 0)} |")
+    A("")
+    fpts = probes.get((cls_c, "full", "score"), [])
+    npts = probes.get((cls_c, "no_feedback", "score"), [])
+    if fpts and npts:
+        A(f"Final-generation level: `full` {fpts[-1][1]:+.4f} vs `no_feedback` "
+          f"{npts[-1][1]:+.4f} (difference {fpts[-1][1] - npts[-1][1]:+.4f}). The slope "
+          f"and the level can disagree; both are reported.")
+        A("")
+
+    A("**H3 — architectures grow spontaneously**")
+    A("")
+    A("| # | criterion | value | verdict |")
+    A("|---|---|---|---|")
+    grew = sel - (neu if args.neutral and Path(args.neutral).exists() else 0.0)
+    A(f"| 1 | selected − neutral drift > 0 | {grew:+.5f} nats/gen | "
+      f"{verdict(grew > 0)} |")
+    A(f"| 2 | distribution minimum moves up | slope {s_min:+.2f}/gen | "
+      f"{verdict(s_min > 0)} |")
+    A(f"| 3 | displaced founders do not regress | see subclade test | n/a |")
+    if eff:
+        A(f"| 4 | effective parameters grow | slope {s_eff:+.1f}/gen | "
+          f"{verdict(s_eff > 0)} |")
+    A("")
+
+    gb = [g["gene_p_growth_bias"] for g in gens if "gene_p_growth_bias" in g]
+    if gb:
+        A(f"**H4 — growth-bias gene rises above 0.5**: {gb[0]:.3f} -> {gb[-1]:.3f}. "
+          f"{verdict(gb[-1] > 0.5)}. Under drift this gene stays at 0.5 by construction "
+          f"(`tests/test_neutrality.py`), so a departure in either direction is "
+          f"selection, not noise.")
+        A("")
 
     if args.figures and HAVE_MPL:
         _figures(db, gens, probes, out_dir)

@@ -23,6 +23,7 @@ parameter count. Architectures may grow, shrink, diversify into size niches, or 
 | [RESEARCH.md](RESEARCH.md) | Literature audit, prior-art verdict, and what the audit changed |
 | [EXPERIMENTS.md](EXPERIMENTS.md) | Stages, conditions, ablations, sweeps, metrics |
 | [PREREGISTRATION.md](PREREGISTRATION.md) | Hypotheses and analysis, frozen before the held-out set is opened |
+| [results/RESULTS.md](results/RESULTS.md) | Pilot results against the neutral arm, in the pre-registered format |
 
 ---
 

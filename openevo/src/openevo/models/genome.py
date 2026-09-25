@@ -192,4 +192,17 @@ def scale_to_params(
             break
     if best is None:
         raise ValueError(f"cannot reach {target} params within bounds")
-    return best
+    # Snap onto the mutation ladder. Organisms live on it (mutations move +-1 rung), so a
+    # genome off the ladder would be silently resized the first time it is used and the
+    # parameter count reported for a founder, or for a capacity-matched control, would
+    # not be the one actually evaluated.
+    from .morphisms import snap_genome, step_field  # deferred: morphisms imports this
+    snapped = snap_genome(best)
+    # Snapping rounds to the nearest rung, which can land below the target. Step d_model
+    # back up until the contract ("at least `target` parameters") holds again.
+    while snapped.n_params < target:
+        up = step_field(snapped, "d_model", +1)
+        if up is None:
+            break
+        snapped = up
+    return snapped

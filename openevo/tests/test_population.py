@@ -177,3 +177,15 @@ def test_checkpoint_round_trips():
     restored.step(s)                     # must keep running after a restore
     assert restored.generation == pop.generation + 1
     assert all(count_params(o.weights) == o.arch.n_params for o in restored.living())
+
+
+def test_every_ancestral_scale_is_seeded_into_every_island():
+    """The subclade test only discriminates driven from passive trends if displaced
+    lineages compete with the bulk. One founder size per island does not achieve that."""
+    small, big = scale_to_params(2000), scale_to_params(40000)
+    cfg = EvoConfig(n_islands=3, island_capacity=6)
+    pop = Population(cfg, PhaseConfig(), [small, big], np.random.default_rng(0))
+    for isl in pop.islands:
+        sizes = {o.n_params for o in isl.members}
+        assert sizes == {small.n_params, big.n_params}, \
+            f"island {isl.idx} is monomorphic: {sizes}"
