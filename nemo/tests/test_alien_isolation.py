@@ -58,28 +58,35 @@ def test_no_alien_primitive_is_ever_selected_on():
 
 
 def test_selection_reward_excludes_alien_channels():
-    """The reward vector that reaches selection must be zero on alien channels.
+    """The reward that reaches selection must be completely insensitive to the
+    alien channels.
 
-    This is the load-bearing test: even if an alien primitive's reward is
-    computed (it always is -- the primitives are vectorised together), the
-    `active` mask must zero it before it can enter fitness.
+    Even if an alien primitive's reward is computed -- it always is, the
+    primitives are vectorised together -- the `active` mask must render it
+    invisible to fitness.  The check is behavioural rather than structural:
+    perturb the alien channels arbitrarily and require the selection signal to
+    be bit-for-bit unchanged.
     """
+    from nemo.ecology.evolve import aggregate_reward
+
     cfg = _tiny_cfg()
     ex = Experiment(cfg=cfg, runs=[RunConfig(name="t", goal_structure="MVG", seed=0)])
     reward, flops, active, per_prim = ex.evaluate()
     goal = ex._goals[0]
-    for prim in P.ALIEN_POOL:
-        assert prim not in goal
-    # Reward is the mean over ACTIVE channels only; alien channels carry no
-    # weight in it regardless of what they scored.
-    masked = per_prim[:, list(P.ALIEN_POOL)]
-    recomputed = per_prim[:, list(goal)].mean(axis=1)
+    assert set(goal).isdisjoint(P.ALIEN_POOL)
+
+    act = np.zeros_like(per_prim)
+    act[:, list(goal)] = 1.0
+    recomputed = aggregate_reward(per_prim, act, cfg.environment.aggregation,
+                                  cfg.environment.conj_weight)
     assert np.allclose(reward, recomputed, atol=1e-6)
-    # Perturbing the alien channels must not change the selection signal at all.
-    per_prim[:, list(P.ALIEN_POOL)] += 1000.0
-    still = per_prim[:, list(goal)].mean(axis=1)
-    assert np.allclose(reward, still, atol=1e-6)
-    assert masked.shape[1] == len(P.ALIEN_POOL)
+
+    for perturbation in (1000.0, -1000.0, np.nan):
+        poisoned = per_prim.copy()
+        poisoned[:, list(P.ALIEN_POOL)] = perturbation
+        still = aggregate_reward(poisoned, act, cfg.environment.aggregation,
+                                 cfg.environment.conj_weight)
+        assert np.allclose(reward, still, atol=1e-6, equal_nan=False), perturbation
 
 
 def test_assays_do_not_mutate_the_population():

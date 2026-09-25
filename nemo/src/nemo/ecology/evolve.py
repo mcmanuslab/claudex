@@ -27,6 +27,45 @@ from ..organisms.execute import active_modules, metabolic_flops, new_state, step
 from ..selection.islands import migrate, step_generation
 
 
+def aggregate_reward(per_prim: np.ndarray, active: np.ndarray,
+                     mode: str = "conjunctive", conj_weight: float = 0.75
+                     ) -> np.ndarray:
+    """Combine per-subgoal scores into one reproductive-fitness number.
+
+    per_prim : (L, 10) calibrated score per primitive
+    active   : (L, 10) which primitives are in this lane's goal
+
+    "mean" is the obvious choice and it is the wrong one.  Under an arithmetic
+    mean an organism can score well by handling whichever subgoal is easiest
+    and ignoring the others, so there is no pressure for one part of the
+    organism to do one job and another part a different job -- which is exactly
+    the pressure this experiment is trying to detect the consequences of.  The
+    pilot showed the effect plainly: under a mean, the MVG cell reached the
+    HIGHEST reward with the SMALLEST genome (1.1 genes, 0.5 of them active).
+
+    "conjunctive" mixes a geometric mean over the active subgoals into the
+    arithmetic one.  The geometric term is zero unless every subgoal is handled
+    above its random baseline, so subgoals become genuine sub-problems; the
+    arithmetic term is kept at a minority weight so early populations, which
+    are below baseline everywhere, still have a gradient to climb.
+    """
+    n_act = np.maximum(active.sum(axis=1), 1)
+    # Select rather than multiply.  `per_prim * active` would let a NaN in an
+    # INACTIVE channel reach fitness (NaN * 0 == NaN), which would breach the
+    # alien-channel isolation guarantee the moment any primitive misbehaved.
+    # `where` makes that impossible rather than merely unlikely.
+    live = np.where(active > 0, per_prim, 0.0)
+    arith = live.sum(axis=1) / n_act
+    if mode == "mean":
+        return arith
+    pos = np.clip(np.where(active > 0, per_prim, 1.0), 0.0, 1.0)
+    # Geometric mean over ACTIVE channels only: an inactive channel contributes
+    # a factor of 1 by construction, not a factor of 0.
+    log_terms = np.where(active > 0, np.log(pos + 1e-6), 0.0)
+    geo = np.exp(log_terms.sum(axis=1) / n_act)
+    return (1.0 - conj_weight) * arith + conj_weight * geo
+
+
 @dataclass
 class GenerationRecord:
     generation: int
@@ -110,7 +149,7 @@ class Experiment:
         if self.calib is not None:
             per_prim = self.calib.normalise(per_prim)
         act_l = active.reshape(L, E, 10)[:, 0, :]
-        reward = (per_prim * act_l).sum(axis=1) / np.maximum(act_l.sum(axis=1), 1)
+        reward = aggregate_reward(per_prim, act_l, ec.aggregation, ec.conj_weight)
 
         flops = metabolic_flops(self.pop, st, self.spec)
         # Presence cost: a dormant gene still costs something to carry, but far

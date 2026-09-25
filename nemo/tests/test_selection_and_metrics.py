@@ -228,3 +228,98 @@ def test_metabolism_off_lets_genomes_grow():
 
 def cfg_init() -> int:
     return ExperimentConfig().genome.n_genes_init
+
+
+def test_minimal_criterion_blocks_the_degenerate_cheap_corner():
+    """On a two-objective front the cheapest organism is ALWAYS non-dominated,
+    so a bare Pareto rank hands rank 0 to the most degenerate genome in the
+    population however badly it performs.
+
+    The pilot showed this is not hypothetical: with metabolism on, genomes
+    collapsed from 4 genes to ~1 within 40 generations while the drift control
+    stayed at 3.7 -- and a one-gene organism has no organisation to measure,
+    which makes the experiment's central question unaskable.
+    """
+    reward = np.array([0.01, 0.50, 0.45, 0.40, 0.35, 0.30])
+    compute = np.array([1.0, 9.0, 8.0, 7.0, 6.0, 5.0])
+
+    bare, _ = fitness_key(reward, compute, True, min_criterion_pct=0.0)
+    assert bare[0] == 0, "precondition: without a criterion the worst is on the front"
+
+    ranked, _ = fitness_key(reward, compute, True, min_criterion_pct=50.0)
+    assert ranked[0] > ranked[1:].max() or ranked[0] > ranked[1:].min()
+    assert ranked[np.argmax(reward)] == 0, "the best performer must stay on the front"
+
+
+def test_minimal_criterion_survives_a_degenerate_population():
+    """If almost nothing clears the floor, selection must still rank sanely
+    rather than divide by an empty front."""
+    reward = np.array([0.5, 0.5, 0.5, 0.5])
+    compute = np.array([1.0, 2.0, 3.0, 4.0])
+    rank, tie = fitness_key(reward, compute, True, min_criterion_pct=99.0)
+    assert len(rank) == 4
+    # Crowding distance is +inf for boundary solutions by NSGA-II's definition;
+    # tournament_select clips it, so inf is expected, NaN is not.
+    assert not np.isnan(tie).any()
+    assert rank.min() == 0
+    assert rank[np.argmin(compute)] == 0, "cheapest wins when performance ties"
+
+
+def test_metabolism_still_rewards_cheapness_among_performers():
+    """The criterion must not switch metabolism off: among organisms that
+    clear the floor, the cheaper one is still promoted."""
+    reward = np.array([0.50, 0.49, 0.20, 0.10])
+    compute = np.array([1e6, 1.0, 1.0, 1.0])
+    rank, _ = fitness_key(reward, compute, True, min_criterion_pct=50.0)
+    assert rank[0] == 0 and rank[1] == 0, "both eligible extremes are on the front"
+    assert rank[2] > 0 and rank[3] > 0
+
+
+# -------------------------------------------------------- reward aggregation
+def test_conjunctive_aggregation_penalises_ignoring_a_subgoal():
+    """Under an arithmetic mean an organism can score well by handling the
+    easiest subgoal and ignoring the rest, which removes the only reason for
+    it to be modular.  The pilot showed this directly: under a mean the MVG
+    cell reached the highest reward with the smallest genome (1.1 genes, 0.5
+    of them active).
+    """
+    from nemo.ecology.evolve import aggregate_reward
+
+    active = np.zeros((4, 10)); active[:, :3] = 1.0
+    scores = np.zeros((4, 10))
+    scores[0, :3] = [1.0, 0.0, 0.0]     # specialist: one subgoal, ignores two
+    scores[1, :3] = [0.35, 0.35, 0.35]  # generalist
+    scores[2, :3] = [1.0, 1.0, 1.0]     # solves everything
+    scores[3, :3] = [1.0, 1.0, 0.0]     # two of three
+
+    mean = aggregate_reward(scores, active, "mean")
+    conj = aggregate_reward(scores, active, "conjunctive")
+
+    assert mean[0] < mean[1] * 1.05, "precondition: under a mean these are close"
+    assert conj[0] < conj[1] * 0.5, "conjunctive must punish ignoring subgoals"
+    assert conj[3] < conj[2], "failing any subgoal must cost"
+    assert conj[2] > conj[1] > conj[0]
+
+
+def test_conjunctive_aggregation_keeps_an_early_gradient():
+    """A pure geometric mean is zero for a population below baseline
+    everywhere, which would leave early evolution with nothing to climb."""
+    from nemo.ecology.evolve import aggregate_reward
+
+    active = np.zeros((2, 10)); active[:, :3] = 1.0
+    below = np.zeros((2, 10))
+    below[0, :3] = [-0.2, -0.2, -0.2]
+    below[1, :3] = [-0.1, -0.1, -0.1]
+    conj = aggregate_reward(below, active, "conjunctive")
+    assert conj[1] > conj[0], "no gradient below baseline"
+
+
+def test_aggregation_ignores_inactive_channels():
+    from nemo.ecology.evolve import aggregate_reward
+
+    active = np.zeros((1, 10)); active[0, :2] = 1.0
+    s = np.zeros((1, 10)); s[0, :2] = [0.6, 0.6]; s[0, 5:] = -9.0
+    a = aggregate_reward(s, active, "conjunctive")[0]
+    s2 = np.zeros((1, 10)); s2[0, :2] = [0.6, 0.6]
+    b = aggregate_reward(s2, active, "conjunctive")[0]
+    assert abs(a - b) < 1e-9

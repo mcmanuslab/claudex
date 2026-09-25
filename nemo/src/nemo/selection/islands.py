@@ -52,17 +52,55 @@ def crowding_distance(objectives: np.ndarray) -> np.ndarray:
 
 
 def fitness_key(reward: np.ndarray, compute: np.ndarray,
-                metabolism: bool) -> tuple[np.ndarray, np.ndarray]:
-    """Return (rank, tiebreak) where lower rank is better and higher tiebreak
-    is better.  With metabolism off this reduces to plain reward rank."""
+                metabolism: bool,
+                min_criterion_pct: float = 50.0) -> tuple[np.ndarray, np.ndarray]:
+    """Return (rank, tiebreak); lower rank is better, higher tiebreak is better.
+
+    With metabolism off this is plain reward rank.
+
+    With metabolism on it is a Pareto rank on (reward, -compute) **restricted
+    to organisms that clear a minimal performance criterion**.
+
+    Why the criterion is necessary, and it is not a detail.  On a two-objective
+    front the cheapest organism is ALWAYS non-dominated -- nothing can beat it
+    on cost -- so a bare Pareto rank hands rank 0 to the most degenerate
+    genome in the population regardless of how badly it performs.  The pilot
+    showed exactly that: with metabolism on, genomes collapsed from 4 genes to
+    ~1 within 40 generations while the fitness-shuffled drift control stayed at
+    3.7.  A one-gene organism has no organisation to measure, so the
+    experiment's central question becomes unaskable.
+
+    The minimal criterion (Brant & Stanley 2017; used in POET) makes cheapness
+    pay only among organisms that actually perform: below the reward floor, an
+    organism is ranked after every eligible one no matter how cheap it is.
+    That is also the behaviour the original proposal asks for -- redundancy
+    should survive when its benefits justify its metabolic cost, rather than
+    being competed away by whatever is smallest.
+    """
     if not metabolism:
         order = np.argsort(np.argsort(-reward))
         return order.astype(np.int32), reward
-    obj = np.stack([reward, -compute], axis=1)
-    r = pareto_rank(obj)
-    return r, crowding_distance(obj)
 
+    n = reward.shape[0]
+    floor = np.percentile(reward, min_criterion_pct)
+    eligible = reward >= floor
+    if eligible.sum() < 2:                      # degenerate population
+        eligible = np.ones(n, bool)
 
+    rank = np.zeros(n, np.int32)
+    tie = np.zeros(n, float)
+
+    idx = np.flatnonzero(eligible)
+    obj = np.stack([reward[idx], -compute[idx]], axis=1)
+    rank[idx] = pareto_rank(obj)
+    tie[idx] = crowding_distance(obj)
+
+    bad = np.flatnonzero(~eligible)
+    if bad.size:
+        offset = int(rank[idx].max()) + 1
+        rank[bad] = offset + np.argsort(np.argsort(-reward[bad])).astype(np.int32)
+        tie[bad] = reward[bad]
+    return rank, tie
 def tournament_select(rank: np.ndarray, tiebreak: np.ndarray, k: int,
                       rng: np.random.Generator, n_picks: int) -> np.ndarray:
     """k-way tournament within one island."""
@@ -78,7 +116,9 @@ def tournament_select(rank: np.ndarray, tiebreak: np.ndarray, k: int,
 def step_generation(reward: np.ndarray, compute: np.ndarray, island: np.ndarray,
                     n_islands: int, island_size: int, tournament: int,
                     metabolism: bool, rng: np.random.Generator,
-                    shuffled: bool = False) -> tuple[np.ndarray, np.ndarray]:
+                    shuffled: bool = False,
+                    min_criterion_pct: float = 50.0
+                    ) -> tuple[np.ndarray, np.ndarray]:
     """Decide who reproduces and who dies, per island.
 
     Returns (parent_of_slot, survived) where parent_of_slot[i] is the index of
@@ -104,7 +144,7 @@ def step_generation(reward: np.ndarray, compute: np.ndarray, island: np.ndarray,
         if shuffled:
             perm = rng.permutation(idx.size)
             r, c = r[perm], c[perm]
-        rank, tb = fitness_key(r, c, metabolism)
+        rank, tb = fitness_key(r, c, metabolism, min_criterion_pct)
 
         n_replace = max(1, idx.size // 4)
         # Losers: worst by (rank, -tiebreak).

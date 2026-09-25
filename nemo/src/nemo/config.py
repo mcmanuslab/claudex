@@ -10,6 +10,7 @@ from dataclasses import dataclass, field, asdict
 from typing import Literal
 
 GoalStructure = Literal["MVG", "RVG", "FIX"]
+RewardAggregation = Literal["conjunctive", "mean"]
 LearnMode = Literal["none", "reset", "lamarckian", "partial"]
 
 
@@ -80,6 +81,14 @@ class EnvironmentConfig:
     mvg_basis: int = 6              # size of the shared subgoal basis under MVG
     switch_every: int = 50          # generations between goal switches
     noise: float = 0.05
+    aggregation: RewardAggregation = "conjunctive"
+    # "conjunctive": every active subgoal must be handled, so subgoals are
+    #   genuine sub-problems and division of labour can pay.
+    # "mean": the arithmetic mean.  Kept as an explicit CONTROL, not as a
+    #   default -- the pilot showed that under a mean, one module specialises
+    #   on the easiest channel, ignores the rest, and still scores best, which
+    #   removes the only reason for an organism to be modular at all.
+    conj_weight: float = 0.75       # weight on the conjunctive term
 
 
 @dataclass

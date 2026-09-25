@@ -125,7 +125,8 @@ python3 scripts/run_experiment.py --preset main --control monolithic \
 | Date | Preset | Backend | Runs × organisms | Gens | Wall clock | Result |
 |---|---|---|---|---|---|---|
 | 2026-09-25 | smoke | numpy (4-core container) | 4 × 16 | 60 | 8 s | Selection works; drift stays flat. Exposed the DECOY calibration flaw (§5 D3) |
-| 2026-09-25 | pilot | numpy (4-core container) | 16 × 64 | 250 | see `results/pilot/summary.json` | see `results/pilot/analysis.json` |
+| 2026-09-25 | pilot | numpy (4-core container) | 16 × 64 | 62 (stopped) | 5 min | **Selection collapsed genomes to ~1 gene.** Diagnosed two design flaws (D8, D9). Evidence in `results/pilot_no_min_criterion/` |
+| 2026-09-25 | pilot | numpy (4-core container) | 16 × 64 | 180 | see `results/pilot/summary.json` | see `results/pilot/analysis.json` |
 
 **Not yet run: anything on the M3 Ultra.** Every hardware number in
 RESEARCH.md §5 and DESIGN.md §7 is from the analytic model, not measurement.
@@ -168,6 +169,35 @@ Consequence of D3: NOISE has no reward channel of its own, so it cannot be a
 member of the subgoal basis. The shared basis is now
 (RECALL, XOR, SWITCH, DECOY, GATE, DELAY), giving C(6,3) = 20 MVG goals, and the
 alien pool is (COUNT, IRREV, DRIFT).
+
+**D9 — reward aggregation changed from arithmetic mean to conjunctive.**
+Found by the pilot. Under an arithmetic mean over active subgoals, an organism
+scores well by handling whichever subgoal is easiest and ignoring the rest — so
+there is no pressure for one part of the organism to do one job and another
+part a different job, which is the pressure this experiment exists to study the
+consequences of. The pilot showed it plainly: the MVG cell reached the
+**highest reward with the smallest genome** (1.14 genes, 0.51 of them active)
+while the drift control sat at 4.28. Reproductive fitness is now
+`0.25·arithmetic + 0.75·geometric` over the active subgoals; the geometric term
+is ~0 unless every subgoal is above its random baseline, and the arithmetic
+minority keeps a gradient for populations that start below baseline everywhere.
+`"mean"` is retained as an explicit control condition, not as a default.
+
+**D8 — minimal performance criterion added to Pareto selection.**
+Found by the pilot, and the more serious of the two. On a two-objective front
+the cheapest organism is **always** non-dominated — nothing can beat it on cost
+— so a bare Pareto rank on (reward, −compute) hands rank 0 to the most
+degenerate genome in the population regardless of how badly it performs. With
+metabolism on, genomes collapsed from 4 genes to ~1 within 40 generations while
+the seed-matched drift control held at 3.7. A one-gene organism has no
+organisation to measure, so the experiment's central question becomes
+unaskable. Selection now restricts the Pareto front to organisms clearing a
+performance floor (median by default); below the floor, an organism ranks after
+every eligible one however cheap it is. Precedent: minimal criterion
+coevolution (Brant & Stanley 2017), as used in POET. This is also what the
+original proposal asked for — redundancy should survive when its benefits
+justify its cost, rather than being competed away by whatever is smallest.
+Evidence preserved in `results/pilot_no_min_criterion/`.
 
 **D7 — duplicate pairs tracked by innovation id rather than by birth lane.**
 A correctness fix, not a design change, found while validating the assay.
