@@ -145,6 +145,27 @@ where it genuinely pays.
 
 ---
 
+## Pilot outcome
+
+The pipeline has been run end to end. It reported **a clean null on every
+outcome** — no condition's duplication→specialisation rate exceeds its drift
+control, and no condition's graphs are more modular than degree-matched random
+ones. That is the machinery working: it declined to find a pattern.
+
+The informative part is *why*. The largest effect in the run is genome
+shrinkage (MVG 4.0 → 1.4 genes, Cliff's δ = −1.00 against drift), because **a
+single 2,145-parameter module holds median performance on a 3-subgoal goal at
+lifetime 32**. When one module solves the task there is no selective reason for
+modularity, and selection is right to discard the rest. That is an environment
+problem, not a selection problem, and [EXPERIMENTS.md §6](EXPERIMENTS.md) sets
+out the fix and the diagnostic to run before spending compute on the main
+experiment: *a 1-gene organism should not be able to clear the minimal
+criterion.*
+
+This does **not** show that modularity fails to evolve. The pilot is n=4 over
+180 generations — roughly 1/300th of the designed experiment — in an
+environment that does not require an organism.
+
 ## Status
 
 Implemented and tested: representation, mutation operators, vectorised
