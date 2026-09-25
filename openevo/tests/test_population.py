@@ -114,3 +114,26 @@ def test_neutral_and_selected_arms_share_demography():
     a, b = sel.step(_sampler()), neu.step(_sampler())
     assert a["n_alive"] == b["n_alive"]
     assert a["total_births"] == b["total_births"]
+
+
+def test_effective_params_detects_dead_capacity():
+    """Raw parameter count cannot distinguish complexity from bloat; this must."""
+    from openevo.metrics.complexity import effective_params, probe_batch
+    from openevo.models.transformer import init_params
+    arch = scale_to_params(2000)
+    rng = np.random.default_rng(0)
+    w = init_params(arch, rng, n=1)
+    for k in list(w):                 # de-zero the output paths so the test is real
+        if k.endswith(("Wo", "W2")):
+            w[k] = rng.normal(0, 0.3, w[k].shape).astype(np.float32)
+    ob, pa, pr = probe_batch(arch, np.random.default_rng(7))
+    live = effective_params(w, arch, ob, pa, pr)
+    assert live["effective"] <= live["raw"]
+    assert live["fraction"] > 0.5, "a healthy organism should be mostly effective"
+
+    dead = {k: v.copy() for k, v in w.items()}
+    for b in range(arch.n_blocks):    # silence half the FFN units
+        dead[f"b{b}.W2"][0, : arch.d_ff // 2, :] = 0.0
+    bloated = effective_params(dead, arch, ob, pa, pr)
+    assert bloated["effective"] < live["effective"]
+    assert bloated["n_effective"] < live["n_effective"]

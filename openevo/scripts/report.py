@@ -141,6 +141,20 @@ def main() -> None:
     A("A rising median with a stationary minimum is the signature of **passive diffusion**, "
       "not a driven trend.")
     A("")
+    eff = probes.get(("-", "effective_params", "effective"), [])
+    frac = probes.get(("-", "effective_params", "fraction"), [])
+    if eff:
+        A("### Effective vs raw parameters (bloat check)")
+        A("")
+        A(f"- effective parameters {eff[0][1]:.0f} -> {eff[-1][1]:.0f} "
+          f"(slope {slope([g for g, _ in eff], [v for _, v in eff]):+.1f}/gen)")
+        if frac:
+            A(f"- effective fraction {frac[0][1] * 100:.1f}% -> {frac[-1][1] * 100:.1f}% "
+              f"`{spark([v for _, v in frac])}`")
+        A("")
+        A("Raw parameters growing while the effective fraction falls is **bloat**, not "
+          "complexity: capacity accumulating with no behavioural effect.")
+        A("")
 
     # ------------------------------------------------------- displaced founders
     rows = db.execute(

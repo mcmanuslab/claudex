@@ -32,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from openevo.environments.suites import SuiteSplit, build_suite, sample_spec, reference_scores  # noqa: E402
 from openevo.evolution.organism import PhaseConfig  # noqa: E402
 from openevo.evolution.population import EvoConfig, Population  # noqa: E402
+from openevo.metrics.complexity import effective_params, probe_batch  # noqa: E402
 from openevo.metrics.probe import CONDITIONS, run_probes  # noqa: E402
 from openevo.models.genome import scale_to_params  # noqa: E402
 from openevo.storage.run import RunStore  # noqa: E402
@@ -42,6 +43,7 @@ DEFAULTS = {
     "probe_every": 5, "probe_cohort": 8, "probe_worlds": 6, "probe_instances": 8,
     "probe_conditions": list(CONDITIONS), "open_test_set": False,
     "checkpoint_every": 0, "island_family_fraction": 0.6,
+    "effective_params": True, "effective_cohort": 3,
     "evo": {}, "phase": {},
 }
 
@@ -179,6 +181,17 @@ def main() -> None:
                 cohort, suites, ancestral, np.random.default_rng(4242),
                 tuple(cfg["probe_conditions"]), cfg["probe_instances"]):
                 store.add_probe(pop.generation, cls, cond, m)
+            # Effective (ablation-surviving) parameters, so that a rise in raw parameter
+            # count can be distinguished from bloat -- PREREGISTRATION.md H3 criterion 4.
+            if cfg["effective_params"]:
+                eff = []
+                for o in cohort[: cfg["effective_cohort"]]:
+                    ob, pa, pr = probe_batch(o.arch, np.random.default_rng(31337))
+                    eff.append(effective_params(o.weights, o.arch, ob, pa, pr))
+                if eff:
+                    store.add_probe(pop.generation, "-", "effective_params",
+                                    {k: float(np.mean([e[k] for e in eff]))
+                                     for k in eff[0]})
         store.commit()
 
         if cfg["checkpoint_every"] and pop.generation % cfg["checkpoint_every"] == 0:
