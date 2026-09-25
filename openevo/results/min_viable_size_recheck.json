@@ -1,0 +1,50 @@
+[
+  {
+    "n_variants": 1,
+    "scored_on": "train",
+    "target": 900,
+    "params": 983,
+    "d_model": 6,
+    "ce_final": 0.2320844918489456,
+    "trained": 0.8677436864717889,
+    "random": -0.019475904876434174,
+    "gain": 0.057428101895110495,
+    "seconds": 18.0
+  },
+  {
+    "n_variants": 1,
+    "scored_on": "train",
+    "target": 5000,
+    "params": 5360,
+    "d_model": 17,
+    "ce_final": 0.06825397443026304,
+    "trained": 0.9666283072925324,
+    "random": 0.013990657193139919,
+    "gain": 0.009916989448769842,
+    "seconds": 77.2
+  },
+  {
+    "n_variants": 1,
+    "scored_on": "heldout",
+    "target": 900,
+    "params": 983,
+    "d_model": 6,
+    "ce_final": 0.2320844918489456,
+    "trained": 0.013453783389723457,
+    "random": -0.06895140186862411,
+    "gain": 0.0012350104032547628,
+    "seconds": 18.4
+  },
+  {
+    "n_variants": 1,
+    "scored_on": "heldout",
+    "target": 5000,
+    "params": 5360,
+    "d_model": 17,
+    "ce_final": 0.06825397443026304,
+    "trained": 0.04746798937536116,
+    "random": 0.024189663734354792,
+    "gain": -0.002152120072444849,
+    "seconds": 77.5
+  }
+]

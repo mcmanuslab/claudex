@@ -1,0 +1,131 @@
+{
+  "config": {
+    "name": "pilot",
+    "generations": 40,
+    "seed": 0,
+    "founder_params": [
+      1000,
+      5000
+    ],
+    "displaced_founder_params": [
+      40000
+    ],
+    "probe_every": 5,
+    "probe_cohort": 6,
+    "probe_worlds": 5,
+    "probe_instances": 8,
+    "probe_conditions": [
+      "full",
+      "no_feedback",
+      "reinit_weights",
+      "capacity_matched",
+      "fixed_hparams"
+    ],
+    "open_test_set": false,
+    "checkpoint_every": 20,
+    "island_family_fraction": 0.6,
+    "effective_params": true,
+    "effective_cohort": 3,
+    "evo": {
+      "n_islands": 6,
+      "island_capacity": 16,
+      "tournament_k": 3,
+      "worlds_per_island": 8,
+      "credited_worlds": 6,
+      "instances_per_world": 6,
+      "flop_budget_per_island": 2000000000,
+      "max_births_per_island": 16,
+      "migration_interval": 10,
+      "migrants": 1,
+      "selection": "ecological",
+      "max_params": 1000000,
+      "resample_worlds_every": 3
+    },
+    "phase": {
+      "structural_mutation": true,
+      "heritable_learning": true,
+      "heritable_mutation": true,
+      "weight_inheritance": "lamarckian",
+      "neutral": false
+    }
+  },
+  "evo": {
+    "n_islands": 6,
+    "island_capacity": 16,
+    "tournament_k": 3,
+    "worlds_per_island": 8,
+    "credited_worlds": 6,
+    "instances_per_world": 6,
+    "flop_budget_per_island": 2000000000,
+    "max_births_per_island": 16,
+    "migration_interval": 10,
+    "migrants": 1,
+    "selection": "ecological",
+    "lambda_compute": 0.0,
+    "archive_reentry": false,
+    "novelty_weight": 0.0,
+    "resample_worlds_every": 3,
+    "lifetime_steps": 0,
+    "max_params": 1000000,
+    "seed": 0
+  },
+  "phase": {
+    "heritable_learning": true,
+    "heritable_mutation": true,
+    "recombination": false,
+    "env_coevolution": false,
+    "structural_mutation": true,
+    "weight_inheritance": "lamarckian",
+    "neutral": false
+  },
+  "suite_seal": "e50ad237af389d10913d8e0b9f027382baa0c01988225971191b8bd138a36b92",
+  "suite_summary": {
+    "A": 231,
+    "B": 77,
+    "C_dev": 1430,
+    "C_test": 1430
+  },
+  "probe_classes": [
+    "A",
+    "B",
+    "C_dev"
+  ],
+  "founder_archs": [
+    {
+      "d_model": 7,
+      "n_heads": 1,
+      "head_dim": 8,
+      "d_ff": 14,
+      "n_blocks": 2,
+      "n_obs": 32,
+      "n_act": 5,
+      "n_rew": 4
+    },
+    {
+      "d_model": 17,
+      "n_heads": 2,
+      "head_dim": 8,
+      "d_ff": 34,
+      "n_blocks": 2,
+      "n_obs": 32,
+      "n_act": 5,
+      "n_rew": 4
+    },
+    {
+      "d_model": 49,
+      "n_heads": 6,
+      "head_dim": 8,
+      "d_ff": 98,
+      "n_blocks": 2,
+      "n_obs": 32,
+      "n_act": 5,
+      "n_rew": 4
+    }
+  ],
+  "git_commit": "8e8064590cfd4ec32d9b8ebdea64932757146bb6",
+  "started_at": "2026-09-25T21:33:39Z",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "config_hash": "48dd5dd1f5331aa4"
+}
