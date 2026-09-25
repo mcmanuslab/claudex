@@ -145,10 +145,19 @@ def evaluate_group(weights_list: list[Params], arch: ArchGenome,
     weights = stack([unstack(w, 0) for w in weights_list])
     norm_blocks = np.zeros((P, W, N_BLOCKS_EVAL))
     beh = np.zeros((P, W, 3))
-    for j, (spec, lo, hi) in enumerate(worlds):
+    for j, w in enumerate(worlds):
+        spec, lo, hi = w.spec, w.lo, w.hi
         out = rollout(weights, arch, spec, n_inst, P, temps, rng, feedback=feedback)
-        span = max(1e-6, hi - lo)
-        norm_blocks[:, j] = np.clip((out["per_block"] - lo) / span, -0.5, 1.5)
+        if w.lo_blocks and w.hi_blocks:
+            # Per-block references, so that a world which is intrinsically easier late in
+            # the context cannot masquerade as in-context adaptation.
+            lb = np.asarray(w.lo_blocks)
+            span = np.maximum(1e-6, np.asarray(w.hi_blocks) - lb)
+            norm_blocks[:, j] = np.clip((out["per_block"] - lb[None]) / span[None],
+                                        -0.5, 1.5)
+        else:
+            span = max(1e-6, hi - lo)
+            norm_blocks[:, j] = np.clip((out["per_block"] - lo) / span, -0.5, 1.5)
         beh[:, j] = _behaviour(out["actions"], out["obs"])
     m = np.ones((P, W), dtype=bool) if credit is None else credit
     wts = m / np.maximum(1, m.sum(axis=1, keepdims=True))

@@ -35,7 +35,8 @@
     "migration_interval": 10,
     "migrants": 1,
     "selection": "ecological",
-    "max_params": 1000000
+    "max_params": 1000000,
+    "resample_worlds_every": 3
   },
   "phase": {
     "structural_mutation": true,

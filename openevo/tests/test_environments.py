@@ -8,10 +8,11 @@ import numpy as np
 import pytest
 
 from openevo.environments.suites import (
-    MIN_GAP, SuiteSplit, build_suite, family_is_alien, normalise, reference_scores,
+    MIN_GAP, REF_N, SuiteSplit, build_suite, family_is_alien, normalise,
+    reference_scores,
 )
 from openevo.environments.worlds import (
-    ALIEN, CONTEXT, N_ACT, WorldBatch, WorldSpec,
+    ALIEN, CONTEXT, N_ACT, N_BLOCKS_EVAL, WorldBatch, WorldSpec,
 )
 
 SPLIT = SuiteSplit()
@@ -95,3 +96,50 @@ def test_interface_is_identical_across_all_classes():
 def test_reference_scores_are_reproducible():
     spec = WorldSpec("cycle", ("scramble",), "match", (), k=6, seed=11)
     assert reference_scores(spec, seed=1) == reference_scores(spec, seed=1)
+
+
+def test_per_block_references_are_populated_and_bracket_the_whole_context_pair():
+    """The in-context gain metric is normalised per block, so those references must exist
+    and must be consistent with the whole-context pair."""
+    for w in build_suite(SPLIT, "A", 5, np.random.default_rng(12)):
+        assert len(w.lo_blocks) == N_BLOCKS_EVAL and len(w.hi_blocks) == N_BLOCKS_EVAL
+        assert min(w.lo_blocks) - 1e-6 <= w.lo <= max(w.lo_blocks) + 1e-6
+        assert min(w.hi_blocks) - 1e-6 <= w.hi <= max(w.hi_blocks) + 1e-6
+        spec, lo, hi = w                      # three-way unpacking still works
+        assert spec is w.spec and lo == w.lo and hi == w.hi
+
+
+def _random_blocks(spec, n, seed):
+    rng = np.random.default_rng(seed)
+    wb = WorldBatch(spec, n, rng)
+    rew = []
+    for _ in range(CONTEXT):
+        wb.observe()
+        rew.append(wb.step(rng.integers(0, N_ACT, n)))
+    return np.stack(rew).reshape(N_BLOCKS_EVAL, CONTEXT // N_BLOCKS_EVAL, n).mean(axis=(1, 2))
+
+
+def test_per_block_references_reproduce_the_random_policy_exactly():
+    """Plumbing check: replaying the reference rollout must normalise to exactly zero in
+    every block, or the stored profiles do not describe the policy they claim to."""
+    for w in build_suite(SPLIT, "A", 4, np.random.default_rng(12)):
+        r = _random_blocks(w.spec, REF_N, w.spec.seed)
+        assert np.allclose(r, np.asarray(w.lo_blocks), atol=1e-6)
+
+
+def test_per_block_normalisation_reduces_random_policy_gain_bias():
+    """Out of sample: a world that is intrinsically easier late in the context must not
+    masquerade as in-context adaptation. Compared on mean absolute gain across a suite,
+    since a single world's estimate is dominated by sampling noise."""
+    worlds = build_suite(SPLIT, "B", 24, np.random.default_rng(11))
+    whole, per = [], []
+    for w in worlds:
+        r = _random_blocks(w.spec, REF_N, w.spec.seed + 7919)   # out-of-sample seed
+        n1 = (r - w.lo) / max(1e-6, w.hi - w.lo)
+        lb = np.asarray(w.lo_blocks)
+        n2 = (r - lb) / np.maximum(1e-6, np.asarray(w.hi_blocks) - lb)
+        whole.append(n1[-1] - n1[0])
+        per.append(n2[-1] - n2[0])
+    assert np.mean(np.abs(per)) < np.mean(np.abs(whole)), (
+        f"per-block mean |gain| {np.mean(np.abs(per)):.4f} did not improve on "
+        f"whole-context {np.mean(np.abs(whole)):.4f}")

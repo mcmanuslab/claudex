@@ -29,7 +29,9 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from openevo.environments.suites import SuiteSplit, build_suite, sample_spec, reference_scores  # noqa: E402
+from openevo.environments.suites import (  # noqa: E402
+    Scored, SuiteSplit, build_suite, reference_profiles, reference_scores, sample_spec,
+)
 from openevo.evolution.organism import PhaseConfig  # noqa: E402
 from openevo.evolution.population import EvoConfig, Population  # noqa: E402
 from openevo.metrics.complexity import (  # noqa: E402
@@ -94,9 +96,10 @@ def make_world_sampler(split: SuiteSplit, cfg: dict, evo: EvoConfig):
             tries += 1
             fam = fams[int(r.integers(0, len(fams)))]
             spec = sample_spec(fam, r, seed=int(r.integers(0, 2**31)))
-            lo, hi = reference_scores(spec, n=32, seed=spec.seed)
+            lo, hi = reference_scores(spec, seed=spec.seed)
             if hi - lo >= 0.08:
-                out.append((spec, lo, hi))
+                lb, hb = reference_profiles(spec, seed=spec.seed)
+                out.append(Scored(spec, lo, hi, lb, hb))
         return out
 
     return sampler

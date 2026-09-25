@@ -2,13 +2,24 @@
   "name": "pilot",
   "generations": 40,
   "seed": 0,
-  "founder_params": [1000, 5000],
-  "displaced_founder_params": [40000],
+  "founder_params": [
+    1000,
+    5000
+  ],
+  "displaced_founder_params": [
+    40000
+  ],
   "probe_every": 5,
   "probe_cohort": 6,
   "probe_worlds": 5,
   "probe_instances": 8,
-  "probe_conditions": ["full", "no_feedback", "reinit_weights", "capacity_matched", "fixed_hparams"],
+  "probe_conditions": [
+    "full",
+    "no_feedback",
+    "reinit_weights",
+    "capacity_matched",
+    "fixed_hparams"
+  ],
   "open_test_set": false,
   "checkpoint_every": 20,
   "island_family_fraction": 0.6,
@@ -24,7 +35,8 @@
     "migration_interval": 10,
     "migrants": 1,
     "selection": "ecological",
-    "max_params": 1000000
+    "max_params": 1000000,
+    "resample_worlds_every": 3
   },
   "phase": {
     "structural_mutation": true,

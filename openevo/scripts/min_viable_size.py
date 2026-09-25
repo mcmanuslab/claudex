@@ -16,6 +16,7 @@ import argparse
 import json
 import sys
 import time
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -100,9 +101,9 @@ def main() -> None:
         regime = ("stable (n_variants=1): representational capacity" if nv == 1
                   else f"variable (n_variants={nv}): must infer the instance in context")
         print(f"\n=== {regime} ===")
-        train_worlds = [(sp.with_variants(nv), lo, hi) for sp, lo, hi in
+        train_worlds = [replace(s, spec=s.spec.with_variants(nv)) for s in
                         build_suite(split, "A", args.worlds, np.random.default_rng(args.seed + 1))]
-        held_out = [(sp.with_variants(nv), lo, hi) for sp, lo, hi in
+        held_out = [replace(s, spec=s.spec.with_variants(nv)) for s in
                     build_suite(split, "A", args.worlds, np.random.default_rng(args.seed + 99))]
         # Scored on the *training* worlds as well as held-out ones. With n_variants=1 a
         # world's mapping is fixed, so a held-out world presents a mapping the organism

@@ -28,6 +28,8 @@ information through their own choices just as surely as the fitness function wou
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import functools
 import hashlib
 import itertools
@@ -36,12 +38,45 @@ import json
 import numpy as np
 
 from .worlds import (
-    ALIEN, CONTEXT, LATENT_ALIEN, LATENT_ANCESTRAL, N_ACT, OBS_ALIEN, OBS_ANCESTRAL,
-    REW_ALIEN, REW_ANCESTRAL, REW_CORES, WorldBatch, WorldSpec,
+    ALIEN, CONTEXT, LATENT_ALIEN, LATENT_ANCESTRAL, N_ACT, N_BLOCKS_EVAL, OBS_ALIEN,
+    OBS_ANCESTRAL, REW_ALIEN, REW_ANCESTRAL, REW_CORES, WorldBatch, WorldSpec,
 )
 
-# A world paired with its measured (random, reference_high) scores.
-Scored = tuple[WorldSpec, float, float]
+@dataclass(frozen=True)
+class Scored:
+    """A world paired with the reference scores that make it comparable to others.
+
+    Both a whole-context pair (`lo`, `hi`) and a *per-block* pair. The per-block version
+    exists because the in-context adaptation metric is the difference between the last
+    and first block, and some worlds are intrinsically easier late in a context --
+    `deceptive` poisoning wears off, `reversal_after` flips, delayed reward arrives. A
+    random policy on `cycle|distractor|match|deceptive+delay` gains +0.154 under
+    whole-context normalisation without adapting at all. Averaged over a large suite this
+    washes out (measured: +0.004 +- 0.019 over 25 Class B worlds), but probe suites are
+    small and the bias is then comparable to the signal, so each block is normalised
+    against the reference scores *for that block*.
+    """
+
+    spec: WorldSpec
+    lo: float
+    hi: float
+    lo_blocks: tuple[float, ...] = ()
+    hi_blocks: tuple[float, ...] = ()
+
+    def __iter__(self):
+        """Unpacks as (spec, lo, hi) so existing three-way unpacking keeps working."""
+        return iter((self.spec, self.lo, self.hi))
+
+REF_N = 256
+"""Instances used to estimate a world's reference scores.
+
+Set by measurement, not taste. The per-block references have narrower spans than the
+whole-context pair, so they amplify their own estimation noise: at n=64, normalising each
+block against its own references is *worse* out of sample than whole-context normalisation
+on every class (mean |random-policy gain| 0.030 vs 0.030 on A, 0.030 vs 0.026 on B, 0.029
+vs 0.028 on C-dev). At n=256 it is better on every class (0.019 vs 0.029, 0.023 vs 0.026,
+0.027 vs 0.028). The results are cached per spec, so the extra cost is paid once.
+"""
 
 PARAM_GRID: dict[str, tuple[float, ...]] = {
     "mask_p": (0.2, 0.35), "distractor_p": (0.2, 0.35), "mimic_p": (0.25, 0.4),
@@ -137,7 +172,25 @@ _PARAM_OWNER = {
 
 # ------------------------------------------------------- reference measurements
 @functools.lru_cache(maxsize=65536)
-def reference_scores(spec: WorldSpec, n: int = 64, seed: int = 0
+def reference_profiles(spec: WorldSpec, n: int = REF_N, seed: int = 0
+                       ) -> tuple[tuple[float, ...], tuple[float, ...]]:
+    """Per-block (random, reference_high) mean reward on this world."""
+    out = []
+    for policy in ("random", "high"):
+        rng = np.random.default_rng(seed)
+        wb = WorldBatch(spec, n, rng)
+        rew = []
+        for _ in range(CONTEXT):
+            wb.observe()
+            a = rng.integers(0, N_ACT, n) if policy == "random" else wb.oracle_action()
+            rew.append(wb.step(a))
+        r = np.stack(rew).reshape(N_BLOCKS_EVAL, CONTEXT // N_BLOCKS_EVAL, n)
+        out.append(tuple(float(x) for x in r.mean(axis=(1, 2))))
+    return out[0], out[1]
+
+
+@functools.lru_cache(maxsize=65536)
+def reference_scores(spec: WorldSpec, n: int = REF_N, seed: int = 0
                      ) -> tuple[float, float]:
     """(random_policy, reference_high) mean per-step reward on this world instance.
 
@@ -175,7 +228,8 @@ def build_suite(split: SuiteSplit, cls: str, size: int, rng: np.random.Generator
         spec = sample_spec(fam, rng, seed=int(rng.integers(0, 2**31)))
         lo, hi = reference_scores(spec, seed=spec.seed)
         if hi - lo >= min_gap:
-            out.append((spec, lo, hi))
+            lb, hb = reference_profiles(spec, seed=spec.seed)
+            out.append(Scored(spec, lo, hi, lb, hb))
     if len(out) < size:
         raise RuntimeError(f"only {len(out)}/{size} discriminative worlds for class {cls}")
     return out

@@ -238,7 +238,7 @@ class Population:
         if not worlds:
             return
         for o in kids:
-            spec = worlds[int(self.rng.integers(0, len(worlds)))][0]
+            spec = worlds[int(self.rng.integers(0, len(worlds)))].spec
             temps = np.array([o.gene("temperature")], dtype=np.float32)
             w, flops, curve = lifetime_learn(
                 o.weights, o.arch, spec, cfg.instances_per_world,

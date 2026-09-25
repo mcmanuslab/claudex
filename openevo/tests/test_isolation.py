@@ -62,7 +62,7 @@ def test_no_feedback_condition_actually_blinds_the_organism():
     from openevo.models.transformer import init_params
     arch = scale_to_params(5000)
     w = init_params(arch, np.random.default_rng(0), n=1)
-    spec = build_suite(SuiteSplit(), "A", 1, np.random.default_rng(2))[0][0]
+    spec = build_suite(SuiteSplit(), "A", 1, np.random.default_rng(2))[0].spec
     temps = np.ones(1, dtype=np.float32)
     on = rollout(w, arch, spec, 4, 1, temps, np.random.default_rng(0), record=True,
                  feedback=True)
