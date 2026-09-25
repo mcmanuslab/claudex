@@ -26,6 +26,7 @@ import numpy as np  # noqa: E402
 from nemo.config import ExperimentConfig, RunConfig, factorial_runs  # noqa: E402
 from nemo.ecology.evolve import Experiment  # noqa: E402
 from nemo.environments.world import calibrate  # noqa: E402
+from nemo.modules.spec import ModuleSpec, match_monolithic  # noqa: E402
 from nemo.storage.db import Store, dedup_stats  # noqa: E402
 
 
@@ -60,6 +61,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--preset", choices=tuple(PRESETS), default="smoke")
     ap.add_argument("--subset", choices=("core", "full"), default="core")
+    ap.add_argument("--control", choices=("none", "monolithic"),
+                    default="none",
+                    help="monolithic: one module, parameter- and "
+                         "compute-matched to the modular ancestor. "
+                         "Runs as a separate invocation because the "
+                         "batched engine takes one module shape per run.")
     ap.add_argument("--out", default=None)
     ap.add_argument("--generations", type=int, default=None)
     ap.add_argument("--log-every", type=int, default=10)
@@ -95,6 +102,23 @@ def main() -> None:
         cfg.mutation.p_delete = args.p_dup
     runs = build_runs(reps, args.subset)
 
+    if args.control == "monolithic":
+        base = ModuleSpec(d_model=cfg.module.d_model, d_ff=cfg.module.d_ff,
+                          max_in_degree=cfg.module.max_in_degree)
+        matched, info = match_monolithic(cfg.genome.n_genes_init, base)
+        cfg.module.d_model, cfg.module.d_ff = matched.d_model, matched.d_ff
+        cfg.genome.n_rounds, cfg.genome.slots_per_round = 1, 1
+        cfg.genome.n_genes_init = 1
+        for r in runs:
+            r.duplication = False
+            r.topology_mutable = False
+        print("monolithic control, matched to "
+              f"{info['target_params']:,} params / {info['target_flops']:,} FLOPs:")
+        print(f"  d_model={info['d_model']} d_ff={info['d_ff']} -> "
+              f"{info['matched_params']:,} params "
+              f"({info['param_error']:+.1%}), "
+              f"{info['matched_flops']:,} FLOPs ({info['flop_error']:+.1%})")
+
     ex = Experiment(cfg=cfg, runs=runs)
     if not args.no_calibrate:
         # Difficulty matching across goal structures (DESIGN.md 5.2).
@@ -104,7 +128,8 @@ def main() -> None:
     store = Store(out / "nemo.sqlite")
     names = [r.name for r in runs]
     meta = {
-        "preset": args.preset, "subset": args.subset, "generations": gens,
+        "preset": args.preset, "subset": args.subset,
+        "control": args.control, "generations": gens,
         "lanes": int(ex.pop.L), "runs": names, "config": cfg.to_dict(),
     }
     (out / "meta.json").write_text(json.dumps(meta, indent=2, default=str))

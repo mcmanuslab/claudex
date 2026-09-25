@@ -162,3 +162,42 @@ class OrganismSpec:
             "neural_total": self.n_params,
             "regulatory_scalars": self.regulatory_genome_size(),
         }
+
+
+def match_monolithic(n_genes: int, module: ModuleSpec,
+                     d_ff_ratio: int = 2) -> tuple[ModuleSpec, dict]:
+    """Smallest single module whose parameter count matches `n_genes` of `module`.
+
+    The control the original proposal calls "a particularly important control":
+    if modular organisms beat monolithic ones only because they carry more
+    parameters or execute more FLOPs, the experiment has shown nothing about
+    organisation.
+
+    Returns the matched spec plus the realised match quality on BOTH budgets.
+    Parameters and FLOPs both scale as d_model^2 here, so a single d_model
+    matches both to within a few percent -- which is why one control suffices
+    rather than two.
+    """
+    target_p = n_genes * module.n_params
+    target_f = n_genes * module.flops_forward()
+    best, best_err = None, float("inf")
+    for d in range(module.d_model, 16 * module.d_model + 1):
+        cand = ModuleSpec(d_model=d, d_ff=d_ff_ratio * d,
+                          n_heads=module.n_heads,
+                          max_in_degree=module.max_in_degree)
+        err = abs(cand.n_params - target_p) / target_p
+        if err < best_err:
+            best, best_err = cand, err
+        elif cand.n_params > target_p * 1.5:
+            break
+    assert best is not None
+    return best, {
+        "target_params": target_p,
+        "matched_params": best.n_params,
+        "param_error": (best.n_params - target_p) / target_p,
+        "target_flops": target_f,
+        "matched_flops": best.flops_forward(),
+        "flop_error": (best.flops_forward() - target_f) / target_f,
+        "d_model": best.d_model,
+        "d_ff": best.d_ff,
+    }
