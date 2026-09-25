@@ -60,21 +60,12 @@ xp = _xp
 # for anything whose MLX spelling differs from NumPy's.
 array = _xp.array
 zeros = _xp.zeros
-ones = _xp.ones
 arange = _xp.arange
 concatenate = _xp.concatenate
-stack = _xp.stack
-where = _xp.where
-exp = _xp.exp
 maximum = _xp.maximum
-minimum = _xp.minimum
 sqrt = _xp.sqrt
 matmul = _xp.matmul
 reshape = _xp.reshape
-transpose = _xp.transpose
-sum_ = _xp.sum
-mean = _xp.mean
-take_along_axis = _xp.take_along_axis
 float32 = _xp.float32
 int32 = _xp.int32
 
@@ -135,16 +126,19 @@ def gather_slots(buf, idx):
 def set_slots(buf, values, start: int, count: int):
     """Write `values` (L, count, E, d) into slots [start, start+count).
 
-    In-place on a copy rather than a three-way concatenate: the concatenate
-    spelling copies the whole buffer three times per round, four rounds per
-    timestep.  Both backends support slice assignment.
+    Slice assignment rather than a three-way concatenate: the concatenate
+    spelling copies the whole message buffer three times per round, four rounds
+    per timestep.  Both backends support `a[:, i:j] = v`.
+
+    MLX caveat: this mutates `buf`, and in-place mutation of a traced array is
+    not generally safe inside `mx.compile`.  If the rollout is compiled, replace
+    the body with the functional form below -- measure before assuming the
+    concatenate cost matters there, since MLX fuses where NumPy cannot:
+
+        return concatenate([buf[:, :start], values, buf[:, start+count:]], 1)
     """
-    out = buf if _INPLACE_OK else buf
-    out[:, start:start + count] = values
-    return out
-
-
-_INPLACE_OK = True
+    buf[:, start:start + count] = values
+    return buf
 
 
 def broadcast_to(x, shape):
