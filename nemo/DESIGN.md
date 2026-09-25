@@ -134,8 +134,7 @@ executed as independent lanes of one batched tensor program. Modelled cost:
 | Control | Purpose |
 |---|---|
 | **Fitness-shuffled drift** | Fitness assigned at random each generation. Establishes the null for genome-length growth, duplication rate, and every modularity metric. **Absent from the original proposal; it is the single most important addition.** Without it, genome bloat (well documented in GP, and known to drive Tierra's complexity growth) is indistinguishable from adaptive complexification |
-| **Monolithic, parameter-matched** | One module with `d_model` scaled so total params match the evolved mean; same budgets |
-| **Monolithic, compute-matched** | Same, matched on executed FLOPs instead |
+| **Monolithic, matched** | One module with `d_model` solved so parameters match the modular ancestor. Implemented in `ModuleSpec.match_monolithic`. **Parameters and FLOPs both scale as `d_model²`, so a single `d_model` matches both budgets to within 2.5%** — one control answers "did modularity win, or did more parameters win?" without needing a separate compute-matched arm. Runs as its own invocation, because the batched engine takes one module shape per run (§7.2) |
 | **Modular-fixed-topology** | Modules present, wiring and regulation frozen |
 | **Regulation-frozen** | Wiring mutable, gate parameters frozen. Isolates factor 7 of the proposal's operator list |
 | **Global selection** | Replaces island structure. Tests the proposal's (correct) intuition that global top-k is harmful |
@@ -304,7 +303,26 @@ what makes the whole population steppable in one graph (§7).
 Difficulty is matched across G levels by calibrating each primitive's solo
 difficulty for a random policy before the run, and reporting the calibration.
 
-### 5.3 Environment classes (strict separation, as the proposal requires)
+### 5.3 Alien-world adaptation, operationally
+
+The headline evolvability measurement (`src/nemo/ecology/alien.py`,
+`scripts/alien_test.py`):
+
+1. Take a fossil; **deep-copy it**.
+2. Evaluate it unchanged on a world built only from held-out primitives. That
+   is the pre-adaptation level.
+3. Evolve the copy there for a **fixed offspring budget** — the same number of
+   births, not the same wall clock, so a larger organism does not get more
+   adaptation for being slower.
+4. Report normalised AUC with pre-adaptation fitness subtracted, which is what
+   controls regression to the mean (a population starting lower has more room
+   to improve).
+
+`adapt()` asserts its goal is a subset of `ALIEN_POOL` and refuses otherwise;
+`tests/test_alien_adaptation.py` verifies the live population is byte-identical
+after an adaptation run. The isolation is structural, not procedural.
+
+### 5.4 Environment classes (strict separation, as the proposal requires)
 
 - **A — Ancestral:** primitives and combinations used for reproductive fitness.
 - **B — Recombination:** familiar primitives, unseen combinations.

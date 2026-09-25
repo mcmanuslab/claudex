@@ -110,6 +110,9 @@ python3 scripts/run_experiment.py --preset main   --subset full --out results/ma
 python3 scripts/analyse.py results/main
 python3 scripts/report.py  results/main            # HTML research dashboard
 python3 scripts/module_sweep.py                    # smallest viable module, empirically
+python3 scripts/alien_test.py results/main        # evolvability on held-out causal structure
+python3 scripts/run_experiment.py --preset main --control monolithic \
+        --out results/main_mono                   # the matched monolithic control
 ```
 
 `--subset core` runs the four lane-groups carrying the central contrast
@@ -165,6 +168,16 @@ Consequence of D3: NOISE has no reward channel of its own, so it cannot be a
 member of the subgoal basis. The shared basis is now
 (RECALL, XOR, SWITCH, DECOY, GATE, DELAY), giving C(6,3) = 20 MVG goals, and the
 alien pool is (COUNT, IRREV, DRIFT).
+
+**D7 — duplicate pairs tracked by innovation id rather than by birth lane.**
+A correctness fix, not a design change, found while validating the assay.
+Offspring overwrite the lanes of the organisms they displace, so looking for a
+pair in its birth lane both missed most survivors and could attribute a pair to
+whatever unrelated organism now occupied that lane. Observed pairs rose from 4
+per 25 generations to 31 per 60 on identical settings. The resulting
+observations also make the case for the drift null concrete: median weight
+distance across observed pairs is 0.0000 while median contribution divergence
+is 0.13 — most pairs are byte-identical and still *appear* to have diverged.
 
 **D6 — pilot duplication rate raised from 2% to 6% (deletion matched).**
 Pilot only; the main experiment keeps the pre-registered 2%. At 2% per birth,
