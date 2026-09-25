@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+# Run outputs: regenerate with scripts/run_evolution.py. Committed results live in
+# results/ only when explicitly added (see results/README.md).
+results/**/run.db
+results/**/checkpoint.pkl

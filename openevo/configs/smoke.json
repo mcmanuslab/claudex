@@ -1,0 +1,18 @@
+{
+  "name": "smoke",
+  "generations": 4,
+  "seed": 0,
+  "founder_params": [5000],
+  "probe_every": 2,
+  "probe_cohort": 4,
+  "probe_worlds": 3,
+  "probe_instances": 6,
+  "probe_conditions": ["full", "no_feedback", "reinit_weights"],
+  "evo": {
+    "n_islands": 2, "island_capacity": 8, "worlds_per_island": 4,
+    "credited_worlds": 3, "instances_per_world": 6,
+    "flop_budget_per_island": 400000000, "max_births_per_island": 8,
+    "migration_interval": 2
+  },
+  "phase": {"heritable_learning": true, "heritable_mutation": true}
+}

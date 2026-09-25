@@ -1,0 +1,36 @@
+{
+  "name": "pilot",
+  "generations": 40,
+  "seed": 0,
+  "founder_params": [1000, 5000],
+  "displaced_founder_params": [40000],
+  "probe_every": 5,
+  "probe_cohort": 6,
+  "probe_worlds": 5,
+  "probe_instances": 8,
+  "probe_conditions": ["full", "no_feedback", "reinit_weights", "capacity_matched", "fixed_hparams"],
+  "open_test_set": false,
+  "checkpoint_every": 20,
+  "island_family_fraction": 0.6,
+  "evo": {
+    "n_islands": 6,
+    "island_capacity": 16,
+    "tournament_k": 3,
+    "worlds_per_island": 8,
+    "credited_worlds": 6,
+    "instances_per_world": 6,
+    "flop_budget_per_island": 2000000000,
+    "max_births_per_island": 16,
+    "migration_interval": 10,
+    "migrants": 1,
+    "selection": "ecological",
+    "max_params": 1000000
+  },
+  "phase": {
+    "structural_mutation": true,
+    "heritable_learning": true,
+    "heritable_mutation": true,
+    "weight_inheritance": "lamarckian",
+    "neutral": false
+  }
+}
