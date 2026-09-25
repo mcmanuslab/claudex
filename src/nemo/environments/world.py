@@ -27,6 +27,11 @@ import numpy as np
 from . import primitives as P
 
 
+# A channel narrower than this cannot be normalised without amplifying noise.
+MIN_RANGE = 0.25
+NOISE_IDX = P.NOISE
+
+
 @dataclass
 class Calibration:
     baseline: np.ndarray    # (P,) random-policy mean reward
@@ -67,7 +72,18 @@ def calibrate(n_symbols: int, n_actions: int, n_channels: int,
             a = _oracle(prim, st, params, n_actions)
             tot += P.reward(st, active, params, a, n_actions, n_symbols)[:, prim].mean()
         ceil[prim] = tot / steps
-    return Calibration(baseline=base, ceiling=np.maximum(ceil, base + 1e-3))
+    scored = [i for i in range(10) if i not in P.MODIFIERS]
+    narrow = np.zeros(10, bool)
+    narrow[scored] = (ceil[scored] - base[scored]) < MIN_RANGE
+    if narrow.any():
+        bad = [P.NAMES[i] for i in np.flatnonzero(narrow)]
+        raise ValueError(
+            f"primitives {bad} have a calibrated range < {MIN_RANGE}: "
+            "normalising by it would amplify noise and let a degenerate policy "
+            "reach the ceiling.  Give the channel a positive reward component."
+        )
+    ceil = np.where(np.arange(10)[None, :][0] == NOISE_IDX, base + 1.0, ceil)
+    return Calibration(baseline=base, ceiling=ceil)
 
 
 def _oracle(prim: int, st: P.PrimitiveState, params: np.ndarray, n_actions: int) -> np.ndarray:
@@ -81,14 +97,18 @@ def _oracle(prim: int, st: P.PrimitiveState, params: np.ndarray, n_actions: int)
         base = st.history[:, 0] % n_actions
         return np.where(st.ctx == 1, (base + n_actions // 2) % n_actions, base)
     if prim == P.DECOY:
-        return (params[:, P.DECOY] % n_actions + 1) % n_actions
+        want = (st.history[:, 1] + 1) % n_actions
+        trap = params[:, P.DECOY] % n_actions
+        return np.where(want == trap, (want + 1) % n_actions, want)
     if prim == P.GATE:
         return st.ctx.astype(np.int64)
     if prim == P.COUNT:
         m = np.clip(params[:, P.COUNT], 2, 8)
         return np.where(st.counter % m == 0, 0, 1).astype(np.int64)
     if prim == P.IRREV:
-        return (params[:, P.IRREV] % n_actions + 1) % n_actions
+        want = st.history[:, 0] % n_actions
+        trap = params[:, P.IRREV] % n_actions
+        return np.where(want == trap, (want + 1) % n_actions, want)
     if prim == P.DRIFT:
         return (st.history[:, 0] + st.drift) % n_actions
     if prim == P.DELAY:

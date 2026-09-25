@@ -40,6 +40,17 @@ CREATE TABLE IF NOT EXISTS duplicate_pairs (
 CREATE TABLE IF NOT EXISTS module_blobs (
     digest TEXT PRIMARY KEY, n_params INTEGER, n_refs INTEGER
 );
+CREATE TABLE IF NOT EXISTS pair_observations (
+    run INTEGER, lane INTEGER, born_generation INTEGER,
+    observed_generation INTEGER, age INTEGER, innov INTEGER,
+    parent_innov INTEGER, divergence REAL, weight_distance REAL, both_alive INTEGER
+);
+CREATE TABLE IF NOT EXISTS organism_observations (
+    run INTEGER, lane INTEGER, generation INTEGER, n_live INTEGER,
+    q_str REAL, mean_specialisation REAL, division_of_labour REAL
+);
+CREATE INDEX IF NOT EXISTS ix_po_run ON pair_observations(run, age);
+CREATE INDEX IF NOT EXISTS ix_oo_run ON organism_observations(run, generation);
 CREATE INDEX IF NOT EXISTS ix_gen_run ON generations(run, generation);
 CREATE INDEX IF NOT EXISTS ix_ev_gen  ON events(generation);
 CREATE INDEX IF NOT EXISTS ix_dp_run  ON duplicate_pairs(run, generation);
@@ -65,6 +76,21 @@ class Store:
 
     def write_events(self, events) -> None:
         self.con.executemany("INSERT INTO events VALUES (?,?,?,?,?)", events)
+        self.con.commit()
+
+    def write_pair_observations(self, obs) -> None:
+        self.con.executemany(
+            "INSERT INTO pair_observations VALUES (?,?,?,?,?,?,?,?,?,?)",
+            [(o.run, o.lane, o.born_generation, o.observed_generation, o.age,
+              o.innov, o.parent_innov, o.divergence, o.weight_distance,
+              o.both_alive) for o in obs])
+        self.con.commit()
+
+    def write_organism_observations(self, obs) -> None:
+        self.con.executemany(
+            "INSERT INTO organism_observations VALUES (?,?,?,?,?,?,?)",
+            [(o.run, o.lane, o.generation, o.n_live, o.q_str,
+              o.mean_specialisation, o.division_of_labour) for o in obs])
         self.con.commit()
 
     def write_module_lineage(self, registry) -> None:

@@ -28,10 +28,21 @@ NAMES = {
     DRIFT: "DRIFT", DELAY: "DELAY",
 }
 
-# Basis of 6 used for reproductive fitness under MVG.
-ANCESTRAL_POOL = (RECALL, XOR, SWITCH, DECOY, GATE, NOISE)
-# Never used for reproductive fitness in any condition.
-ALIEN_POOL = (COUNT, IRREV, DRIFT, DELAY)
+# NOISE is a MODIFIER, not a subgoal: it corrupts observations and has no
+# reward channel of its own.  It is therefore excluded from both pools and
+# applied to whatever world is active.  Putting it in the subgoal basis gave it
+# a calibrated range of ~0, which `calibrate` now refuses.
+MODIFIERS = (NOISE,)
+
+# The shared subgoal basis used for reproductive fitness.  C(6,3) = 20 goals.
+ANCESTRAL_POOL = (RECALL, XOR, SWITCH, DECOY, GATE, DELAY)
+
+# Never used for reproductive fitness in any condition, under any goal
+# structure.  Held out for the alien-adaptation evolvability test.
+ALIEN_POOL = (COUNT, IRREV, DRIFT)
+
+assert set(ANCESTRAL_POOL).isdisjoint(ALIEN_POOL)
+assert set(MODIFIERS).isdisjoint(set(ANCESTRAL_POOL) | set(ALIEN_POOL))
 
 
 @dataclass
@@ -88,8 +99,9 @@ def observe(st: PrimitiveState, active: np.ndarray, params: np.ndarray,
     s = active[:, SWITCH]
     cue[:, 0] = np.where(s > 0, (cue[:, 0] & ~1) | st.ctx, cue[:, 0]).astype(np.int32)
 
-    # NOISE: independent symbol corruption.
-    p_noise = active[:, NOISE] * (params[:, NOISE].astype(np.float32) / 100.0)
+    # NOISE: independent symbol corruption, always on (it is a modifier, not a
+    # subgoal), at a level carried in `params`.
+    p_noise = params[:, NOISE].astype(np.float32) / 100.0
     corrupt = rng.random((n, n_channels)) < p_noise[:, None]
     cue = np.where(corrupt, rng.integers(1, n_symbols, size=(n, n_channels)), cue).astype(np.int32)
 
@@ -121,9 +133,19 @@ def reward(st: PrimitiveState, active: np.ndarray, params: np.ndarray,
     want = np.where(st.ctx == 1, alt, base)
     out[:, SWITCH] = (a == want).astype(np.float32)
 
-    # DECOY(p): one action pays a small immediate reward and a larger penalty.
+    # DECOY(p): a real task with a deceptive trap.  Reward for tracking the
+    # cue, a large penalty for one specific action.
+    #
+    # This channel must carry a positive component.  A penalty-only channel has
+    # a calibrated range of (baseline, 0) -- about 0.06 wide -- so normalising
+    # by it amplifies noise ~16x, and its "ceiling" is reachable by a degenerate
+    # constant-action policy that simply never emits the trap action.  The smoke
+    # test caught exactly that: the fitness-shuffled drift control appeared to
+    # improve from 0.01 to 0.42 purely through this channel.
     decoy_a = params[:, DECOY] % n_actions
-    out[:, DECOY] = np.where(a == decoy_a, -0.5, 0.0).astype(np.float32)
+    decoy_want = (st.history[:, 1] + 1) % n_actions
+    out[:, DECOY] = np.where(a == decoy_a, -1.0,
+                             (a == decoy_want).astype(np.float32)).astype(np.float32)
 
     # GATE(h): reward for tracking the live channel.
     out[:, GATE] = (a % 2 == st.ctx).astype(np.float32)
@@ -135,8 +157,13 @@ def reward(st: PrimitiveState, active: np.ndarray, params: np.ndarray,
     m = np.clip(params[:, COUNT], 2, 8)
     out[:, COUNT] = ((st.counter % m == 0) == (a == 0)).astype(np.float32)
 
+    # IRREV(a): one action permanently closes a branch; the task is solvable
+    # only while the branch is open.  Positive component for the same reason as
+    # DECOY.
     irrev_a = params[:, IRREV] % n_actions
-    out[:, IRREV] = np.where((a == irrev_a) & (st.closed > 0), -1.0, 0.0).astype(np.float32)
+    out[:, IRREV] = np.where(st.closed > 0, -0.25,
+                             (a == (st.history[:, 0] % n_actions)).astype(np.float32)
+                             ).astype(np.float32)
 
     phase_want = (st.history[:, 0] + st.drift) % n_actions
     out[:, DRIFT] = (a == phase_want).astype(np.float32)

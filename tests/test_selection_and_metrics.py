@@ -180,7 +180,14 @@ def test_factorial_covers_every_cell():
 
 
 def test_conditions_are_actually_distinct_in_the_loop():
-    """Two runs differing only in `duplication` must diverge in genome length."""
+    """Two runs differing only in `duplication` must differ in the loop.
+
+    The discriminator is the duplication EVENT COUNT, not genome length:
+    with metabolism on, selection removes duplicates about as fast as they
+    arise, so both conditions shrink.  That is itself informative -- it is the
+    metabolic factor doing its job -- but it means genome length alone cannot
+    be used to verify that the D factor is wired up.
+    """
     cfg = ExperimentConfig()
     cfg.ecology.n_islands, cfg.ecology.island_size = 2, 8
     cfg.ecology.n_episodes, cfg.ecology.lifetime = 2, 8
@@ -189,7 +196,35 @@ def test_conditions_are_actually_distinct_in_the_loop():
         RunConfig(name="dup_on", duplication=True, seed=1),
         RunConfig(name="dup_off", duplication=False, seed=1),
     ])
+    on = off = 0
     for _ in range(25):
         recs = ex.run_generation(sample_q=0)
-    assert recs[0].mean_genome_len > recs[1].mean_genome_len
-    assert recs[1].mean_genome_len <= cfg.genome.n_genes_init
+        on += recs[0].n_duplications
+        off += recs[1].n_duplications
+    assert on > 0, "duplication enabled but no duplication events occurred"
+    assert off == 0, "duplication disabled but events occurred"
+    assert len(ex.duplicate_pairs) == on
+
+
+def test_metabolism_off_lets_genomes_grow():
+    """Without metabolic cost, duplication should inflate genome length --
+    the bloat that RESEARCH.md 7 (C5) warns can masquerade as complexity.
+    With cost on, that growth should be checked."""
+    def run(metabolism):
+        cfg = ExperimentConfig()
+        cfg.ecology.n_islands, cfg.ecology.island_size = 2, 16
+        cfg.ecology.n_episodes, cfg.ecology.lifetime = 2, 8
+        cfg.mutation.p_duplicate, cfg.mutation.p_delete = 0.4, 0.02
+        ex = Experiment(cfg=cfg, runs=[
+            RunConfig(name="x", duplication=True, metabolism=metabolism, seed=2)])
+        for _ in range(40):
+            recs = ex.run_generation(sample_q=0)
+        return recs[0].mean_genome_len
+
+    free, costed = run(False), run(True)
+    assert free > cfg_init(), "genomes did not grow even with cost off"
+    assert free > costed, (free, costed)
+
+
+def cfg_init() -> int:
+    return ExperimentConfig().genome.n_genes_init

@@ -17,3 +17,11 @@
 
 # Test scratch
 /tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# NEMO experiment outputs (regenerated; keep the code, not the runs)
+/nemo/results/

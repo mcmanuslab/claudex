@@ -1,0 +1,66 @@
+{
+  "preset": "smoke",
+  "subset": "core",
+  "generations": 60,
+  "lanes": 64,
+  "runs": [
+    "MVG_r0",
+    "RVG_r0",
+    "FIX_r0",
+    "DRIFT_r0"
+  ],
+  "config": {
+    "module": {
+      "d_model": 16,
+      "d_ff": 32,
+      "max_in_degree": 4
+    },
+    "genome": {
+      "n_rounds": 4,
+      "slots_per_round": 4,
+      "n_genes_init": 4
+    },
+    "mutation": {
+      "p_weight": 0.7,
+      "p_regulatory": 0.09,
+      "p_wiring": 0.15,
+      "p_duplicate": 0.02,
+      "p_delete": 0.02,
+      "p_subsystem_dup": 0.01,
+      "p_encapsulate": 0.01,
+      "weight_sigma": 0.08,
+      "heritable": false,
+      "meta_sigma": 0.15,
+      "meta_bounds": [
+        0.0001,
+        0.5
+      ]
+    },
+    "ecology": {
+      "n_islands": 2,
+      "island_size": 8,
+      "n_episodes": 2,
+      "lifetime": 16,
+      "tournament": 4,
+      "offspring_per_event": 2,
+      "migration_interval": 20,
+      "migrants": 1
+    },
+    "environment": {
+      "n_symbols": 16,
+      "n_actions": 8,
+      "n_obs_channels": 2,
+      "goal_arity": 3,
+      "mvg_basis": 6,
+      "switch_every": 50,
+      "noise": 0.05
+    },
+    "runs": [],
+    "generations": 60,
+    "metabolic_lambda": 1.0,
+    "gate_threshold": 0.5,
+    "mem_soft_gb": 32.0,
+    "mem_hard_gb": 64.0,
+    "out_dir": "results/smoke"
+  }
+}

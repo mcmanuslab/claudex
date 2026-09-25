@@ -28,7 +28,22 @@ def _tiny_cfg():
 
 def test_pools_are_disjoint():
     assert set(P.ANCESTRAL_POOL).isdisjoint(P.ALIEN_POOL)
-    assert len(set(P.ANCESTRAL_POOL) | set(P.ALIEN_POOL)) == 10
+    assert set(P.MODIFIERS).isdisjoint(set(P.ANCESTRAL_POOL) | set(P.ALIEN_POOL))
+    assert len(set(P.ANCESTRAL_POOL) | set(P.ALIEN_POOL) | set(P.MODIFIERS)) == 10
+
+
+def test_every_scored_channel_has_a_usable_calibrated_range():
+    """A channel narrower than MIN_RANGE cannot be normalised without
+    amplifying noise, and its ceiling becomes reachable by a degenerate
+    constant-action policy.  The smoke test caught exactly that failure mode in
+    a penalty-only DECOY channel, where the fitness-shuffled drift control
+    appeared to improve from 0.01 to 0.42."""
+    from nemo.environments.world import MIN_RANGE, calibrate
+
+    c = calibrate(16, 8, 2, steps=120, n=1024)
+    for prim in set(P.ANCESTRAL_POOL) | set(P.ALIEN_POOL):
+        rng_ = c.ceiling[prim] - c.baseline[prim]
+        assert rng_ >= MIN_RANGE, (P.NAMES[prim], rng_)
 
 
 def test_no_alien_primitive_is_ever_selected_on():

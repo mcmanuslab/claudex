@@ -54,6 +54,8 @@ class Experiment:
     duplicate_pairs: list[dict] = field(default_factory=list)
     records: list[GenerationRecord] = field(default_factory=list)
     events: list[tuple] = field(default_factory=list)
+    pair_obs: list = field(default_factory=list)
+    org_obs: list = field(default_factory=list)
 
     def __post_init__(self) -> None:
         n_org = self.cfg.ecology.n_organisms
@@ -177,6 +179,20 @@ class Experiment:
         self.generation += 1
         self.records.extend(recs)
         return recs
+
+    def assay(self, n_lanes_per_run: int = 8, episodes: int = 2,
+              lifetime: int = 24) -> None:
+        """Periodic observational assay (never used for selection).
+
+        Costs one extra rollout per gene, so it runs on a sample of lanes at a
+        cadence set by the caller, not every generation.
+        """
+        from ..metrics.tracking import run_assay
+
+        pairs, orgs = run_assay(self, n_lanes_per_run=n_lanes_per_run,
+                                episodes=episodes, lifetime=lifetime)
+        self.pair_obs.extend(pairs)
+        self.org_obs.extend(orgs)
 
     def _copy_organism(self, src: int, dst: int) -> None:
         for name in ("Wq", "Wk", "Wv", "Wo", "W1", "b1", "W2", "b2", "g1", "g2",

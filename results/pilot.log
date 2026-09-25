@@ -1,0 +1,2 @@
+NEMO pilot: 16 runs x 64 organisms = 1024 lanes, E=4, lifetime=40, 250 generations
+  gen     0/250  MVG rew=+0.0317 len=4.02 | RVG rew=+0.0017 len=3.98 | FIX rew=-0.0057 len=3.98 | DRIFT rew=-0.0044 len=4.03  [7s elapsed, ~1646s left]
