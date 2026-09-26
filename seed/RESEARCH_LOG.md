@@ -157,3 +157,64 @@ Two things, both important:
 Response: shrink the starting model so the task is hard relative to capacity,
 keeping the endpoint definition untouched. Calibration runs on `world_seed=99`,
 which is never used in the frozen experiment.
+
+---
+
+## Dry run — the competition correctly refused to grow
+
+With `min_gain = 0.0`, every candidate at every growth event scored a *negative*
+marginal contribution: masking it off slightly **improved** validation loss. So
+all four candidates were pruned at all four events and group D ended
+byte-identical in architecture to group A.
+
+That is the pruning rule working exactly as specified. It is also a collapse of
+the experiment, because D and C then differ in parameter count and the C-vs-D
+comparison becomes a parameter comparison.
+
+Resolution: `min_gain = None` keeps exactly `keep` survivors, so the competition
+decides **which** unit survives rather than **whether** to grow, and C and D end
+at identical parameter counts. What a gain filter *would* have pruned is
+recorded at every event (`would_fail_min_gain`, `all_candidates_unhelpful`),
+because "the competition found no candidate that improved validation loss" is a
+first-class finding, not a detail to bury.
+
+---
+
+## Dry run — wrong regime
+
+At 48 entities the model had 13.4 parameters per training fact and was
+**memorisation-limited**, not capacity-limited. The hypothesis is about capacity
+failure; if the model can simply memorise, then "persistent failure" means "not
+enough data" and adding capacity answers a question nobody asked.
+
+Fix: 80 entities, 26,316 facts, 5.0 parameters per training fact.
+
+---
+
+## Two bugs in the controls, both found by reading the compute table
+
+1. **RANDOM DEV was under-growing.** It fired 2.4 events on average against D's
+   3.2, and ended at 154k parameters against D's 178k. Cause: its random
+   schedule was drawn over a step count estimated from the *starting* model,
+   which ignores that every step gets more expensive after growth. Late draws
+   landed past the end of the run and never fired. A control with fewer
+   parameters than the thing it controls for is not a control. Fixed by drawing
+   the schedule over the reference run's *actual* step count.
+2. **Forgetting was measured on the wrong quantity.** The frozen criterion names
+   *accuracy* on previously-mastered categories; the first implementation
+   measured validation *loss*, and reported regressions up to +5.0 — which turned
+   out to be dominated by SOLUBLE, a category with about two validation facts,
+   where one flipped example moves the number by half. Fixed to measure accuracy,
+   restricted to categories that were both already above 90% and had at least 30
+   validation facts.
+
+---
+
+## Result
+
+See `RESULTS_001.md`. Headline: **NO-GO.** Growth was exactly function-preserving
+and fired on real evidence, but the capacity it added never became load-bearing —
+units added during training carry a vanishing share of the model's total ablation
+effect, three to four orders of magnitude below the units present from the start.
+FIXED LARGE, trained from scratch at D's exact final architecture and taking
+**fewer** optimizer steps for the same FLOPs, beat every developmental variant.

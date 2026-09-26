@@ -1,6 +1,8 @@
 # EXPERIMENT_001.md — frozen protocol
 
 **Status: FROZEN 2026-09-25, before any group-comparison run was executed.**
+**Outcome: NO-GO. See `RESULTS_001.md`.** The criteria below are as frozen;
+§9 records how each one came out.
 
 Everything below was written before a single number from the comparison groups
 existed. Calibration used `world_seed=99` only, which never appears in the
@@ -231,16 +233,18 @@ without this control any claim about competition is unsupported.
 
 ## 9. Gates
 
-| gate | question | status |
+| gate | question | outcome |
 |---|---|---|
-| 0 | can we train the tiny transformer at all? | pass — far above majority baseline |
-| 1 | can we grow while preserving function? | **pass — `logit_delta == 0.0` exactly**, on trained models, both operators |
-| 2 | does growth match or beat a fixed control at matched FLOPs? | measured |
-| 3 | does the controller find real plateaus? | measured (vs R) |
-| 4 | does growth + competition + pruning beat growth alone? | measured (C vs D, D vs D_RANDPRUNE) |
-| 5 | does either strategy improve prediction of withheld structure? | measured |
+| 0 | can we train the tiny transformer at all? | **PASS** — 0.98-1.00 on D0/D1/D2 against baselines of 0.34/0.29/0.50 |
+| 1 | can we grow while preserving function? | **PASS** — `logit_delta == 0.0` exactly, both operators, on trained models, at every one of ~100 growth events across 20 runs |
+| 2 | does growth match or beat a fixed control at matched FLOPs? | **FAIL** — C − A = −0.0026 (2/5 seeds); D − A = −0.0016 (1/5) |
+| 3 | does the controller find real plateaus? | **PASS** — D − R = +0.0101, CI [+0.0052, +0.0159], 5/5 seeds, d = +1.42 |
+| 4 | does growth + competition + pruning beat growth alone? | **INCONCLUSIVE** — D − C = +0.0010 (3/5); D − D_RANDPRUNE = +0.0047 (4/5), CI spans 0 |
+| 5 | does either strategy improve prediction of withheld structure? | **FAIL** — no group reaches the D3 baseline except FIXED LARGE |
 
----
+Gate 2 fails, so by the protocol's own staging we stop and analyse rather than
+proceeding. No teacher model. See `RESULTS_001.md` §9 for what the failure
+actually points at.
 
 ## 10. Reproduction
 

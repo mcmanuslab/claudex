@@ -66,41 +66,50 @@ def evaluate_run(run_dir: str) -> dict:
     }
 
 
-def forgetting_analysis(run: dict, horizon_steps: int = 500) -> dict:
-    """Catastrophic forgetting, measured rather than asserted.
+def forgetting_analysis(run: dict, horizon_steps: int = 500,
+                        min_val_facts: int = 30) -> dict:
+    """Catastrophic forgetting, measured against the quantity the frozen
+    protocol names: ACCURACY on already-mastered categories.
 
-    For every growth event, compare per-category validation loss at the event
-    against the same categories `horizon_steps` later, restricted to categories
-    the model had already MASTERED (loss below the median at the event). A
-    category that was never learned cannot be forgotten, and including it would
-    dilute the measure into meaninglessness.
+    Two guards matter. First, a category that was never learned cannot be
+    forgotten, so we restrict to categories already above 90% at the moment of
+    growth. Second, the small relations have only a handful of validation facts
+    (SOLUBLE has ~2), where a single flipped example moves the number by 50
+    points; those are excluded by `min_val_facts`. Without that guard the
+    measure is dominated by noise on categories nobody was measuring.
     """
     trace, events = run["trace"], run["events"]
+    empty = {"n_events": 0, "max_mastered_accuracy_drop": 0.0,
+             "max_logit_delta_at_growth": 0.0, "per_event": [],
+             "measurable": False}
     if not events:
-        return {"n_events": 0, "max_mastered_regression": 0.0, "per_event": []}
+        return empty
     out = []
     for ev in events:
         s0 = ev["step"]
-        at = min((t for t in trace if t["step"] >= s0),
-                 key=lambda t: t["step"], default=None)
+        at = min((t for t in trace if t["step"] >= s0), key=lambda t: t["step"], default=None)
         after = min((t for t in trace if t["step"] >= s0 + horizon_steps),
                     key=lambda t: t["step"], default=None)
-        if not at or not after or not at.get("per_cat"):
+        if not at or not after or not at.get("per_cat_acc"):
             continue
-        cats = at["per_cat"]
-        med = sorted(cats.values())[len(cats) // 2]
-        mastered = [c for c, v in cats.items() if v <= med]
-        deltas = {c: after["per_cat"].get(c, cats[c]) - cats[c] for c in mastered}
+        ns = at.get("per_cat_n", {})
+        mastered = [c for c, v in at["per_cat_acc"].items()
+                    if v >= 0.90 and ns.get(c, 0) >= min_val_facts]
+        drops = {c: at["per_cat_acc"][c] - after["per_cat_acc"].get(c, at["per_cat_acc"][c])
+                 for c in mastered}
         out.append({"step": s0, "kind": ev["kind"],
                     "logit_delta_at_growth": ev["logit_delta"],
                     "mastered_categories": mastered,
-                    "loss_delta_after_%d_steps" % horizon_steps:
-                        {k: round(v, 4) for k, v in deltas.items()},
-                    "worst_regression": round(max(deltas.values()), 4) if deltas else 0.0})
+                    "accuracy_drop_after_%d_steps" % horizon_steps:
+                        {k: round(v, 4) for k, v in drops.items()},
+                    "worst_drop": round(max(drops.values()), 4) if drops else 0.0})
+    if not out:
+        return empty
     return {
         "n_events": len(out),
-        "max_mastered_regression": max([e["worst_regression"] for e in out], default=0.0),
-        "max_logit_delta_at_growth": max([e["logit_delta_at_growth"] for e in out], default=0.0),
+        "max_mastered_accuracy_drop": max(e["worst_drop"] for e in out),
+        "max_logit_delta_at_growth": max(e["logit_delta_at_growth"] for e in out),
+        "measurable": any(e["mastered_categories"] for e in out),
         "per_event": out,
     }
 
@@ -131,7 +140,26 @@ def specialization_analysis(run: dict) -> dict:
             "per_relation": {k: v for k, v in sorted(per_rel.items(), key=lambda kv: -kv[1])[:4]},
         }
     n_rel = max(1, len(next(iter(abl.values()), {})))
-    return {"uniform_baseline_concentration": round(1.0 / n_rel, 3), "units": out}
+
+    # The decisive number. High "concentration" on a negligible effect is not
+    # specialisation, it is concentration of noise -- so we report how much
+    # functional weight the grown units carry RELATIVE to the units that were
+    # there from the start. If this ratio is ~0, growth added capacity that
+    # never became load-bearing, and no selection rule applied to it could
+    # matter.
+    grown_eff = [v["total_effect"] for k, v in out.items()
+                 if v["grown"] and v["total_effect"] and v["total_effect"] > 0]
+    orig_eff = [v["total_effect"] for k, v in out.items()
+                if not v["grown"] and v["total_effect"] and v["total_effect"] > 0
+                and not any(k.startswith(p) for p in ("G", "B"))]
+    return {
+        "uniform_baseline_concentration": round(1.0 / n_rel, 3),
+        "grown_total_effect": round(sum(grown_eff), 6),
+        "original_total_effect": round(sum(orig_eff), 6),
+        "grown_share_of_effect": (round(sum(grown_eff) / (sum(grown_eff) + sum(orig_eff)), 6)
+                                  if (grown_eff or orig_eff) else None),
+        "units": out,
+    }
 
 
 def aggregate(evals: list[dict]) -> dict:
@@ -169,8 +197,11 @@ def aggregate(evals: list[dict]) -> dict:
             "inference_flops_per_token": M._mean(r["compute"]["inference_flops_per_token"] for r in runs),
             "n_events": M._mean(r["n_events"] for r in runs),
             "ledger_ok": all(r["ledger_ok"] for r in runs),
-            "max_mastered_regression": max(
-                (r["forgetting"]["max_mastered_regression"] for r in runs), default=0.0),
+            "grown_share_of_ablation_effect": M._mean(
+                [r["specialization"]["grown_share_of_effect"] for r in runs
+                 if r["specialization"].get("grown_share_of_effect") is not None] or [float("nan")]),
+            "max_mastered_accuracy_drop": max(
+                (r["forgetting"]["max_mastered_accuracy_drop"] for r in runs), default=0.0),
             "max_logit_delta_at_growth": max(
                 (r["forgetting"]["max_logit_delta_at_growth"] for r in runs), default=0.0),
         }
@@ -205,6 +236,29 @@ def main() -> None:
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     json.dump({"runs": evals, "aggregate": agg}, open(a.out, "w"), indent=1)
 
+    # The raw ledgers are ~35MB each and are not committed. The manifest keeps
+    # the part that carries the guarantee: how many predictions each run
+    # committed, and the terminal hash of its chain. Re-running the same seed
+    # must reproduce the same terminal hash.
+    manifest = {}
+    for d in dirs:
+        path = os.path.join(d, "ledger.jsonl")
+        if not os.path.exists(path):
+            continue
+        ok, msg = L.verify(path)
+        recs = L.read(path)
+        manifest[os.path.basename(d.rstrip("/"))] = {
+            "records": len(recs),
+            "predictions": sum(1 for r in recs if r.get("kind") == "prediction"),
+            "chain_verified": ok,
+            "terminal_hash": recs[-1]["_hash"] if recs else None,
+            "bytes": os.path.getsize(path),
+        }
+    json.dump(manifest, open(os.path.join(os.path.dirname(a.out),
+                                          "ledger_manifest.json"), "w"), indent=1)
+    print(f"\nledger manifest: {len(manifest)} runs, "
+          f"all chains verified = {all(v['chain_verified'] for v in manifest.values())}")
+
     t = agg["groups"]
     print(f"\n{'grp':<12}{'seeds':>6}{'PRIMARY':>10}{'sd':>7}{'D0':>7}{'D1':>7}{'D2':>7}"
           f"{'D3':>7}{'D4':>7}{'IG':>7}{'ECE':>7}{'PFLOP':>8}{'params':>9}{'lk_z':>6}")
@@ -218,12 +272,21 @@ def main() -> None:
               + "".join(f"{b.get(DIST_NAMES[d], float('nan')):>7.3f}" for d in range(5))
               + f"{v['info_gain_bits']:>7.3f}{v['ece']:>7.3f}"
               + f"{v['flops']/1e15:>8.3f}{v['params_final']/1e6:>9.3f}{v['leakage_z']:>6.1f}")
-    print("\nforgetting check (max val-loss regression on already-mastered "
-          "categories within 500 steps of a growth event):")
+    print("\nforgetting check (worst ACCURACY drop on already-mastered categories "
+          "within 500 steps of a growth event; frozen threshold = 0.02):")
     for g in ["C", "D", "D_RANDPRUNE", "R"]:
         if g in t:
-            print(f"  {g:<12} max_regression={t[g]['max_mastered_regression']:+.4f}  "
-                  f"max_logit_delta_at_growth={t[g]['max_logit_delta_at_growth']:.2e}")
+            v = t[g]["max_mastered_accuracy_drop"]
+            print(f"  {g:<12} worst_drop={v:+.4f} {'FAIL' if v > 0.02 else 'pass'}   "
+                  f"logit_delta_at_growth={t[g]['max_logit_delta_at_growth']:.2e}")
+    print("\nis the grown capacity load-bearing? (share of total positive "
+          "ablation effect carried by units added during training):")
+    for g in ["C", "D", "D_RANDPRUNE", "R"]:
+        if g in t and t[g]["grown_share_of_ablation_effect"] == t[g]["grown_share_of_ablation_effect"]:
+            print(f"  {g:<12} grown units carry "
+                  f"{100*t[g]['grown_share_of_ablation_effect']:.4f}% of the model's "
+                  f"functional weight")
+
     print("\npaired differences in PRIMARY (across seeds):")
     for k, v in agg["paired"].items():
         if v:

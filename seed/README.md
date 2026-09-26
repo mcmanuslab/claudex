@@ -15,7 +15,7 @@ This is a **falsification attempt**, not a demo. A clean negative is a success.
 | `EXPERIMENT_001.md` | **the frozen protocol** — groups, endpoints, go/no-go thresholds, confounders. Written before any comparison run. |
 | `DESIGN.md` | why the code is shaped the way it is |
 | `RESEARCH_LOG.md` | chronological, including the four pilots that were thrown away |
-| `RESULTS_001.md` | results, uncertainty, and the strongest alternative explanation |
+| `RESULTS_001.md` | **results — the verdict is NO-GO** — with uncertainty, mechanism, and the strongest alternative explanation |
 
 ## Code
 
@@ -40,6 +40,20 @@ python3 run_experiment.py --config configs/exp001_cpu.json --seeds 0,1,2,3,4
 python3 evaluate.py  --runs 'results/exp001/*/'
 python3 visualize.py
 ```
+
+## The result in three lines
+
+**NO-GO.** Growth was exactly function-preserving and fired on genuine
+validation-loss plateaus, but the capacity it added never became load-bearing:
+units added during training carry **0.22%** of the model's total ablation effect,
+three to four orders of magnitude below the units present from the start. The
+same architecture trained from scratch (FIXED LARGE) beat every developmental
+variant at identical FLOPs and identical parameters, while taking **55% fewer
+optimizer steps**.
+
+The one thing that worked: plateau-triggered growth beat randomly-timed growth on
+5/5 seeds (+0.0101, d = +1.42). The controller is good at deciding when to do
+something that does not help.
 
 ## Two things to know before reading any number
 

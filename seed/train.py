@@ -141,9 +141,18 @@ class Trainer:
             est = self._estimate_total_steps()
             kinds, n = None, c.controller.max_events
             if c.match_events:
-                evs = json.load(open(c.match_events))["events"]
+                ref = json.load(open(c.match_events))
+                evs = ref["events"]
                 kinds = [e["kind"] for e in evs]
                 n = len(evs)
+                # Draw the random schedule over the step count the reference run
+                # ACTUALLY reached, not the one estimated from the starting
+                # model. Estimating from the small model overshoots badly (it
+                # ignores that growth makes every later step more expensive),
+                # so late draws would land past the end of the run and never
+                # fire -- leaving the control with fewer growth events and
+                # fewer parameters than the run it is supposed to match.
+                est = ref["compute"]["steps"]
             # The random control must match the DEVELOPMENTAL run's ACTUAL
             # growth sequence, not the configured maximum. The controller is
             # evidence-driven, so it fires 3 events on one seed and 4 on
@@ -181,10 +190,15 @@ class Trainer:
         self.model.eval()
         logits = self.model.answer_logits(self.vx)
         ls = F.cross_entropy(logits, self.vy, reduction="none")
+        ok = (logits.argmax(-1) == self.vy).float()
         per: dict[str, list[float]] = {}
-        for r, v in zip(self.val_rel, ls.tolist()):
+        acc: dict[str, list[float]] = {}
+        for r, v, a in zip(self.val_rel, ls.tolist(), ok.tolist()):
             per.setdefault(r, []).append(v)
+            acc.setdefault(r, []).append(a)
         self.model.train()
+        self._per_cat_acc = {k: sum(v) / len(v) for k, v in acc.items()}
+        self._per_cat_n = {k: len(v) for k, v in acc.items()}
         return float(ls.mean()), {k: sum(v) / len(v) for k, v in per.items()}
 
     @torch.no_grad()
@@ -346,6 +360,8 @@ class Trainer:
             "step": self.step, "age": self.age, "flops": self.flops,
             "tokens": self.tokens, "train_loss": getattr(self, "last_loss", None),
             "val_loss": vl, "per_cat": {k: round(v, 4) for k, v in per.items()},
+            "per_cat_acc": {k: round(v, 4) for k, v in getattr(self, "_per_cat_acc", {}).items()},
+            "per_cat_n": getattr(self, "_per_cat_n", {}),
             "params": self.model.n_params(), "params_active": self.model.n_params(True),
             "n_blocks": len(self.model.live_blocks()),
             "action": dec.get("action"),

@@ -1,0 +1,212 @@
+{
+ "A_s0": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "547b77070971ba41cd6bdb8f3d23660564aba8582bd3090701da5fb4634f557e",
+  "bytes": 49074579
+ },
+ "A_s1": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "33b5e5b0cf364b92775955979a7574a732d8ceeca5c2b3db96e9fcbc99bf9d7d",
+  "bytes": 49043007
+ },
+ "A_s2": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "66bfa94cd839e44088a359b27e57f26a1fec026e2890b19af18e3b244a9e8511",
+  "bytes": 49027415
+ },
+ "A_s3": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "681d85535b563132ca6d9389dd1ce8b55ce49f7ed7a0aeca3f0c9d6d7ca530da",
+  "bytes": 49170813
+ },
+ "A_s4": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "1465fbe89a19862e3ec97c09a935c535fabf54fc6e07ed0c8cca4bea63617745",
+  "bytes": 49098342
+ },
+ "B_s0": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "3cf47a498da891114523a8bc53a6a3d7043f7a28f6c18ed0410b9cfdfa4a242f",
+  "bytes": 49657705
+ },
+ "B_s1": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "8c93201a0b06c448c75a96fcc0a5fbff1c7ed72a408c39a7bc4f54a8620b81c7",
+  "bytes": 49605460
+ },
+ "B_s2": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "e16e605eeb70df2571c30b7cca394beb91f73b0419c029ba181ccb1155ddd367",
+  "bytes": 49836979
+ },
+ "B_s3": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "8536c3b2a9329292a334a69146acb5749d1a9e05fd41502a6a35db4e0876a85f",
+  "bytes": 49521342
+ },
+ "B_s4": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "2bc4f106d8ec406bf44ff26b4b6894a86a4181d566dfd07576bc4bcd6903f315",
+  "bytes": 49770938
+ },
+ "C_s0": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "3fc6bcd41343ce724a0e6e20be643a48b3ad86218a8ca3496eeb07f0346fa89a",
+  "bytes": 49131895
+ },
+ "C_s1": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "b66a42693db9c4b9c8d478b1c4273dbdd26f3933368b280cdecd3dd57f871a9b",
+  "bytes": 49147160
+ },
+ "C_s2": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "037d29a2f9e2fc91d729dd5d650c474df49d292e4ed42556ffbf04826b99a469",
+  "bytes": 49090854
+ },
+ "C_s3": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "f2de66d8791fe845fa5c096c022b9c201ed5a8db451b3d1c3d61c36a600ade83",
+  "bytes": 49202700
+ },
+ "C_s4": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "244089c65acf3bd09d3a9f0d87bc84ef9b580d8c91cf7ec37d27c0cb8eab9ba1",
+  "bytes": 49185254
+ },
+ "D_RANDPRUNE_s0": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "cd66cd0d28d76604cea3a6f12864e9bc53f47788eb98c547069b63600700d913",
+  "bytes": 49175086
+ },
+ "D_RANDPRUNE_s1": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "cf60bcdecca015ecf69483c62c23afae69cc3233a91077cbb8f553d0242ca417",
+  "bytes": 49171765
+ },
+ "D_RANDPRUNE_s2": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "fe547fb79e48001d9a56059a434e6a6a5d75074ce399d33b79b27fcf30a02055",
+  "bytes": 49094635
+ },
+ "D_RANDPRUNE_s3": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "ba17aa50e16989de04c7373b7ba4b105663eb3031e830698c9d2bc79685d0687",
+  "bytes": 49239980
+ },
+ "D_RANDPRUNE_s4": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "39e9cac861f8a6eec14e4e634a1a93a55f37abe355fbb6b5ce3b0ed0a29e6c5c",
+  "bytes": 49199427
+ },
+ "D_s0": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "8ef53c6ac81d2014782efc11571bfa5215d582c86d6a670554c150bc1fecd184",
+  "bytes": 49169208
+ },
+ "D_s1": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "dc3c7bb9dc166c10caf731ed27454eea9c458148cd21a5489a6fb1b64ac7faf9",
+  "bytes": 49179192
+ },
+ "D_s2": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "7021bce2f74087906049c43b52f3c29782cb131112bd7beff800063ad726f010",
+  "bytes": 49105980
+ },
+ "D_s3": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "6b2cf4d9ac213ae475a32c2af279fb91b630c4967c0603b2a839bac3a9d12c8f",
+  "bytes": 49237321
+ },
+ "D_s4": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "7436baa0d4091a2c3be747941ef6dc8bdf4f97b5d6b104fba1e4fde0fe38551d",
+  "bytes": 49226606
+ },
+ "R_s0": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "27d6b075c9d6ebeabf16fe837a17db2330b2a03169e09770bd5965c1700df9c4",
+  "bytes": 49201073
+ },
+ "R_s1": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "8c5f298723a26b24ce18ce5e4a53f26346949d7174f44d958014cb0ca46002c4",
+  "bytes": 49162370
+ },
+ "R_s2": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "a785411342b24986f8fe0add0d034e47aa54f3dd695f6d91e5802ade57f6f532",
+  "bytes": 49168463
+ },
+ "R_s3": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "e4b1ccdaf5157bd343179347444449354221eb8e8187c7a23ca33cb3b493f733",
+  "bytes": 49295132
+ },
+ "R_s4": {
+  "records": 117176,
+  "predictions": 117168,
+  "chain_verified": true,
+  "terminal_hash": "72946d90f50ad4f071285d79d7459fd3e3e6ec5fe8bf4030461b858298205233",
+  "bytes": 49269218
+ }
+}
