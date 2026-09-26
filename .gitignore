@@ -17,3 +17,16 @@
 
 # Test scratch
 /tmp/
+
+# Python
+__pycache__/
+*.pyc
+
+# seed/ run artifacts: prediction ledgers are ~35MB each and model checkpoints
+# are regenerable. The committed run.json + summary.json + ledger_manifest.json
+# (record count + terminal hash of each chain) preserve every claim; the raw
+# ledgers reproduce exactly from `run_experiment.py` at the same seeds.
+seed/results/**/ledger.jsonl
+seed/results/**/model.pt
+seed/results/**/*.log
+seed/results/archive_v1/

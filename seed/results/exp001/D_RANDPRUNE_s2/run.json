@@ -1,0 +1,3468 @@
+{
+ "config": {
+  "group": "D_RANDPRUNE",
+  "seed": 2,
+  "world_seed": 0,
+  "out": "results/exp001/D_RANDPRUNE_s2",
+  "d_model": 64,
+  "n_head": 4,
+  "d_ff": 128,
+  "n_layer": 2,
+  "lr": 0.003,
+  "batch_size": 128,
+  "weight_decay": 0.01,
+  "grad_clip": 1.0,
+  "lr_warmup": 200,
+  "new_param_warmup": 200,
+  "sampling_alpha": 0.5,
+  "flops_budget": 2000000000000.0,
+  "n_ages": 8,
+  "max_steps": 200000,
+  "n_candidates": 4,
+  "keep": 1,
+  "dev_window": 400,
+  "min_gain": null,
+  "redundancy_thresh": 0.95,
+  "branch_d_ff": 128,
+  "controller": {
+   "eval_every": 100,
+   "window": 3,
+   "plateau_rel": 0.02,
+   "patience": 2,
+   "cooldown": 700,
+   "max_events": 4,
+   "max_blocks": 8,
+   "depth_first": 2,
+   "warmup_steps": 400
+  },
+  "match_arch": "",
+  "match_events": ""
+ },
+ "world": {
+  "n_facts": 26316,
+  "n_elem": 80,
+  "vocab": 105,
+  "by_split_dist": {
+   "holdout/D0-interpolation": 4399,
+   "holdout/D1-near": 907,
+   "holdout/D2-compositional": 1892,
+   "holdout/D3-distant": 1490,
+   "holdout/D4-unsupported": 246,
+   "pool/D0-interpolation": 9161,
+   "pool/D1-near": 1856,
+   "pool/D2-compositional": 3903,
+   "pool/D4-unsupported": 477,
+   "val/D0-interpolation": 1146,
+   "val/D1-near": 247,
+   "val/D2-compositional": 525,
+   "val/D4-unsupported": 67
+  },
+  "by_relation": {
+   "VAL": 80,
+   "SHELL": 80,
+   "METAL": 80,
+   "SOLUBLE": 6,
+   "BOND": 6320,
+   "REACT": 6320,
+   "HEAVIER": 6320,
+   "REACTSOL": 6320,
+   "OMEN": 790
+  },
+  "spec": {
+   "seed": 0,
+   "holdout_frac": 0.3,
+   "val_frac": 0.08,
+   "n_tranches": 8,
+   "initial_reveal_frac": 0.25,
+   "salt": "omen-v1"
+  },
+  "token_id_leak": {
+   "pearson_id_group": -0.018280553489060433,
+   "pearson_id_period": -0.02220714779048936
+  }
+ },
+ "final_arch": {
+  "n_blocks": 4,
+  "blocks": [
+   {
+    "uid": "L0",
+    "branches": [
+     "L0.b0",
+     "B11@L0",
+     "B15@L0",
+     "B16@L0",
+     "B17@L0",
+     "B18@L0"
+    ],
+    "d_ff_total": 768
+   },
+   {
+    "uid": "G8",
+    "branches": [
+     "G8.b0"
+    ],
+    "d_ff_total": 128
+   },
+   {
+    "uid": "G5",
+    "branches": [
+     "G5.b0"
+    ],
+    "d_ff_total": 128
+   },
+   {
+    "uid": "L1",
+    "branches": [
+     "L1.b0"
+    ],
+    "d_ff_total": 128
+   }
+  ],
+  "params_total": 230656,
+  "params_active": 230656,
+  "flops_per_token_train": 1333632.0
+ },
+ "events": [
+  {
+   "step": 2200,
+   "age": 1,
+   "kind": "GROW_DEPTH",
+   "strategy": "competitive",
+   "reason": {
+    "step": 2200,
+    "val_loss": 0.2757442593574524,
+    "stalled_count": 2,
+    "events_so_far": 0,
+    "best_old_half": 0.1848422735929489,
+    "best_recent_half": 0.24954524636268616,
+    "rel_improvement_over_window": -0.3500442377820083,
+    "action": "GROW",
+    "kind": "GROW_DEPTH",
+    "site": "L0",
+    "why": "best val loss improved only -35.00% (0.1848 -> 0.2495) across the last 6 observations, for 2 consecutive observations (threshold 2.0%)",
+    "per_category_loss": {
+     "SHELL": 8.05471521615982,
+     "VAL": 4.381759655882239,
+     "OMEN": 2.7306233052648765,
+     "HEAVIER": 0.27988758241298933,
+     "BOND": 0.17264630871423758,
+     "REACT": 0.09161629584697673,
+     "REACTSOL": 0.04183210802421829,
+     "METAL": 0.00040567746407305094
+    },
+    "worst_category": "SHELL",
+    "strain": {
+     "L0": 0.15784029653098716,
+     "L1": 0.062235797948648745
+    }
+   },
+   "added_uids": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+   ],
+   "site": "L0",
+   "params_before": 80832,
+   "params_after": 214720,
+   "logit_delta": 0.0,
+   "val_loss_before": 0.2757442593574524,
+   "val_loss_after": 0.2757442593574524,
+   "survivors": [
+    "G5"
+   ],
+   "pruned": [
+    "G3",
+    "G6",
+    "G4"
+   ],
+   "prune_scores": {
+    "marginal_val_loss_increase_when_masked": {
+     "G3": -0.003563,
+     "G4": -0.003412,
+     "G5": -0.003959,
+     "G6": -0.004453
+    },
+    "pairwise_output_cosine": {
+     "G3|G6": 0.9998,
+     "G3|G5": 0.9995,
+     "G3|G4": 0.9989,
+     "G6|G5": 0.9999,
+     "G6|G4": 0.9995,
+     "G5|G4": 0.9999
+    },
+    "selection": {
+     "mode": "random",
+     "would_fail_min_gain": [
+      "G3",
+      "G4",
+      "G5",
+      "G6"
+     ],
+     "all_candidates_unhelpful": true,
+     "per_unit": {
+      "G5": "kept",
+      "G3": "over budget",
+      "G6": "over budget",
+      "G4": "over budget"
+     }
+    }
+   },
+   "final_ablation": {
+    "G5": 0.000749
+   }
+  },
+  {
+   "step": 3100,
+   "age": 3,
+   "kind": "GROW_DEPTH",
+   "strategy": "competitive",
+   "reason": {
+    "step": 3100,
+    "val_loss": 0.18309208750724792,
+    "stalled_count": 2,
+    "events_so_far": 1,
+    "best_old_half": 0.15534164011478424,
+    "best_recent_half": 0.1620933562517166,
+    "rel_improvement_over_window": -0.04346365940222744,
+    "action": "GROW",
+    "kind": "GROW_DEPTH",
+    "site": "L0",
+    "why": "best val loss improved only -4.35% (0.1553 -> 0.1621) across the last 6 observations, for 2 consecutive observations (threshold 2.0%)",
+    "per_category_loss": {
+     "SHELL": 8.533334917492336,
+     "VAL": 3.8385884223884466,
+     "OMEN": 2.3244217898098944,
+     "HEAVIER": 0.13654026858921028,
+     "BOND": 0.054933259661112684,
+     "REACT": 0.039490561038695124,
+     "REACTSOL": 0.008475289293182246,
+     "METAL": 3.930795014639443e-05
+    },
+    "worst_category": "SHELL",
+    "strain": {
+     "L0": 0.05313136045053923,
+     "L1": 0.028626670562737447,
+     "G5": 0.003107559254852822
+    }
+   },
+   "added_uids": [
+    "G7",
+    "G8",
+    "G9",
+    "G10"
+   ],
+   "site": "L0",
+   "params_before": 114304,
+   "params_after": 248192,
+   "logit_delta": 0.0,
+   "val_loss_before": 0.18309208750724792,
+   "val_loss_after": 0.18309208750724792,
+   "survivors": [
+    "G8"
+   ],
+   "pruned": [
+    "G7",
+    "G10",
+    "G9"
+   ],
+   "prune_scores": {
+    "marginal_val_loss_increase_when_masked": {
+     "G7": -0.006839,
+     "G8": -0.008781,
+     "G9": -0.008111,
+     "G10": -0.009813
+    },
+    "pairwise_output_cosine": {
+     "G7|G8": 0.9999,
+     "G7|G10": 0.9996,
+     "G7|G9": 0.999,
+     "G8|G10": 0.9999,
+     "G8|G9": 0.9996,
+     "G10|G9": 0.9999
+    },
+    "selection": {
+     "mode": "random",
+     "would_fail_min_gain": [
+      "G7",
+      "G8",
+      "G9",
+      "G10"
+     ],
+     "all_candidates_unhelpful": true,
+     "per_unit": {
+      "G8": "kept",
+      "G7": "over budget",
+      "G10": "over budget",
+      "G9": "over budget"
+     }
+    }
+   },
+   "final_ablation": {
+    "G8": 0.000423
+   }
+  },
+  {
+   "step": 3800,
+   "age": 5,
+   "kind": "ADD_MLP_CAPACITY",
+   "strategy": "competitive",
+   "reason": {
+    "step": 3800,
+    "val_loss": 0.17446132004261017,
+    "stalled_count": 2,
+    "events_so_far": 2,
+    "best_old_half": 0.16283586621284485,
+    "best_recent_half": 0.1666487157344818,
+    "rel_improvement_over_window": -0.023415293020599887,
+    "action": "GROW",
+    "kind": "ADD_MLP_CAPACITY",
+    "site": "L0",
+    "why": "best val loss improved only -2.34% (0.1628 -> 0.1666) across the last 6 observations, for 2 consecutive observations (threshold 2.0%)",
+    "per_category_loss": {
+     "SHELL": 10.348878454003069,
+     "VAL": 2.989536081523121,
+     "OMEN": 1.6584914399805277,
+     "HEAVIER": 0.28034113428235363,
+     "REACT": 0.015628716079610847,
+     "BOND": 0.005557668169005413,
+     "REACTSOL": 0.003767702556014664,
+     "METAL": 0.00022390933236238197
+    },
+    "worst_category": "SHELL",
+    "strain": {
+     "L0": 0.15120912101581455,
+     "L1": 0.045607953929016815,
+     "G8": 0.004638008825653919,
+     "G5": 0.0032117181769786697
+    }
+   },
+   "added_uids": [
+    "B11@L0",
+    "B12@L0",
+    "B13@L0",
+    "B14@L0"
+   ],
+   "site": "L0",
+   "params_before": 147776,
+   "params_after": 214080,
+   "logit_delta": 0.0,
+   "val_loss_before": 0.17446132004261017,
+   "val_loss_after": 0.17446132004261017,
+   "survivors": [
+    "B11@L0"
+   ],
+   "pruned": [
+    "B14@L0",
+    "B12@L0",
+    "B13@L0"
+   ],
+   "prune_scores": {
+    "marginal_val_loss_increase_when_masked": {
+     "B11@L0": -0.001041,
+     "B12@L0": -0.001166,
+     "B13@L0": -0.001198,
+     "B14@L0": -0.00095
+    },
+    "pairwise_output_cosine": {
+     "B11@L0|B12@L0": 0.9165,
+     "B11@L0|B13@L0": 0.8812,
+     "B11@L0|B14@L0": 0.8478,
+     "B12@L0|B13@L0": 0.9034,
+     "B12@L0|B14@L0": 0.8635,
+     "B13@L0|B14@L0": 0.8645
+    },
+    "selection": {
+     "mode": "random",
+     "would_fail_min_gain": [
+      "B11@L0",
+      "B12@L0",
+      "B13@L0",
+      "B14@L0"
+     ],
+     "all_candidates_unhelpful": true,
+     "per_unit": {
+      "B11@L0": "kept",
+      "B14@L0": "over budget",
+      "B12@L0": "over budget",
+      "B13@L0": "over budget"
+     }
+    }
+   },
+   "final_ablation": {
+    "B11@L0": 0.000184
+   }
+  },
+  {
+   "step": 4500,
+   "age": 6,
+   "kind": "ADD_MLP_CAPACITY",
+   "strategy": "competitive",
+   "reason": {
+    "step": 4500,
+    "val_loss": 0.13920459151268005,
+    "stalled_count": 2,
+    "events_so_far": 3,
+    "best_old_half": 0.12015031278133392,
+    "best_recent_half": 0.13738742470741272,
+    "rel_improvement_over_window": -0.143462896825323,
+    "action": "GROW",
+    "kind": "ADD_MLP_CAPACITY",
+    "site": "L0",
+    "why": "best val loss improved only -14.35% (0.1202 -> 0.1374) across the last 6 observations, for 2 consecutive observations (threshold 2.0%)",
+    "per_category_loss": {
+     "SHELL": 10.152837965223524,
+     "OMEN": 1.809756202118492,
+     "VAL": 0.5105682453686963,
+     "HEAVIER": 0.1213191859308599,
+     "BOND": 0.02545434048838458,
+     "REACTSOL": 0.0003687805975198985,
+     "REACT": 0.0003099046696434279,
+     "METAL": 3.8413966649386566e-05
+    },
+    "worst_category": "SHELL",
+    "strain": {
+     "L0": 0.034221099749197355,
+     "L1": 0.028798453239318914,
+     "G8": 0.0011842339785672513,
+     "G5": 0.000996596220710286
+    }
+   },
+   "added_uids": [
+    "B15@L0",
+    "B16@L0",
+    "B17@L0",
+    "B18@L0"
+   ],
+   "site": "L0",
+   "params_before": 164352,
+   "params_after": 230656,
+   "logit_delta": 0.0,
+   "val_loss_before": 0.13920459151268005,
+   "val_loss_after": 0.13920459151268005,
+   "survivors": [],
+   "pruned": [],
+   "prune_scores": {},
+   "final_ablation": {}
+  }
+ ],
+ "controller_log": [
+  {
+   "step": 100,
+   "val_loss": 1.2371914386749268,
+   "window": [
+    1.2371914386749268
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 200,
+   "val_loss": 1.1479519605636597,
+   "window": [
+    1.2371914386749268,
+    1.1479519605636597
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 300,
+   "val_loss": 1.1229684352874756,
+   "window": [
+    1.2371914386749268,
+    1.1479519605636597,
+    1.1229684352874756
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 400,
+   "val_loss": 1.0931246280670166,
+   "window": [
+    1.2371914386749268,
+    1.1479519605636597,
+    1.1229684352874756,
+    1.0931246280670166
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 500,
+   "val_loss": 0.8433473706245422,
+   "window": [
+    1.2371914386749268,
+    1.1479519605636597,
+    1.1229684352874756,
+    1.0931246280670166,
+    0.8433473706245422
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 600,
+   "val_loss": 0.7238160371780396,
+   "window": [
+    1.2371914386749268,
+    1.1479519605636597,
+    1.1229684352874756,
+    1.0931246280670166,
+    0.8433473706245422,
+    0.7238160371780396
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 1.1229684352874756,
+   "best_recent_half": 0.7238160371780396,
+   "rel_improvement_over_window": 0.35544400498421364,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 700,
+   "val_loss": 0.6188655495643616,
+   "window": [
+    1.1479519605636597,
+    1.1229684352874756,
+    1.0931246280670166,
+    0.8433473706245422,
+    0.7238160371780396,
+    0.6188655495643616
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 1.0931246280670166,
+   "best_recent_half": 0.6188655495643616,
+   "rel_improvement_over_window": 0.43385636580276504,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 800,
+   "val_loss": 0.6004699468612671,
+   "window": [
+    1.1229684352874756,
+    1.0931246280670166,
+    0.8433473706245422,
+    0.7238160371780396,
+    0.6188655495643616,
+    0.6004699468612671
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.8433473706245422,
+   "best_recent_half": 0.6004699468612671,
+   "rel_improvement_over_window": 0.2879921515417922,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 900,
+   "val_loss": 0.5547502040863037,
+   "window": [
+    1.0931246280670166,
+    0.8433473706245422,
+    0.7238160371780396,
+    0.6188655495643616,
+    0.6004699468612671,
+    0.5547502040863037
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.7238160371780396,
+   "best_recent_half": 0.5547502040863037,
+   "rel_improvement_over_window": 0.23357569383358404,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 1000,
+   "val_loss": 0.5963242053985596,
+   "window": [
+    0.8433473706245422,
+    0.7238160371780396,
+    0.6188655495643616,
+    0.6004699468612671,
+    0.5547502040863037,
+    0.5963242053985596
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.6188655495643616,
+   "best_recent_half": 0.5547502040863037,
+   "rel_improvement_over_window": 0.10360141313923617,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 1100,
+   "val_loss": 0.5054987668991089,
+   "window": [
+    0.7238160371780396,
+    0.6188655495643616,
+    0.6004699468612671,
+    0.5547502040863037,
+    0.5963242053985596,
+    0.5054987668991089
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.6004699468612671,
+   "best_recent_half": 0.5054987668991089,
+   "rel_improvement_over_window": 0.15816142083144155,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 1200,
+   "val_loss": 0.4545179009437561,
+   "window": [
+    0.6188655495643616,
+    0.6004699468612671,
+    0.5547502040863037,
+    0.5963242053985596,
+    0.5054987668991089,
+    0.4545179009437561
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.5547502040863037,
+   "best_recent_half": 0.4545179009437561,
+   "rel_improvement_over_window": 0.18068006537759515,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 1300,
+   "val_loss": 0.350888192653656,
+   "window": [
+    0.6004699468612671,
+    0.5547502040863037,
+    0.5963242053985596,
+    0.5054987668991089,
+    0.4545179009437561,
+    0.350888192653656
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.5547502040863037,
+   "best_recent_half": 0.350888192653656,
+   "rel_improvement_over_window": 0.367484337871343,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 1400,
+   "val_loss": 0.3815063238143921,
+   "window": [
+    0.5547502040863037,
+    0.5963242053985596,
+    0.5054987668991089,
+    0.4545179009437561,
+    0.350888192653656,
+    0.3815063238143921
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.5054987668991089,
+   "best_recent_half": 0.350888192653656,
+   "rel_improvement_over_window": 0.30585747062032137,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 1500,
+   "val_loss": 0.27251672744750977,
+   "window": [
+    0.5963242053985596,
+    0.5054987668991089,
+    0.4545179009437561,
+    0.350888192653656,
+    0.3815063238143921,
+    0.27251672744750977
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.4545179009437561,
+   "best_recent_half": 0.27251672744750977,
+   "rel_improvement_over_window": 0.4004268547362844,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 1600,
+   "val_loss": 0.35790660977363586,
+   "window": [
+    0.5054987668991089,
+    0.4545179009437561,
+    0.350888192653656,
+    0.3815063238143921,
+    0.27251672744750977,
+    0.35790660977363586
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.350888192653656,
+   "best_recent_half": 0.27251672744750977,
+   "rel_improvement_over_window": 0.22335167397183625,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 1700,
+   "val_loss": 0.26355263590812683,
+   "window": [
+    0.4545179009437561,
+    0.350888192653656,
+    0.3815063238143921,
+    0.27251672744750977,
+    0.35790660977363586,
+    0.26355263590812683
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.350888192653656,
+   "best_recent_half": 0.26355263590812683,
+   "rel_improvement_over_window": 0.24889853398895553,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 1800,
+   "val_loss": 0.1848422735929489,
+   "window": [
+    0.350888192653656,
+    0.3815063238143921,
+    0.27251672744750977,
+    0.35790660977363586,
+    0.26355263590812683,
+    0.1848422735929489
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.27251672744750977,
+   "best_recent_half": 0.1848422735929489,
+   "rel_improvement_over_window": 0.32172136615521363,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 1900,
+   "val_loss": 0.25930941104888916,
+   "window": [
+    0.3815063238143921,
+    0.27251672744750977,
+    0.35790660977363586,
+    0.26355263590812683,
+    0.1848422735929489,
+    0.25930941104888916
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.27251672744750977,
+   "best_recent_half": 0.1848422735929489,
+   "rel_improvement_over_window": 0.32172136615521363,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 2000,
+   "val_loss": 0.24954524636268616,
+   "window": [
+    0.27251672744750977,
+    0.35790660977363586,
+    0.26355263590812683,
+    0.1848422735929489,
+    0.25930941104888916,
+    0.24954524636268616
+   ],
+   "stalled_count": 0,
+   "events_so_far": 0,
+   "best_old_half": 0.26355263590812683,
+   "best_recent_half": 0.1848422735929489,
+   "rel_improvement_over_window": 0.29865139479240865,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 2100,
+   "val_loss": 0.2579632103443146,
+   "window": [
+    0.35790660977363586,
+    0.26355263590812683,
+    0.1848422735929489,
+    0.25930941104888916,
+    0.24954524636268616,
+    0.2579632103443146
+   ],
+   "stalled_count": 1,
+   "events_so_far": 0,
+   "best_old_half": 0.1848422735929489,
+   "best_recent_half": 0.24954524636268616,
+   "rel_improvement_over_window": -0.3500442377820083,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 1 < 2)"
+  },
+  {
+   "step": 2200,
+   "val_loss": 0.2757442593574524,
+   "window": [
+    0.26355263590812683,
+    0.1848422735929489,
+    0.25930941104888916,
+    0.24954524636268616,
+    0.2579632103443146,
+    0.2757442593574524
+   ],
+   "stalled_count": 2,
+   "events_so_far": 0,
+   "best_old_half": 0.1848422735929489,
+   "best_recent_half": 0.24954524636268616,
+   "rel_improvement_over_window": -0.3500442377820083,
+   "action": "GROW",
+   "kind": "GROW_DEPTH",
+   "site": "L0",
+   "why": "best val loss improved only -35.00% (0.1848 -> 0.2495) across the last 6 observations, for 2 consecutive observations (threshold 2.0%)",
+   "per_category_loss": {
+    "SHELL": 8.05471521615982,
+    "VAL": 4.381759655882239,
+    "OMEN": 2.7306233052648765,
+    "HEAVIER": 0.27988758241298933,
+    "BOND": 0.17264630871423758,
+    "REACT": 0.09161629584697673,
+    "REACTSOL": 0.04183210802421829,
+    "METAL": 0.00040567746407305094
+   },
+   "worst_category": "SHELL",
+   "strain": {
+    "L0": 0.15784029653098716,
+    "L1": 0.062235797948648745
+   }
+  },
+  {
+   "step": 2300,
+   "val_loss": 0.17811189591884613,
+   "window": [
+    0.17811189591884613
+   ],
+   "stalled_count": 0,
+   "events_so_far": 1,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 2400,
+   "val_loss": 0.26189887523651123,
+   "window": [
+    0.17811189591884613,
+    0.26189887523651123
+   ],
+   "stalled_count": 0,
+   "events_so_far": 1,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 2500,
+   "val_loss": 0.16256183385849,
+   "window": [
+    0.17811189591884613,
+    0.26189887523651123,
+    0.16256183385849
+   ],
+   "stalled_count": 0,
+   "events_so_far": 1,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 2600,
+   "val_loss": 0.19256484508514404,
+   "window": [
+    0.17811189591884613,
+    0.26189887523651123,
+    0.16256183385849,
+    0.19256484508514404
+   ],
+   "stalled_count": 0,
+   "events_so_far": 1,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 2700,
+   "val_loss": 0.15534164011478424,
+   "window": [
+    0.17811189591884613,
+    0.26189887523651123,
+    0.16256183385849,
+    0.19256484508514404,
+    0.15534164011478424
+   ],
+   "stalled_count": 0,
+   "events_so_far": 1,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 2800,
+   "val_loss": 0.16872966289520264,
+   "window": [
+    0.17811189591884613,
+    0.26189887523651123,
+    0.16256183385849,
+    0.19256484508514404,
+    0.15534164011478424,
+    0.16872966289520264
+   ],
+   "stalled_count": 0,
+   "events_so_far": 1,
+   "best_old_half": 0.16256183385849,
+   "best_recent_half": 0.15534164011478424,
+   "rel_improvement_over_window": 0.04441506085611045,
+   "action": "CONTINUE",
+   "why": "cooldown (600 < 700)"
+  },
+  {
+   "step": 2900,
+   "val_loss": 0.16477428376674652,
+   "window": [
+    0.26189887523651123,
+    0.16256183385849,
+    0.19256484508514404,
+    0.15534164011478424,
+    0.16872966289520264,
+    0.16477428376674652
+   ],
+   "stalled_count": 0,
+   "events_so_far": 1,
+   "best_old_half": 0.16256183385849,
+   "best_recent_half": 0.15534164011478424,
+   "rel_improvement_over_window": 0.04441506085611045,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 0 < 2)"
+  },
+  {
+   "step": 3000,
+   "val_loss": 0.1620933562517166,
+   "window": [
+    0.16256183385849,
+    0.19256484508514404,
+    0.15534164011478424,
+    0.16872966289520264,
+    0.16477428376674652,
+    0.1620933562517166
+   ],
+   "stalled_count": 1,
+   "events_so_far": 1,
+   "best_old_half": 0.15534164011478424,
+   "best_recent_half": 0.1620933562517166,
+   "rel_improvement_over_window": -0.04346365940222744,
+   "action": "CONTINUE",
+   "why": "not yet persistent (stalled 1 < 2)"
+  },
+  {
+   "step": 3100,
+   "val_loss": 0.18309208750724792,
+   "window": [
+    0.19256484508514404,
+    0.15534164011478424,
+    0.16872966289520264,
+    0.16477428376674652,
+    0.1620933562517166,
+    0.18309208750724792
+   ],
+   "stalled_count": 2,
+   "events_so_far": 1,
+   "best_old_half": 0.15534164011478424,
+   "best_recent_half": 0.1620933562517166,
+   "rel_improvement_over_window": -0.04346365940222744,
+   "action": "GROW",
+   "kind": "GROW_DEPTH",
+   "site": "L0",
+   "why": "best val loss improved only -4.35% (0.1553 -> 0.1621) across the last 6 observations, for 2 consecutive observations (threshold 2.0%)",
+   "per_category_loss": {
+    "SHELL": 8.533334917492336,
+    "VAL": 3.8385884223884466,
+    "OMEN": 2.3244217898098944,
+    "HEAVIER": 0.13654026858921028,
+    "BOND": 0.054933259661112684,
+    "REACT": 0.039490561038695124,
+    "REACTSOL": 0.008475289293182246,
+    "METAL": 3.930795014639443e-05
+   },
+   "worst_category": "SHELL",
+   "strain": {
+    "L0": 0.05313136045053923,
+    "L1": 0.028626670562737447,
+    "G5": 0.003107559254852822
+   }
+  },
+  {
+   "step": 3200,
+   "val_loss": 0.20542648434638977,
+   "window": [
+    0.20542648434638977
+   ],
+   "stalled_count": 0,
+   "events_so_far": 2,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 3300,
+   "val_loss": 0.16283586621284485,
+   "window": [
+    0.20542648434638977,
+    0.16283586621284485
+   ],
+   "stalled_count": 0,
+   "events_so_far": 2,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 3400,
+   "val_loss": 0.16406850516796112,
+   "window": [
+    0.20542648434638977,
+    0.16283586621284485,
+    0.16406850516796112
+   ],
+   "stalled_count": 0,
+   "events_so_far": 2,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 3500,
+   "val_loss": 0.16998450458049774,
+   "window": [
+    0.20542648434638977,
+    0.16283586621284485,
+    0.16406850516796112,
+    0.16998450458049774
+   ],
+   "stalled_count": 0,
+   "events_so_far": 2,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 3600,
+   "val_loss": 0.17410793900489807,
+   "window": [
+    0.20542648434638977,
+    0.16283586621284485,
+    0.16406850516796112,
+    0.16998450458049774,
+    0.17410793900489807
+   ],
+   "stalled_count": 0,
+   "events_so_far": 2,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 3700,
+   "val_loss": 0.1666487157344818,
+   "window": [
+    0.20542648434638977,
+    0.16283586621284485,
+    0.16406850516796112,
+    0.16998450458049774,
+    0.17410793900489807,
+    0.1666487157344818
+   ],
+   "stalled_count": 1,
+   "events_so_far": 2,
+   "best_old_half": 0.16283586621284485,
+   "best_recent_half": 0.1666487157344818,
+   "rel_improvement_over_window": -0.023415293020599887,
+   "action": "CONTINUE",
+   "why": "cooldown (600 < 700)"
+  },
+  {
+   "step": 3800,
+   "val_loss": 0.17446132004261017,
+   "window": [
+    0.16283586621284485,
+    0.16406850516796112,
+    0.16998450458049774,
+    0.17410793900489807,
+    0.1666487157344818,
+    0.17446132004261017
+   ],
+   "stalled_count": 2,
+   "events_so_far": 2,
+   "best_old_half": 0.16283586621284485,
+   "best_recent_half": 0.1666487157344818,
+   "rel_improvement_over_window": -0.023415293020599887,
+   "action": "GROW",
+   "kind": "ADD_MLP_CAPACITY",
+   "site": "L0",
+   "why": "best val loss improved only -2.34% (0.1628 -> 0.1666) across the last 6 observations, for 2 consecutive observations (threshold 2.0%)",
+   "per_category_loss": {
+    "SHELL": 10.348878454003069,
+    "VAL": 2.989536081523121,
+    "OMEN": 1.6584914399805277,
+    "HEAVIER": 0.28034113428235363,
+    "REACT": 0.015628716079610847,
+    "BOND": 0.005557668169005413,
+    "REACTSOL": 0.003767702556014664,
+    "METAL": 0.00022390933236238197
+   },
+   "worst_category": "SHELL",
+   "strain": {
+    "L0": 0.15120912101581455,
+    "L1": 0.045607953929016815,
+    "G8": 0.004638008825653919,
+    "G5": 0.0032117181769786697
+   }
+  },
+  {
+   "step": 3900,
+   "val_loss": 0.13071279227733612,
+   "window": [
+    0.13071279227733612
+   ],
+   "stalled_count": 0,
+   "events_so_far": 3,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 4000,
+   "val_loss": 0.139114648103714,
+   "window": [
+    0.13071279227733612,
+    0.139114648103714
+   ],
+   "stalled_count": 0,
+   "events_so_far": 3,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 4100,
+   "val_loss": 0.12015031278133392,
+   "window": [
+    0.13071279227733612,
+    0.139114648103714,
+    0.12015031278133392
+   ],
+   "stalled_count": 0,
+   "events_so_far": 3,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 4200,
+   "val_loss": 0.13429245352745056,
+   "window": [
+    0.13071279227733612,
+    0.139114648103714,
+    0.12015031278133392,
+    0.13429245352745056
+   ],
+   "stalled_count": 0,
+   "events_so_far": 3,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 4300,
+   "val_loss": 0.1445351094007492,
+   "window": [
+    0.13071279227733612,
+    0.139114648103714,
+    0.12015031278133392,
+    0.13429245352745056,
+    0.1445351094007492
+   ],
+   "stalled_count": 0,
+   "events_so_far": 3,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 4400,
+   "val_loss": 0.13738742470741272,
+   "window": [
+    0.13071279227733612,
+    0.139114648103714,
+    0.12015031278133392,
+    0.13429245352745056,
+    0.1445351094007492,
+    0.13738742470741272
+   ],
+   "stalled_count": 1,
+   "events_so_far": 3,
+   "best_old_half": 0.12015031278133392,
+   "best_recent_half": 0.13429245352745056,
+   "rel_improvement_over_window": -0.11770373641768583,
+   "action": "CONTINUE",
+   "why": "cooldown (600 < 700)"
+  },
+  {
+   "step": 4500,
+   "val_loss": 0.13920459151268005,
+   "window": [
+    0.139114648103714,
+    0.12015031278133392,
+    0.13429245352745056,
+    0.1445351094007492,
+    0.13738742470741272,
+    0.13920459151268005
+   ],
+   "stalled_count": 2,
+   "events_so_far": 3,
+   "best_old_half": 0.12015031278133392,
+   "best_recent_half": 0.13738742470741272,
+   "rel_improvement_over_window": -0.143462896825323,
+   "action": "GROW",
+   "kind": "ADD_MLP_CAPACITY",
+   "site": "L0",
+   "why": "best val loss improved only -14.35% (0.1202 -> 0.1374) across the last 6 observations, for 2 consecutive observations (threshold 2.0%)",
+   "per_category_loss": {
+    "SHELL": 10.152837965223524,
+    "OMEN": 1.809756202118492,
+    "VAL": 0.5105682453686963,
+    "HEAVIER": 0.1213191859308599,
+    "BOND": 0.02545434048838458,
+    "REACTSOL": 0.0003687805975198985,
+    "REACT": 0.0003099046696434279,
+    "METAL": 3.8413966649386566e-05
+   },
+   "worst_category": "SHELL",
+   "strain": {
+    "L0": 0.034221099749197355,
+    "L1": 0.028798453239318914,
+    "G8": 0.0011842339785672513,
+    "G5": 0.000996596220710286
+   }
+  },
+  {
+   "step": 4600,
+   "val_loss": 0.12957361340522766,
+   "window": [
+    0.12957361340522766
+   ],
+   "stalled_count": 0,
+   "events_so_far": 4,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 4700,
+   "val_loss": 0.14425691962242126,
+   "window": [
+    0.12957361340522766,
+    0.14425691962242126
+   ],
+   "stalled_count": 0,
+   "events_so_far": 4,
+   "action": "CONTINUE",
+   "why": "window not full"
+  },
+  {
+   "step": 4800,
+   "val_loss": 0.14650781452655792,
+   "window": [
+    0.12957361340522766,
+    0.14425691962242126,
+    0.14650781452655792
+   ],
+   "stalled_count": 0,
+   "events_so_far": 4,
+   "action": "CONTINUE",
+   "why": "window not full"
+  }
+ ],
+ "trace": [
+  {
+   "step": 100,
+   "age": 0,
+   "flops": 22590259200.0,
+   "tokens": 51200,
+   "train_loss": 1.1792420148849487,
+   "val_loss": 1.2371914386749268,
+   "per_cat": {
+    "VAL": 1.7081,
+    "SHELL": 2.975,
+    "METAL": 0.5186,
+    "BOND": 1.3831,
+    "REACT": 2.0451,
+    "HEAVIER": 0.7509,
+    "REACTSOL": 0.7385,
+    "OMEN": 0.7745
+   },
+   "per_cat_acc": {
+    "VAL": 0.1429,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.3788,
+    "REACT": 0.1584,
+    "HEAVIER": 0.4845,
+    "REACTSOL": 0.5371,
+    "OMEN": 0.4925
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 200,
+   "age": 0,
+   "flops": 45180518400.0,
+   "tokens": 102400,
+   "train_loss": 1.054532766342163,
+   "val_loss": 1.1479519605636597,
+   "per_cat": {
+    "VAL": 1.9348,
+    "SHELL": 3.4796,
+    "METAL": 0.2929,
+    "BOND": 1.317,
+    "REACT": 1.9704,
+    "HEAVIER": 0.4742,
+    "REACTSOL": 0.7258,
+    "OMEN": 0.7889
+   },
+   "per_cat_acc": {
+    "VAL": 0.4286,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.3627,
+    "REACT": 0.1523,
+    "HEAVIER": 0.8041,
+    "REACTSOL": 0.5067,
+    "OMEN": 0.4776
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 300,
+   "age": 0,
+   "flops": 67770777600.0,
+   "tokens": 153600,
+   "train_loss": 0.8219696283340454,
+   "val_loss": 1.1229684352874756,
+   "per_cat": {
+    "VAL": 2.6508,
+    "SHELL": 4.1658,
+    "METAL": 0.1074,
+    "BOND": 1.3027,
+    "REACT": 1.7991,
+    "HEAVIER": 0.383,
+    "REACTSOL": 0.825,
+    "OMEN": 0.9921
+   },
+   "per_cat_acc": {
+    "VAL": 0.1429,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.3527,
+    "REACT": 0.216,
+    "HEAVIER": 0.8608,
+    "REACTSOL": 0.5143,
+    "OMEN": 0.4627
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 400,
+   "age": 0,
+   "flops": 90361036800.0,
+   "tokens": 204800,
+   "train_loss": 0.9436211585998535,
+   "val_loss": 1.0931246280670166,
+   "per_cat": {
+    "VAL": 3.9825,
+    "SHELL": 3.7925,
+    "METAL": 0.0327,
+    "BOND": 1.3308,
+    "REACT": 1.7853,
+    "HEAVIER": 0.2988,
+    "REACTSOL": 0.7161,
+    "OMEN": 1.2557
+   },
+   "per_cat_acc": {
+    "VAL": 0.1429,
+    "SHELL": 0.2222,
+    "METAL": 1.0,
+    "BOND": 0.3507,
+    "REACT": 0.2695,
+    "HEAVIER": 0.8943,
+    "REACTSOL": 0.5429,
+    "OMEN": 0.4179
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 500,
+   "age": 0,
+   "flops": 112951296000.0,
+   "tokens": 256000,
+   "train_loss": 0.48707863688468933,
+   "val_loss": 0.8433473706245422,
+   "per_cat": {
+    "VAL": 3.1055,
+    "SHELL": 3.8566,
+    "METAL": 0.0832,
+    "BOND": 1.2331,
+    "REACT": 1.0002,
+    "HEAVIER": 0.3291,
+    "REACTSOL": 0.6132,
+    "OMEN": 0.9886
+   },
+   "per_cat_acc": {
+    "VAL": 0.2857,
+    "SHELL": 0.2222,
+    "METAL": 1.0,
+    "BOND": 0.4068,
+    "REACT": 0.642,
+    "HEAVIER": 0.8814,
+    "REACTSOL": 0.6724,
+    "OMEN": 0.5075
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 600,
+   "age": 0,
+   "flops": 135541555200.0,
+   "tokens": 307200,
+   "train_loss": 0.43021753430366516,
+   "val_loss": 0.7238160371780396,
+   "per_cat": {
+    "VAL": 2.3598,
+    "SHELL": 6.3227,
+    "METAL": 0.0575,
+    "BOND": 1.0813,
+    "REACT": 0.6988,
+    "HEAVIER": 0.3055,
+    "REACTSOL": 0.5207,
+    "OMEN": 1.3738
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.2222,
+    "METAL": 1.0,
+    "BOND": 0.4729,
+    "REACT": 0.7305,
+    "HEAVIER": 0.8995,
+    "REACTSOL": 0.7067,
+    "OMEN": 0.4478
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 700,
+   "age": 0,
+   "flops": 158131814400.0,
+   "tokens": 358400,
+   "train_loss": 0.31488463282585144,
+   "val_loss": 0.6188655495643616,
+   "per_cat": {
+    "VAL": 2.2236,
+    "SHELL": 6.854,
+    "METAL": 0.0109,
+    "BOND": 0.9604,
+    "REACT": 0.5571,
+    "HEAVIER": 0.2461,
+    "REACTSOL": 0.3914,
+    "OMEN": 1.4955
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.2222,
+    "METAL": 1.0,
+    "BOND": 0.5471,
+    "REACT": 0.8066,
+    "HEAVIER": 0.9072,
+    "REACTSOL": 0.8095,
+    "OMEN": 0.4478
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 800,
+   "age": 0,
+   "flops": 180722073600.0,
+   "tokens": 409600,
+   "train_loss": 0.3830656409263611,
+   "val_loss": 0.6004699468612671,
+   "per_cat": {
+    "VAL": 4.3643,
+    "SHELL": 7.23,
+    "METAL": 0.0083,
+    "BOND": 0.9015,
+    "REACT": 0.5895,
+    "HEAVIER": 0.3224,
+    "REACTSOL": 0.2574,
+    "OMEN": 1.4885
+   },
+   "per_cat_acc": {
+    "VAL": 0.4286,
+    "SHELL": 0.2222,
+    "METAL": 1.0,
+    "BOND": 0.5691,
+    "REACT": 0.8292,
+    "HEAVIER": 0.9175,
+    "REACTSOL": 0.8724,
+    "OMEN": 0.4179
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 900,
+   "age": 0,
+   "flops": 203312332800.0,
+   "tokens": 460800,
+   "train_loss": 0.2191012054681778,
+   "val_loss": 0.5547502040863037,
+   "per_cat": {
+    "VAL": 3.9317,
+    "SHELL": 6.7845,
+    "METAL": 0.0017,
+    "BOND": 0.8743,
+    "REACT": 0.5259,
+    "HEAVIER": 0.2643,
+    "REACTSOL": 0.1716,
+    "OMEN": 1.9123
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.2222,
+    "METAL": 1.0,
+    "BOND": 0.5972,
+    "REACT": 0.8519,
+    "HEAVIER": 0.9201,
+    "REACTSOL": 0.9314,
+    "OMEN": 0.3582
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 1000,
+   "age": 0,
+   "flops": 225902592000.0,
+   "tokens": 512000,
+   "train_loss": 0.3260972201824188,
+   "val_loss": 0.5963242053985596,
+   "per_cat": {
+    "VAL": 4.0772,
+    "SHELL": 8.4264,
+    "METAL": 0.0004,
+    "BOND": 0.9069,
+    "REACT": 0.3677,
+    "HEAVIER": 0.2983,
+    "REACTSOL": 0.2832,
+    "OMEN": 2.7407
+   },
+   "per_cat_acc": {
+    "VAL": 0.4286,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.5571,
+    "REACT": 0.8951,
+    "HEAVIER": 0.9124,
+    "REACTSOL": 0.8895,
+    "OMEN": 0.4328
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 1100,
+   "age": 0,
+   "flops": 248492851200.0,
+   "tokens": 563200,
+   "train_loss": 0.1464807689189911,
+   "val_loss": 0.5054987668991089,
+   "per_cat": {
+    "VAL": 3.0899,
+    "SHELL": 7.7942,
+    "METAL": 0.0011,
+    "BOND": 0.8374,
+    "REACT": 0.3005,
+    "HEAVIER": 0.3156,
+    "REACTSOL": 0.1391,
+    "OMEN": 2.2723
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.2222,
+    "METAL": 1.0,
+    "BOND": 0.6032,
+    "REACT": 0.8889,
+    "HEAVIER": 0.9201,
+    "REACTSOL": 0.9619,
+    "OMEN": 0.4328
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 1200,
+   "age": 1,
+   "flops": 271083110400.0,
+   "tokens": 614400,
+   "train_loss": 0.16760365664958954,
+   "val_loss": 0.4545179009437561,
+   "per_cat": {
+    "VAL": 3.7393,
+    "SHELL": 8.0083,
+    "METAL": 0.002,
+    "BOND": 0.8675,
+    "REACT": 0.2162,
+    "HEAVIER": 0.2573,
+    "REACTSOL": 0.1025,
+    "OMEN": 1.6767
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.6433,
+    "REACT": 0.9362,
+    "HEAVIER": 0.9278,
+    "REACTSOL": 0.9676,
+    "OMEN": 0.4179
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 1300,
+   "age": 1,
+   "flops": 293673369600.0,
+   "tokens": 665600,
+   "train_loss": 0.16136375069618225,
+   "val_loss": 0.350888192653656,
+   "per_cat": {
+    "VAL": 3.9903,
+    "SHELL": 6.1792,
+    "METAL": 0.001,
+    "BOND": 0.5806,
+    "REACT": 0.2,
+    "HEAVIER": 0.2001,
+    "REACTSOL": 0.0743,
+    "OMEN": 1.6319
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.7074,
+    "REACT": 0.9383,
+    "HEAVIER": 0.9304,
+    "REACTSOL": 0.9771,
+    "OMEN": 0.4776
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 1400,
+   "age": 1,
+   "flops": 316263628800.0,
+   "tokens": 716800,
+   "train_loss": 0.19709838926792145,
+   "val_loss": 0.3815063238143921,
+   "per_cat": {
+    "VAL": 2.5116,
+    "SHELL": 8.4658,
+    "METAL": 0.0001,
+    "BOND": 0.5394,
+    "REACT": 0.1896,
+    "HEAVIER": 0.3076,
+    "REACTSOL": 0.0793,
+    "OMEN": 2.108
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.7796,
+    "REACT": 0.9383,
+    "HEAVIER": 0.9175,
+    "REACTSOL": 0.9771,
+    "OMEN": 0.4328
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 1500,
+   "age": 1,
+   "flops": 338853888000.0,
+   "tokens": 768000,
+   "train_loss": 0.06386695057153702,
+   "val_loss": 0.27251672744750977,
+   "per_cat": {
+    "VAL": 2.1624,
+    "SHELL": 7.781,
+    "METAL": 0.0037,
+    "BOND": 0.2854,
+    "REACT": 0.1163,
+    "HEAVIER": 0.2748,
+    "REACTSOL": 0.0427,
+    "OMEN": 1.9077
+   },
+   "per_cat_acc": {
+    "VAL": 0.4286,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.8998,
+    "REACT": 0.965,
+    "HEAVIER": 0.9175,
+    "REACTSOL": 0.9867,
+    "OMEN": 0.4328
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 1600,
+   "age": 1,
+   "flops": 361444147200.0,
+   "tokens": 819200,
+   "train_loss": 0.04427275434136391,
+   "val_loss": 0.35790660977363586,
+   "per_cat": {
+    "VAL": 2.3378,
+    "SHELL": 9.9214,
+    "METAL": 0.0085,
+    "BOND": 0.4492,
+    "REACT": 0.2331,
+    "HEAVIER": 0.2246,
+    "REACTSOL": 0.0698,
+    "OMEN": 2.1424
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.8617,
+    "REACT": 0.93,
+    "HEAVIER": 0.9536,
+    "REACTSOL": 0.9771,
+    "OMEN": 0.4925
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 1700,
+   "age": 1,
+   "flops": 384034406400.0,
+   "tokens": 870400,
+   "train_loss": 0.06684788316488266,
+   "val_loss": 0.26355263590812683,
+   "per_cat": {
+    "VAL": 5.5018,
+    "SHELL": 8.5324,
+    "METAL": 0.0017,
+    "BOND": 0.1259,
+    "REACT": 0.0927,
+    "HEAVIER": 0.2732,
+    "REACTSOL": 0.0909,
+    "OMEN": 2.1825
+   },
+   "per_cat_acc": {
+    "VAL": 0.4286,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.9539,
+    "REACT": 0.965,
+    "HEAVIER": 0.9201,
+    "REACTSOL": 0.9714,
+    "OMEN": 0.4328
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 1800,
+   "age": 1,
+   "flops": 406624665600.0,
+   "tokens": 921600,
+   "train_loss": 0.06296427547931671,
+   "val_loss": 0.1848422735929489,
+   "per_cat": {
+    "VAL": 1.2276,
+    "SHELL": 6.2611,
+    "METAL": 0.0161,
+    "BOND": 0.1068,
+    "REACT": 0.0599,
+    "HEAVIER": 0.135,
+    "REACTSOL": 0.0257,
+    "OMEN": 2.2937
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.9599,
+    "REACT": 0.9815,
+    "HEAVIER": 0.9613,
+    "REACTSOL": 0.9905,
+    "OMEN": 0.4478
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 1900,
+   "age": 1,
+   "flops": 429214924800.0,
+   "tokens": 972800,
+   "train_loss": 0.06720813363790512,
+   "val_loss": 0.25930941104888916,
+   "per_cat": {
+    "VAL": 3.0083,
+    "SHELL": 8.4636,
+    "METAL": 0.0002,
+    "BOND": 0.1453,
+    "REACT": 0.1083,
+    "HEAVIER": 0.199,
+    "REACTSOL": 0.0282,
+    "OMEN": 2.9899
+   },
+   "per_cat_acc": {
+    "VAL": 0.4286,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.9479,
+    "REACT": 0.9733,
+    "HEAVIER": 0.9381,
+    "REACTSOL": 0.9886,
+    "OMEN": 0.4478
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 2000,
+   "age": 1,
+   "flops": 451805184000.0,
+   "tokens": 1024000,
+   "train_loss": 0.12617330253124237,
+   "val_loss": 0.24954524636268616,
+   "per_cat": {
+    "VAL": 4.2571,
+    "SHELL": 9.0422,
+    "METAL": 0.0005,
+    "BOND": 0.1385,
+    "REACT": 0.0624,
+    "HEAVIER": 0.2603,
+    "REACTSOL": 0.0173,
+    "OMEN": 2.6068
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.9439,
+    "REACT": 0.9815,
+    "HEAVIER": 0.9356,
+    "REACTSOL": 0.9943,
+    "OMEN": 0.4179
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 2100,
+   "age": 1,
+   "flops": 474395443200.0,
+   "tokens": 1075200,
+   "train_loss": 0.06384344398975372,
+   "val_loss": 0.2579632103443146,
+   "per_cat": {
+    "VAL": 1.8754,
+    "SHELL": 8.6766,
+    "METAL": 0.0003,
+    "BOND": 0.2113,
+    "REACT": 0.1063,
+    "HEAVIER": 0.2195,
+    "REACTSOL": 0.0149,
+    "OMEN": 2.5484
+   },
+   "per_cat_acc": {
+    "VAL": 0.8571,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.9359,
+    "REACT": 0.9774,
+    "HEAVIER": 0.933,
+    "REACTSOL": 0.9924,
+    "OMEN": 0.5075
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 2200,
+   "age": 1,
+   "flops": 496985702400.0,
+   "tokens": 1126400,
+   "train_loss": 0.03381139039993286,
+   "val_loss": 0.2757442593574524,
+   "per_cat": {
+    "VAL": 4.3818,
+    "SHELL": 8.0547,
+    "METAL": 0.0004,
+    "BOND": 0.1726,
+    "REACT": 0.0916,
+    "HEAVIER": 0.2799,
+    "REACTSOL": 0.0418,
+    "OMEN": 2.7306
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.9519,
+    "REACT": 0.9753,
+    "HEAVIER": 0.9381,
+    "REACTSOL": 0.9905,
+    "OMEN": 0.4179
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 80832,
+   "params_active": 80832,
+   "n_blocks": 2,
+   "action": "GROW"
+  },
+  {
+   "step": 2300,
+   "age": 2,
+   "flops": 560627712000.0,
+   "tokens": 1177600,
+   "train_loss": 0.07483351230621338,
+   "val_loss": 0.17811189591884613,
+   "per_cat": {
+    "VAL": 3.7415,
+    "SHELL": 9.4281,
+    "METAL": 0.0096,
+    "BOND": 0.0704,
+    "REACT": 0.0491,
+    "HEAVIER": 0.1258,
+    "REACTSOL": 0.0241,
+    "OMEN": 1.8218
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.9739,
+    "REACT": 0.9877,
+    "HEAVIER": 0.9536,
+    "REACTSOL": 0.9886,
+    "OMEN": 0.5075
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 214720,
+   "params_active": 214720,
+   "n_blocks": 6,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 2400,
+   "age": 2,
+   "flops": 624269721600.0,
+   "tokens": 1228800,
+   "train_loss": 0.0709160566329956,
+   "val_loss": 0.26189887523651123,
+   "per_cat": {
+    "VAL": 3.691,
+    "SHELL": 9.0796,
+    "METAL": 0.0105,
+    "BOND": 0.121,
+    "REACT": 0.0443,
+    "HEAVIER": 0.3877,
+    "REACTSOL": 0.1074,
+    "OMEN": 1.8444
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.9699,
+    "REACT": 0.9835,
+    "HEAVIER": 0.9149,
+    "REACTSOL": 0.9657,
+    "OMEN": 0.4776
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 214720,
+   "params_active": 214720,
+   "n_blocks": 6,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 2500,
+   "age": 2,
+   "flops": 687911731200.0,
+   "tokens": 1280000,
+   "train_loss": 0.019151587039232254,
+   "val_loss": 0.16256183385849,
+   "per_cat": {
+    "VAL": 2.7082,
+    "SHELL": 8.26,
+    "METAL": 0.0005,
+    "BOND": 0.0617,
+    "REACT": 0.024,
+    "HEAVIER": 0.2003,
+    "REACTSOL": 0.0026,
+    "OMEN": 1.6097
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.976,
+    "REACT": 0.9897,
+    "HEAVIER": 0.9433,
+    "REACTSOL": 1.0,
+    "OMEN": 0.5373
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 214720,
+   "params_active": 214720,
+   "n_blocks": 6,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 2600,
+   "age": 3,
+   "flops": 751553740800.0,
+   "tokens": 1331200,
+   "train_loss": 0.10346537828445435,
+   "val_loss": 0.19256484508514404,
+   "per_cat": {
+    "VAL": 2.8305,
+    "SHELL": 10.8183,
+    "METAL": 0.0,
+    "BOND": 0.0611,
+    "REACT": 0.0038,
+    "HEAVIER": 0.2312,
+    "REACTSOL": 0.0135,
+    "OMEN": 2.0282
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.9699,
+    "REACT": 1.0,
+    "HEAVIER": 0.9433,
+    "REACTSOL": 0.9962,
+    "OMEN": 0.5224
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 114304,
+   "params_active": 114304,
+   "n_blocks": 3,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 2700,
+   "age": 3,
+   "flops": 784406937600.0,
+   "tokens": 1382400,
+   "train_loss": 0.11065521836280823,
+   "val_loss": 0.15534164011478424,
+   "per_cat": {
+    "VAL": 2.6189,
+    "SHELL": 6.9152,
+    "METAL": 0.0002,
+    "BOND": 0.0826,
+    "REACT": 0.0558,
+    "HEAVIER": 0.1298,
+    "REACTSOL": 0.0047,
+    "OMEN": 1.5909
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.9659,
+    "REACT": 0.9815,
+    "HEAVIER": 0.951,
+    "REACTSOL": 1.0,
+    "OMEN": 0.4627
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 114304,
+   "params_active": 114304,
+   "n_blocks": 3,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 2800,
+   "age": 3,
+   "flops": 817260134400.0,
+   "tokens": 1433600,
+   "train_loss": 0.07810842245817184,
+   "val_loss": 0.16872966289520264,
+   "per_cat": {
+    "VAL": 1.036,
+    "SHELL": 11.5203,
+    "METAL": 0.0001,
+    "BOND": 0.062,
+    "REACT": 0.0646,
+    "HEAVIER": 0.1467,
+    "REACTSOL": 0.017,
+    "OMEN": 1.4297
+   },
+   "per_cat_acc": {
+    "VAL": 0.8571,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.978,
+    "REACT": 0.9794,
+    "HEAVIER": 0.9562,
+    "REACTSOL": 0.9962,
+    "OMEN": 0.4478
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 114304,
+   "params_active": 114304,
+   "n_blocks": 3,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 2900,
+   "age": 3,
+   "flops": 850113331200.0,
+   "tokens": 1484800,
+   "train_loss": 0.09577906876802444,
+   "val_loss": 0.16477428376674652,
+   "per_cat": {
+    "VAL": 1.7759,
+    "SHELL": 7.2021,
+    "METAL": 0.0003,
+    "BOND": 0.0413,
+    "REACT": 0.0528,
+    "HEAVIER": 0.2015,
+    "REACTSOL": 0.0029,
+    "OMEN": 1.8482
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.2222,
+    "METAL": 1.0,
+    "BOND": 0.984,
+    "REACT": 0.9877,
+    "HEAVIER": 0.9356,
+    "REACTSOL": 1.0,
+    "OMEN": 0.4925
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 114304,
+   "params_active": 114304,
+   "n_blocks": 3,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 3000,
+   "age": 3,
+   "flops": 882966528000.0,
+   "tokens": 1536000,
+   "train_loss": 0.030577577650547028,
+   "val_loss": 0.1620933562517166,
+   "per_cat": {
+    "VAL": 1.799,
+    "SHELL": 9.894,
+    "METAL": 0.0,
+    "BOND": 0.019,
+    "REACT": 0.0527,
+    "HEAVIER": 0.1044,
+    "REACTSOL": 0.0123,
+    "OMEN": 2.0611
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.99,
+    "REACT": 0.9835,
+    "HEAVIER": 0.9639,
+    "REACTSOL": 0.9943,
+    "OMEN": 0.4478
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 114304,
+   "params_active": 114304,
+   "n_blocks": 3,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 3100,
+   "age": 3,
+   "flops": 915819724800.0,
+   "tokens": 1587200,
+   "train_loss": 0.0151267284527421,
+   "val_loss": 0.18309208750724792,
+   "per_cat": {
+    "VAL": 3.8386,
+    "SHELL": 8.5333,
+    "METAL": 0.0,
+    "BOND": 0.0549,
+    "REACT": 0.0395,
+    "HEAVIER": 0.1365,
+    "REACTSOL": 0.0085,
+    "OMEN": 2.3244
+   },
+   "per_cat_acc": {
+    "VAL": 0.4286,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.982,
+    "REACT": 0.9897,
+    "HEAVIER": 0.9588,
+    "REACTSOL": 0.9962,
+    "OMEN": 0.4627
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 114304,
+   "params_active": 114304,
+   "n_blocks": 3,
+   "action": "GROW"
+  },
+  {
+   "step": 3200,
+   "age": 3,
+   "flops": 989724672000.0,
+   "tokens": 1638400,
+   "train_loss": 0.022663643583655357,
+   "val_loss": 0.20542648434638977,
+   "per_cat": {
+    "VAL": 4.3232,
+    "SHELL": 9.6409,
+    "METAL": 0.0001,
+    "BOND": 0.0392,
+    "REACT": 0.0408,
+    "HEAVIER": 0.1642,
+    "REACTSOL": 0.0267,
+    "OMEN": 2.5911
+   },
+   "per_cat_acc": {
+    "VAL": 0.4286,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.99,
+    "REACT": 0.9877,
+    "HEAVIER": 0.951,
+    "REACTSOL": 0.9924,
+    "OMEN": 0.5075
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 248192,
+   "params_active": 248192,
+   "n_blocks": 7,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 3300,
+   "age": 4,
+   "flops": 1063629619200.0,
+   "tokens": 1689600,
+   "train_loss": 0.025085363537073135,
+   "val_loss": 0.16283586621284485,
+   "per_cat": {
+    "VAL": 2.3762,
+    "SHELL": 9.7196,
+    "METAL": 0.0,
+    "BOND": 0.0235,
+    "REACT": 0.0042,
+    "HEAVIER": 0.158,
+    "REACTSOL": 0.0176,
+    "OMEN": 2.0117
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.994,
+    "REACT": 1.0,
+    "HEAVIER": 0.9536,
+    "REACTSOL": 0.9943,
+    "OMEN": 0.4328
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 248192,
+   "params_active": 248192,
+   "n_blocks": 7,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 3400,
+   "age": 4,
+   "flops": 1137534566400.0,
+   "tokens": 1740800,
+   "train_loss": 0.03397836536169052,
+   "val_loss": 0.16406850516796112,
+   "per_cat": {
+    "VAL": 2.4345,
+    "SHELL": 9.8094,
+    "METAL": 0.0001,
+    "BOND": 0.0306,
+    "REACT": 0.0011,
+    "HEAVIER": 0.1642,
+    "REACTSOL": 0.0006,
+    "OMEN": 2.0971
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.992,
+    "REACT": 1.0,
+    "HEAVIER": 0.9536,
+    "REACTSOL": 1.0,
+    "OMEN": 0.4627
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 248192,
+   "params_active": 248192,
+   "n_blocks": 7,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 3500,
+   "age": 4,
+   "flops": 1211439513600.0,
+   "tokens": 1792000,
+   "train_loss": 0.03614821657538414,
+   "val_loss": 0.16998450458049774,
+   "per_cat": {
+    "VAL": 2.4768,
+    "SHELL": 9.0765,
+    "METAL": 0.0009,
+    "BOND": 0.0501,
+    "REACT": 0.0068,
+    "HEAVIER": 0.1242,
+    "REACTSOL": 0.0464,
+    "OMEN": 2.053
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.99,
+    "REACT": 0.9959,
+    "HEAVIER": 0.9562,
+    "REACTSOL": 0.9752,
+    "OMEN": 0.4179
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 147776,
+   "params_active": 147776,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 3600,
+   "age": 5,
+   "flops": 1254555648000.0,
+   "tokens": 1843200,
+   "train_loss": 0.02178073674440384,
+   "val_loss": 0.17410793900489807,
+   "per_cat": {
+    "VAL": 3.413,
+    "SHELL": 7.8284,
+    "METAL": 0.0003,
+    "BOND": 0.0787,
+    "REACT": 0.0432,
+    "HEAVIER": 0.1213,
+    "REACTSOL": 0.0306,
+    "OMEN": 1.9092
+   },
+   "per_cat_acc": {
+    "VAL": 0.4286,
+    "SHELL": 0.2222,
+    "METAL": 1.0,
+    "BOND": 0.976,
+    "REACT": 0.9794,
+    "HEAVIER": 0.9562,
+    "REACTSOL": 0.9962,
+    "OMEN": 0.4776
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 147776,
+   "params_active": 147776,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 3700,
+   "age": 5,
+   "flops": 1297671782400.0,
+   "tokens": 1894400,
+   "train_loss": 0.019757503643631935,
+   "val_loss": 0.1666487157344818,
+   "per_cat": {
+    "VAL": 1.995,
+    "SHELL": 8.8521,
+    "METAL": 0.0016,
+    "BOND": 0.0612,
+    "REACT": 0.0318,
+    "HEAVIER": 0.2388,
+    "REACTSOL": 0.0011,
+    "OMEN": 1.462
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.984,
+    "REACT": 0.9918,
+    "HEAVIER": 0.9613,
+    "REACTSOL": 1.0,
+    "OMEN": 0.4776
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 147776,
+   "params_active": 147776,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 3800,
+   "age": 5,
+   "flops": 1340787916800.0,
+   "tokens": 1945600,
+   "train_loss": 0.03447581082582474,
+   "val_loss": 0.17446132004261017,
+   "per_cat": {
+    "VAL": 2.9895,
+    "SHELL": 10.3489,
+    "METAL": 0.0002,
+    "BOND": 0.0056,
+    "REACT": 0.0156,
+    "HEAVIER": 0.2803,
+    "REACTSOL": 0.0038,
+    "OMEN": 1.6585
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.998,
+    "REACT": 0.9959,
+    "HEAVIER": 0.9278,
+    "REACTSOL": 0.9981,
+    "OMEN": 0.5075
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 147776,
+   "params_active": 147776,
+   "n_blocks": 4,
+   "action": "GROW"
+  },
+  {
+   "step": 3900,
+   "age": 5,
+   "flops": 1404036710400.0,
+   "tokens": 1996800,
+   "train_loss": 0.03778354823589325,
+   "val_loss": 0.13071279227733612,
+   "per_cat": {
+    "VAL": 2.55,
+    "SHELL": 6.6891,
+    "METAL": 0.001,
+    "BOND": 0.0117,
+    "REACT": 0.0298,
+    "HEAVIER": 0.1334,
+    "REACTSOL": 0.0023,
+    "OMEN": 1.6136
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.996,
+    "REACT": 0.9835,
+    "HEAVIER": 0.9562,
+    "REACTSOL": 1.0,
+    "OMEN": 0.4925
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 214080,
+   "params_active": 214080,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 4000,
+   "age": 5,
+   "flops": 1467285504000.0,
+   "tokens": 2048000,
+   "train_loss": 0.0962972342967987,
+   "val_loss": 0.139114648103714,
+   "per_cat": {
+    "VAL": 3.2155,
+    "SHELL": 7.6258,
+    "METAL": 0.0002,
+    "BOND": 0.0187,
+    "REACT": 0.0494,
+    "HEAVIER": 0.0912,
+    "REACTSOL": 0.0084,
+    "OMEN": 1.6697
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.994,
+    "REACT": 0.9856,
+    "HEAVIER": 0.9536,
+    "REACTSOL": 0.9962,
+    "OMEN": 0.5373
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 214080,
+   "params_active": 214080,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 4100,
+   "age": 6,
+   "flops": 1530534297600.0,
+   "tokens": 2099200,
+   "train_loss": 0.013741356320679188,
+   "val_loss": 0.12015031278133392,
+   "per_cat": {
+    "VAL": 1.1592,
+    "SHELL": 9.8495,
+    "METAL": 0.0002,
+    "BOND": 0.0033,
+    "REACT": 0.0278,
+    "HEAVIER": 0.1044,
+    "REACTSOL": 0.0015,
+    "OMEN": 1.2732
+   },
+   "per_cat_acc": {
+    "VAL": 0.8571,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 1.0,
+    "REACT": 0.9918,
+    "HEAVIER": 0.9536,
+    "REACTSOL": 1.0,
+    "OMEN": 0.403
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 214080,
+   "params_active": 214080,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 4200,
+   "age": 6,
+   "flops": 1593783091200.0,
+   "tokens": 2150400,
+   "train_loss": 0.07459139823913574,
+   "val_loss": 0.13429245352745056,
+   "per_cat": {
+    "VAL": 1.2102,
+    "SHELL": 10.1021,
+    "METAL": 0.0,
+    "BOND": 0.0052,
+    "REACT": 0.0006,
+    "HEAVIER": 0.0998,
+    "REACTSOL": 0.0009,
+    "OMEN": 1.8675
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.998,
+    "REACT": 1.0,
+    "HEAVIER": 0.9639,
+    "REACTSOL": 1.0,
+    "OMEN": 0.5373
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 164352,
+   "params_active": 164352,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 4300,
+   "age": 6,
+   "flops": 1641932390400.0,
+   "tokens": 2201600,
+   "train_loss": 0.05212951824069023,
+   "val_loss": 0.1445351094007492,
+   "per_cat": {
+    "VAL": 2.7772,
+    "SHELL": 9.0235,
+    "METAL": 0.0003,
+    "BOND": 0.0099,
+    "REACT": 0.0223,
+    "HEAVIER": 0.1501,
+    "REACTSOL": 0.0131,
+    "OMEN": 1.5726
+   },
+   "per_cat_acc": {
+    "VAL": 0.5714,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.996,
+    "REACT": 0.9877,
+    "HEAVIER": 0.9536,
+    "REACTSOL": 0.9943,
+    "OMEN": 0.4627
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 164352,
+   "params_active": 164352,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 4400,
+   "age": 6,
+   "flops": 1690081689600.0,
+   "tokens": 2252800,
+   "train_loss": 0.011331475339829922,
+   "val_loss": 0.13738742470741272,
+   "per_cat": {
+    "VAL": 0.7244,
+    "SHELL": 9.453,
+    "METAL": 0.0001,
+    "BOND": 0.0043,
+    "REACT": 0.0033,
+    "HEAVIER": 0.1449,
+    "REACTSOL": 0.0006,
+    "OMEN": 1.8242
+   },
+   "per_cat_acc": {
+    "VAL": 0.8571,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.998,
+    "REACT": 0.9979,
+    "HEAVIER": 0.951,
+    "REACTSOL": 1.0,
+    "OMEN": 0.5224
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 164352,
+   "params_active": 164352,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 4500,
+   "age": 6,
+   "flops": 1738230988800.0,
+   "tokens": 2304000,
+   "train_loss": 0.023700222373008728,
+   "val_loss": 0.13920459151268005,
+   "per_cat": {
+    "VAL": 0.5106,
+    "SHELL": 10.1528,
+    "METAL": 0.0,
+    "BOND": 0.0255,
+    "REACT": 0.0003,
+    "HEAVIER": 0.1213,
+    "REACTSOL": 0.0004,
+    "OMEN": 1.8098
+   },
+   "per_cat_acc": {
+    "VAL": 0.8571,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.994,
+    "REACT": 1.0,
+    "HEAVIER": 0.9588,
+    "REACTSOL": 1.0,
+    "OMEN": 0.4776
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 164352,
+   "params_active": 164352,
+   "n_blocks": 4,
+   "action": "GROW"
+  },
+  {
+   "step": 4600,
+   "age": 7,
+   "flops": 1806512947200.0,
+   "tokens": 2355200,
+   "train_loss": 0.031552936881780624,
+   "val_loss": 0.12957361340522766,
+   "per_cat": {
+    "VAL": 3.6387,
+    "SHELL": 8.4392,
+    "METAL": 0.0037,
+    "BOND": 0.0274,
+    "REACT": 0.0014,
+    "HEAVIER": 0.0934,
+    "REACTSOL": 0.001,
+    "OMEN": 1.5614
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.992,
+    "REACT": 1.0,
+    "HEAVIER": 0.9716,
+    "REACTSOL": 1.0,
+    "OMEN": 0.4925
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 230656,
+   "params_active": 230656,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 4700,
+   "age": 7,
+   "flops": 1874794905600.0,
+   "tokens": 2406400,
+   "train_loss": 0.02608429081737995,
+   "val_loss": 0.14425691962242126,
+   "per_cat": {
+    "VAL": 1.7237,
+    "SHELL": 9.6456,
+    "METAL": 0.0001,
+    "BOND": 0.0097,
+    "REACT": 0.012,
+    "HEAVIER": 0.1185,
+    "REACTSOL": 0.0005,
+    "OMEN": 1.9494
+   },
+   "per_cat_acc": {
+    "VAL": 0.7143,
+    "SHELL": 0.1111,
+    "METAL": 1.0,
+    "BOND": 0.996,
+    "REACT": 0.9979,
+    "HEAVIER": 0.9613,
+    "REACTSOL": 1.0,
+    "OMEN": 0.403
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 230656,
+   "params_active": 230656,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  },
+  {
+   "step": 4800,
+   "age": 7,
+   "flops": 1943076864000.0,
+   "tokens": 2457600,
+   "train_loss": 0.10565286874771118,
+   "val_loss": 0.14650781452655792,
+   "per_cat": {
+    "VAL": 0.0473,
+    "SHELL": 10.194,
+    "METAL": 0.0002,
+    "BOND": 0.0629,
+    "REACT": 0.0426,
+    "HEAVIER": 0.1005,
+    "REACTSOL": 0.0101,
+    "OMEN": 1.5281
+   },
+   "per_cat_acc": {
+    "VAL": 1.0,
+    "SHELL": 0.0,
+    "METAL": 1.0,
+    "BOND": 0.986,
+    "REACT": 0.9877,
+    "HEAVIER": 0.9613,
+    "REACTSOL": 0.9962,
+    "OMEN": 0.5821
+   },
+   "per_cat_n": {
+    "VAL": 7,
+    "SHELL": 9,
+    "METAL": 4,
+    "BOND": 499,
+    "REACT": 486,
+    "HEAVIER": 388,
+    "REACTSOL": 525,
+    "OMEN": 67
+   },
+   "params": 230656,
+   "params_active": 230656,
+   "n_blocks": 4,
+   "action": "CONTINUE"
+  }
+ ],
+ "final_ablation": {
+  "L0": 7.189596,
+  "L0.b0": 1.460203,
+  "B11@L0": 0.000184,
+  "B15@L0": -0.000962,
+  "B16@L0": -0.000714,
+  "B17@L0": -0.000874,
+  "B18@L0": -0.000738,
+  "G8": 0.000423,
+  "G8.b0": 0.000105,
+  "G5": 0.000749,
+  "G5.b0": 0.000242,
+  "L1": 3.573997,
+  "L1.b0": 1.326052
+ },
+ "final_ablation_by_relation": {
+  "L0": {
+   "VAL": 3.735915,
+   "SHELL": -1.125241,
+   "METAL": 7e-05,
+   "BOND": 10.886984,
+   "REACT": 10.885146,
+   "HEAVIER": 6.270535,
+   "REACTSOL": 1.726978,
+   "OMEN": 2.879195
+  },
+  "L0.b0": {
+   "VAL": 1.594098,
+   "SHELL": -4.532617,
+   "METAL": 0.063681,
+   "BOND": 0.851809,
+   "REACT": 2.533353,
+   "HEAVIER": -0.01789,
+   "REACTSOL": 2.497537,
+   "OMEN": -0.487223
+  },
+  "B11@L0": {
+   "VAL": 0.003587,
+   "SHELL": -0.030345,
+   "METAL": -0.0,
+   "BOND": 0.00058,
+   "REACT": -0.000101,
+   "HEAVIER": -0.000283,
+   "REACTSOL": -0.000198,
+   "OMEN": 0.008758
+  },
+  "B15@L0": {
+   "VAL": 0.002083,
+   "SHELL": -0.001343,
+   "METAL": -1e-06,
+   "BOND": 0.000394,
+   "REACT": 2.2e-05,
+   "HEAVIER": -0.001253,
+   "REACTSOL": -0.002757,
+   "OMEN": -0.002764
+  },
+  "B16@L0": {
+   "VAL": -0.006758,
+   "SHELL": -0.000923,
+   "METAL": -2e-06,
+   "BOND": 0.000203,
+   "REACT": 1.7e-05,
+   "HEAVIER": -0.000885,
+   "REACTSOL": -0.001722,
+   "OMEN": -0.003344
+  },
+  "B17@L0": {
+   "VAL": -0.014225,
+   "SHELL": -0.07704,
+   "METAL": -1e-06,
+   "BOND": 0.000736,
+   "REACT": -4.1e-05,
+   "HEAVIER": -0.001014,
+   "REACTSOL": -0.001777,
+   "OMEN": 0.000552
+  },
+  "B18@L0": {
+   "VAL": -0.006027,
+   "SHELL": -0.014783,
+   "METAL": -2e-06,
+   "BOND": 0.000537,
+   "REACT": -1.3e-05,
+   "HEAVIER": -0.001408,
+   "REACTSOL": -0.001853,
+   "OMEN": -0.000473
+  },
+  "G8": {
+   "VAL": 0.008519,
+   "SHELL": -0.025764,
+   "METAL": -0.0,
+   "BOND": 0.000328,
+   "REACT": 1.1e-05,
+   "HEAVIER": 0.00039,
+   "REACTSOL": 0.000441,
+   "OMEN": 0.006868
+  },
+  "G8.b0": {
+   "VAL": 0.002289,
+   "SHELL": -0.013608,
+   "METAL": -0.0,
+   "BOND": 0.000229,
+   "REACT": 1e-06,
+   "HEAVIER": 0.000177,
+   "REACTSOL": -0.00011,
+   "OMEN": 0.002809
+  },
+  "G5": {
+   "VAL": 0.027877,
+   "SHELL": -0.03676,
+   "METAL": -2e-06,
+   "BOND": 0.000714,
+   "REACT": 5.5e-05,
+   "HEAVIER": 0.000717,
+   "REACTSOL": 0.000707,
+   "OMEN": 0.008808
+  },
+  "G5.b0": {
+   "VAL": 0.014067,
+   "SHELL": -0.026277,
+   "METAL": -1e-06,
+   "BOND": 0.000385,
+   "REACT": 1.7e-05,
+   "HEAVIER": 0.000359,
+   "REACTSOL": 0.000166,
+   "OMEN": 0.00286
+  },
+  "L1": {
+   "VAL": 5.550736,
+   "SHELL": -1.04372,
+   "METAL": 2.307047,
+   "BOND": 3.18026,
+   "REACT": 3.912251,
+   "HEAVIER": 5.609597,
+   "REACTSOL": 2.446557,
+   "OMEN": 1.588398
+  },
+  "L1.b0": {
+   "VAL": 1.670131,
+   "SHELL": -1.30611,
+   "METAL": 0.024701,
+   "BOND": 0.896864,
+   "REACT": 2.121317,
+   "HEAVIER": 0.985654,
+   "REACTSOL": 1.402782,
+   "OMEN": 0.519258
+  }
+ },
+ "compute": {
+  "flops": 2000433709056.0,
+  "tokens": 2500608,
+  "steps": 4884,
+  "wall_s": 180.48,
+  "peak_rss_mb": 737.48828125,
+  "inference_flops_per_token": 444544.0
+ }
+}

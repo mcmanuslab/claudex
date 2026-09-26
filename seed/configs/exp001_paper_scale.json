@@ -1,0 +1,14 @@
+{
+  "_comment": "The scale the brief asked for: ~14M start, ~34M grown. NOT RUN in this study -- the container is 4 CPU cores with no GPU, where this config is roughly 300x too slow. It is kept so the identical protocol can be launched on a GPU without touching any code.",
+  "d_model": 512, "n_head": 8, "d_ff": 2048, "n_layer": 8,
+  "lr": 6e-4, "batch_size": 256, "weight_decay": 0.01, "grad_clip": 1.0,
+  "lr_warmup": 1000, "new_param_warmup": 500, "sampling_alpha": 0.5,
+  "flops_budget": 3.0e17, "n_ages": 8, "max_steps": 400000,
+  "n_candidates": 4, "keep": 1, "dev_window": 1500, "min_gain": null,
+  "redundancy_thresh": 0.95, "branch_d_ff": 2048,
+  "controller": {
+    "eval_every": 250, "window": 5, "plateau_rel": 0.02, "patience": 2,
+    "cooldown": 3000, "max_events": 4, "max_blocks": 14, "depth_first": 2,
+    "warmup_steps": 3000
+  }
+}
