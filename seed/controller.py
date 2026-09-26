@@ -190,3 +190,36 @@ def block_strain(model) -> dict[str, float]:
                 n += p.numel()
         out[b.unit_id] = math.sqrt(tot) / max(1, n) * 1e4 if n else 0.0
     return out
+
+
+class ForcedController:
+    """Fires growth at pre-specified steps, ignoring all evidence.
+
+    This is the instrument for the growth-time sweep. Experiment 001 could not
+    separate "the unit had more time to integrate" from "the unit was born
+    earlier", because with a fixed budget `steps_alive = total - birth_step`
+    makes them the same variable. Forcing the birth step and then always
+    training a FIXED number of further steps breaks that: birth time varies,
+    time-to-integrate is held constant.
+    """
+
+    def __init__(self, steps: list[int], kinds: list[str] | None = None):
+        self.steps = sorted(steps)
+        self.kinds = kinds or ["GROW_DEPTH"] * len(self.steps)
+        self.events = 0
+        self.log: list[dict] = []
+
+    def observe(self, step: int, val_loss: float, per_cat: dict, strain: dict,
+                n_blocks: int) -> dict:
+        rec = {"step": step, "val_loss": val_loss, "scheduled": self.steps,
+               "events_so_far": self.events}
+        if self.events < len(self.steps) and step >= self.steps[self.events]:
+            rec.update(action="GROW",
+                       kind=self.kinds[min(self.events, len(self.kinds) - 1)],
+                       site=max(strain, key=strain.get) if strain else "L0",
+                       why=f"FORCED: scheduled growth at step {self.steps[self.events]}")
+            self.events += 1
+        else:
+            rec.update(action="CONTINUE", why="not a forced growth step")
+        self.log.append(rec)
+        return rec

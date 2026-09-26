@@ -15,7 +15,8 @@ This is a **falsification attempt**, not a demo. A clean negative is a success.
 | `EXPERIMENT_001.md` | **the frozen protocol** — groups, endpoints, go/no-go thresholds, confounders. Written before any comparison run. |
 | `DESIGN.md` | why the code is shaped the way it is |
 | `RESEARCH_LOG.md` | chronological, including the four pilots that were thrown away |
-| `RESULTS_001.md` | **results — the verdict is NO-GO** — with uncertainty, mechanism, and the strongest alternative explanation |
+| `RESULTS_001.md` | **Experiment 001 results — the verdict is NO-GO** — with uncertainty, mechanism, and the strongest alternative explanation |
+| `RESULTS_002.md` | **Experiment 002 — why growth doesn't compound.** Capacity has an integration deadline (half-life ~584 steps), which makes recursion converge instead of amplify. |
 
 ## Code
 
@@ -28,6 +29,7 @@ ledger.py      hash-chained, append-only prediction ledger (contains no ground t
 train.py       one run
 metrics.py     scoring: VNPR, information gain, calibration, leakage alarm
 evaluate.py    join truth, aggregate, paired statistics
+exp002.py      the three follow-up arms: growth-time sweep, long-horizon, staged expression
 visualize.py   the plots
 ```
 
@@ -54,6 +56,15 @@ optimizer steps**.
 The one thing that worked: plateau-triggered growth beat randomly-timed growth on
 5/5 seeds (+0.0101, d = +1.42). The controller is good at deciding when to do
 something that does not help.
+
+**Experiment 002** found out why. With the time confound removed, a unit's final
+functional weight decays with a **half-life of ~584 training steps from its birth
+step** — a unit born at step 100 ends up 79x more load-bearing than one born at
+step 3,200, on identical training time. Recursion is therefore self-defeating:
+each generation is born later than the last, so the series converges rather than
+compounds (generation 1 carries 73% of what five generations contributed). The
+one hopeful sign: capacity **allocated at step 0 and merely switched on later**
+beat capacity **created mid-run** on 4/5 seeds — suggestive, not established.
 
 ## Two things to know before reading any number
 

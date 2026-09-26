@@ -24,7 +24,8 @@ import torch.nn.functional as F
 
 import growth as G
 from controller import (ControllerConfig, DevelopmentalController,
-                        NullController, RandomController, block_strain)
+                        ForcedController, NullController, RandomController,
+                        block_strain)
 from ledger import Ledger
 from model import ModelConfig, SeedTransformer
 from world import World, WorldSpec, DIST_NAMES, RELATIONS
@@ -69,6 +70,12 @@ class RunConfig:
     match_arch: str = ""             # path to a run.json whose final arch to copy
     match_events: str = ""           # path to a run.json whose growth EVENTS to copy
 
+    # --- Experiment 002 ---
+    step_budget: int = 0             # >0 runs to a STEP budget instead of a FLOPs budget
+    forced_growth_steps: tuple = ()  # growth-time sweep: grow at exactly these steps
+    expression_steps: tuple = ()     # staged expression: switch pre-allocated units on here
+    expression_ramp: int = 400       # steps over which an expressed unit's gate ramps 0 -> 1
+
 
 def facts_to_tensor(world: World, facts: list) -> tuple[torch.Tensor, torch.Tensor]:
     seqs = [world.encode(f)[0] for f in facts]
@@ -110,6 +117,29 @@ class Trainer:
         if cfg.match_arch:
             self._match_architecture(cfg.match_arch)
 
+        # STAGED EXPRESSION (group S): the genome is fixed from step 0. The
+        # full architecture is allocated and in the optimizer from the start --
+        # nothing is ever created mid-run -- but the later units' gates begin at
+        # 0 and ramp in on a schedule. This separates staged EXPRESSION of
+        # pre-allocated capacity from staged CREATION of new capacity, which is
+        # what groups C and D do.
+        self.expression: list[tuple[str, int]] = []
+        if cfg.group == "S":
+            steps = list(cfg.expression_steps)
+            if not steps and cfg.match_arch:
+                # mirror the reference run's own depth-growth timing, so the
+                # ONLY difference between S and D is whether the capacity was
+                # allocated at step 0 or created mid-run
+                steps = [e["step"] for e in json.load(open(cfg.match_arch))["events"]
+                         if e["kind"] == "GROW_DEPTH"]
+            later = [m.unit_id for k, m in self.model.units()
+                     if k == "block" and m.unit_id not in ("L0", "L1")]
+            for uid, st in zip(later, steps):
+                u = self.model.find_unit(uid)
+                if u is not None:
+                    u.gate.zero_()
+                    self.expression.append((uid, st))
+
         self.opt = G.GrowthAwareOptimizer(self.model, lr=cfg.lr,
                                           weight_decay=cfg.weight_decay,
                                           warmup=cfg.new_param_warmup)
@@ -135,7 +165,9 @@ class Trainer:
     # ------------------------------------------------------------------ setup
     def _make_controller(self):
         c = self.cfg
-        if c.group in ("A", "B"):
+        if c.forced_growth_steps:
+            return ForcedController(list(c.forced_growth_steps))
+        if c.group in ("A", "B", "S"):
             return NullController()
         if c.group == "R":
             est = self._estimate_total_steps()
@@ -181,7 +213,7 @@ class Trainer:
         # trained from scratch, so undo the zero-init that growth uses
         for m in self.model.modules():
             if isinstance(m, torch.nn.Linear):
-                if float(m.weight.abs().sum()) == 0.0:
+                if float(m.weight.detach().abs().sum()) == 0.0:
                     torch.nn.init.normal_(m.weight, std=0.02)
 
     # ------------------------------------------------------------- evaluation
@@ -310,6 +342,7 @@ class Trainer:
     def run(self) -> dict:
         cfg = self.cfg
         per_age_flops = cfg.flops_budget / cfg.n_ages
+        per_age_steps = cfg.step_budget / cfg.n_ages if cfg.step_budget else 0
         for age in range(cfg.n_ages):
             self.age = age
             revealed = self.world.revealed(age)
@@ -317,8 +350,11 @@ class Trainer:
             assert all(f.split == "pool" and f.tranche <= age for f in revealed)
             tx, ty = facts_to_tensor(self.world, revealed)
             tw = relation_sampling_weights(revealed, cfg.sampling_alpha)
-            target = per_age_flops * (age + 1)
-            while self.flops < target and self.step < cfg.max_steps:
+            if cfg.step_budget:
+                target, done = per_age_steps * (age + 1), lambda: self.step >= target
+            else:
+                target, done = per_age_flops * (age + 1), lambda: self.flops >= target
+            while not done() and self.step < cfg.max_steps:
                 self._train_step(tx, ty, tw)
                 if (self.competition and self.step >= self.competition["due"]):
                     self._resolve_competition()
@@ -344,6 +380,11 @@ class Trainer:
         self.opt.set_lr(lr, self.step)
         self.opt.step()
         self.last_loss = float(loss.detach())
+        for uid, st in self.expression:
+            u = self.model.find_unit(uid)
+            if u is not None:
+                g = min(1.0, max(0.0, (self.step - st) / max(1, cfg.expression_ramp)))
+                u.gate.fill_(g)
         self.flops += self.model.flops_per_token(True) * cfg.batch_size * 4
         self.tokens += cfg.batch_size * 4
         self.step += 1
