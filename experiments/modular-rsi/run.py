@@ -227,9 +227,81 @@ def exp_grow(hier=True, seed=0, cycles=10, per_cycle=4, budget=6000, modules=Non
     jdump(dict(hier=hier, seed=seed, log=log, total_evals=total_evals), f"grow_{'hier' if hier else 'flat'}_s{seed}.json")
 
 
+# ============================================================================ Exp 5
+def exp_acquire(mode, seed, max_gens=80, n_tables=4):
+    """Open-ended growth: the system acquires a stream of skills one after another
+    (ALL_SKILLS, 4-table world). Does acquiring the k-th skill get cheaper as the
+    library grows - does the system get smarter as it grows?
+
+      scratch : every skill from random weights with the default improver (control)
+      dup     : gene duplication only - islands are seeded with copies of the library
+                modules that already score best on the new skill (+1 fresh island)
+      smart   : dup + path credit (improvers along the champions' winning ancestral
+                paths seed the next acquisition) + edit memory (mutation explores the
+                subspace of past "module X -> skill Y" edits)
+    """
+    from modrsi.world import ALL_SKILLS
+    rng = np.random.default_rng(500 + seed)
+    torch.manual_seed(500 + seed)
+    codeT = CodeT(GeneticCode(0))
+    lib, path_genes, edits, out = [], [], [], []
+    total_evals = 0
+    for k, skill in enumerate(ALL_SKILLS):
+        lin = Lineage()
+        seeds, init, U0, screen = None, None, None, []
+        if mode in ("dup", "smart") and lib:
+            ctx, x0, y = make_batch(rng, (skill,), 256, n_tables)
+            with torch.no_grad():
+                l, acc = nll(torch.stack([g for _, g in lib]), codeT, ctx, x0, y)
+            order = np.argsort(l.numpy())
+            screen = [(lib[i][0], float(acc[i])) for i in order[:3]]
+            seeds = [lib[i][1] for i in order[:3]]               # 3 duplicated islands + 1 fresh
+            total_evals += len(lib)
+        if mode == "smart" and path_genes:
+            w = np.array([pg["w"] for pg in path_genes]); w = w / w.sum()
+            pick = rng.choice(len(path_genes), 64, p=w)
+            init = {g: np.array([path_genes[i][g] for i in pick], np.float32) for g in GENES}
+        if mode == "smart" and edits:
+            E = torch.stack(edits[-6:])
+            U0 = torch.linalg.qr(E.T)[0].T                        # orthonormal edit directions
+        n = IslandNiche(k, (skill,), rng, lin, codeT, init=init, seeds=seeds, n_tables=n_tables, U0=U0)
+        solved = None
+        for g in range(max_gens):
+            r = n.step()
+            if r["mean_acc"] >= SOLVED:
+                solved = g + 1
+                break
+        evals = (g + 1) * sum(i.mu + i.lam for i in n.islands)
+        total_evals += evals
+        G, ids, acc = n.elites(1)
+        champ = int(ids[0])
+        lib.append((skill, G[0].clone()))
+        # path credit: walk the champion's ancestry back to its founder
+        A = lin.arrays()
+        row = {int(i): j for j, i in enumerate(A["id"])}
+        cur, depth, branch = champ, 0, []
+        while cur in row:
+            j = row[cur]
+            branch.append({g_: float(A[g_][j]) for g_ in GENES})
+            cur, depth = int(A["parent"][j]), depth + 1
+        for d, bg in enumerate(branch):                            # leaf first; discount by distance
+            path_genes.append(dict(bg, w=0.9 ** d * 0.7 ** (len(ALL_SKILLS) - k)))
+        f0 = n.founder_of(cur)
+        if f0 is not None:
+            e = G[0] - f0
+            if e.norm() > 0:
+                edits.append(e / e.norm())
+        out.append(dict(skill=skill, k=k, gens=solved, evals=evals, final_acc=float(acc[0]),
+                        branch_len=len(branch), screen=screen,
+                        improver=dict(lr=float(np.median(n.lr)), sigma=float(np.median(n.sigma)))))
+        print(f"[acquire {mode} s{seed}] {k:2d} {skill:6s} solved={solved} evals={evals} "
+              f"branch={len(branch)} screen={screen}", flush=True)
+    jdump(dict(mode=mode, seed=seed, skills=out, total_evals=total_evals), f"acquire_{mode}_s{seed}.json")
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("exp", choices=["main", "curriculum", "scale", "grow", "report"])
+    ap.add_argument("exp", choices=["main", "curriculum", "scale", "grow", "acquire", "report"])
     ap.add_argument("--flat", action="store_true")
     ap.add_argument("--mode", default="steered")
     ap.add_argument("--improver", default="inherit")
@@ -241,6 +313,8 @@ if __name__ == "__main__":
         exp_curriculum(a.improver, a.seed)
     elif a.exp == "scale":
         exp_scale(a.seed)
+    elif a.exp == "acquire":
+        exp_acquire(a.mode, a.seed)
     elif a.exp == "grow":
         exp_grow(hier=not a.flat, seed=a.seed)
     else:

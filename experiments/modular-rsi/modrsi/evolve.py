@@ -87,14 +87,14 @@ def nll(G, codeT, ctx, x0, y):
     return l, (lp.argmax(-1) == yy).float().mean(1)
 
 
-def lifetime_learning(G, lr, opt_m, opt_v, codeT, rng, program, K, B, b1=0.9, b2=0.99):
+def lifetime_learning(G, lr, opt_m, opt_v, codeT, rng, program, K, B, b1=0.9, b2=0.99, n_tables=2):
     """K steps of per-individual Adam. Optimizer moments (opt_m, opt_v) are inherited
     from the parent, so a child keeps moving along the direction its lineage was
     already learning in. G, opt_m, opt_v: (P,N) tensors; lr: (P,) array."""
     G, opt_m, opt_v = G.clone(), opt_m.clone(), opt_v.clone()
     lr = torch.from_numpy(lr)[:, None]
     for _ in range(K):
-        ctx, x0, y = make_batch(rng, program, B)
+        ctx, x0, y = make_batch(rng, program, B, n_tables)
         G.requires_grad_(True)
         l, _ = nll(G, codeT, ctx, x0, y)
         (g,) = torch.autograd.grad(l.sum(), G)
@@ -107,11 +107,16 @@ def lifetime_learning(G, lr, opt_m, opt_v, codeT, rng, program, K, B, b1=0.9, b2
 
 class Niche:
     def __init__(self, idx, program, rng, lineage, codeT, mu=16, lam=112, mode="steered",
-                 K=16, B_learn=64, B_eval=128, init=None, adapt=True, restart=True):
+                 K=16, B_learn=64, B_eval=128, init=None, adapt=True, restart=True,
+                 n_tables=2, G0=None, U0=None):
         self.idx, self.program, self.rng, self.lin, self.codeT = idx, tuple(program), rng, lineage, codeT
         self.mu, self.lam, self.mode, self.K, self.B_learn, self.B_eval = mu, lam, mode, K, B_learn, B_eval
         self.adapt, self.can_restart = adapt, restart
-        self.G = torch.from_numpy(rng.standard_normal((mu, N)).astype(np.float32))
+        self.n_tables = n_tables
+        if G0 is not None:     # seeded population (gene duplication): copies of an existing module
+            self.G = torch.as_tensor(G0).reshape(-1, N).expand(mu, N).clone()
+        else:
+            self.G = torch.from_numpy(rng.standard_normal((mu, N)).astype(np.float32))
         self.path = torch.zeros(mu, N)
         self.opt_m, self.opt_v = torch.zeros(mu, N), torch.zeros(mu, N)
         init = init or dict(sigma=0.02, m=0.0, a=1.0, b=1.0, lr=0.02)
@@ -127,7 +132,9 @@ class Niche:
         self.acc = np.zeros(mu, np.float32)
         self.bonus = np.zeros(mu, np.float32)
         self.buf = torch.zeros(0, N)
-        self.U = torch.zeros(0, N)
+        self.U = torch.zeros(0, N) if U0 is None else torch.as_tensor(U0).clone()
+        self.U0 = self.U.clone()         # inherited edit memory (kept in the subspace)
+        self.founders = {int(i): self.G[k].clone() for k, i in enumerate(self.ids)}
         self.gen = 0
         self.history = []
         self.stall = 0
@@ -180,8 +187,8 @@ class Niche:
         g = self._mutate_genes(pidx)
         Gc = self.G[pidx] + self._mutate(pidx, g)
         Gc, om, ov = lifetime_learning(Gc, g["lr"], self.opt_m[pidx], self.opt_v[pidx], self.codeT,
-                                       rng, self.program, self.K, self.B_learn)
-        ctx, x0, y = make_batch(rng, self.program, self.B_eval)
+                                       rng, self.program, self.K, self.B_learn, n_tables=self.n_tables)
+        ctx, x0, y = make_batch(rng, self.program, self.B_eval, self.n_tables)
         with torch.no_grad():
             l, acc = nll(torch.cat([self.G, Gc]), self.codeT, ctx, x0, y)
         f, acc = (-l).numpy(), acc.numpy()
@@ -219,6 +226,8 @@ class Niche:
             self.buf = torch.cat([torch.stack(acc_steps), self.buf])[:SUB_BUF]
             if len(self.buf) >= 2 * SUB_K:
                 self.U = torch.linalg.svd(self.buf, full_matrices=False)[2][:SUB_K]
+                if len(self.U0):
+                    self.U = torch.cat([self.U0, self.U])
         rec = dict(gen=self.gen, niche=self.idx, stressed=bool(self.stagnating()), best_acc=float(acc[keep].max()),
                    mean_acc=float(acc[keep].mean()), best_fit=float(f[keep[0]]), enrich=enrich,
                    **{k: float(np.median(getattr(self, k))) for k in GENES})
@@ -243,8 +252,9 @@ class Niche:
         self.G = torch.from_numpy(self.rng.standard_normal((self.mu, N)).astype(np.float32))
         self.path.zero_(); self.opt_m.zero_(); self.opt_v.zero_()
         self.ids = self.lin.new_ids(self.mu)
+        self.founders.update({int(i): self.G[k].clone() for k, i in enumerate(self.ids)})
         self.bonus[:] = 0
-        self.buf, self.U = torch.zeros(0, N), torch.zeros(0, N)
+        self.buf, self.U = torch.zeros(0, N), self.U0.clone()
         self.history.append(dict(self.history[-1], best_fit=-9.0, restart=True))  # reset stall window
         self.stall, self.restarts = 0, self.restarts + 1
 
@@ -268,7 +278,8 @@ class IslandNiche:
     RESTART generations restarts its worst island from fresh weights with the best
     island's improver (immigration)."""
 
-    def __init__(self, idx, program, rng, lineage, codeT, n_islands=4, mu=6, lam=28, T=5, init=None, **kw):
+    def __init__(self, idx, program, rng, lineage, codeT, n_islands=4, mu=6, lam=28, T=5, init=None,
+                 seeds=None, **kw):
         self.idx, self.program, self.rng, self.T = idx, tuple(program), rng, T
         init = init or dict(sigma=0.02, m=0.0, a=1.0, b=1.0, lr=0.02)
         self.islands = []
@@ -283,8 +294,9 @@ class IslandNiche:
                     v += 0.5 * float(rng.standard_normal())
                 gi[k] = v
             gi["lr"] = max(gi["lr"], LR_FLOOR)
+            G0 = seeds[i] if seeds is not None and i < len(seeds) else None
             self.islands.append(Niche(idx, program, rng, lineage, codeT, mu=mu, lam=lam, mode="steered",
-                                      init=gi, adapt=False, restart=False, **kw))
+                                      init=gi, adapt=False, restart=False, G0=G0, **kw))
         self.gen, self.history, self.stall, self.restarts, self.migrations = 0, [], 0, 0, 0
         self._score0 = [0.0] * n_islands
 
@@ -345,6 +357,12 @@ class IslandNiche:
             self.islands[w]._restart()
             self.stall, self.restarts = 0, self.restarts + 1
         return rec
+
+    def founder_of(self, i):
+        for isl in self.islands:
+            if i in isl.founders:
+                return isl.founders[i]
+        return None
 
     def elites(self, k):
         Gs, ids, accs, fits = [], [], [], []
