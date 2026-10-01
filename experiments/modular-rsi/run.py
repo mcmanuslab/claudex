@@ -10,9 +10,9 @@ Everything is written under results/.
 import argparse, json, os, time
 import numpy as np
 import torch
-from modrsi.world import GeneticCode, PRIMITIVES, make_batch
+from modrsi.world import GeneticCode, PRIMITIVES, make_batch, sample_contexts
 from modrsi.monomer import CodeT, N_PARAMS
-from modrsi.evolve import Niche, Lineage, GENES, nll
+from modrsi.evolve import Niche, IslandNiche, Lineage, GENES, nll
 from modrsi import polymer as P
 
 torch.set_num_threads(1)
@@ -29,13 +29,21 @@ def jdump(obj, name):
         json.dump(obj, f, indent=1, default=lambda o: o.tolist() if hasattr(o, "tolist") else float(o))
 
 
+def make_niche(i, program, rng, lin, codeT, mode, init=None):
+    """steered = island niche with lineage-steered mutation + PBT-selected improvers;
+    blind = one population, fixed isotropic mutation and fixed learning rate."""
+    if mode == "blind":
+        return Niche(i, program, rng, lin, codeT, mode="blind")
+    return IslandNiche(i, program, rng, lin, codeT, init=init)
+
+
 # ============================================================================ Exp 1
-def exp_main(mode, seed, cycles=8, gens=10, pool_k=3):
+def exp_main(mode, seed, cycles=10, gens=10, pool_k=3):
     rng = np.random.default_rng(seed)
     torch.manual_seed(seed)
     codeT = CodeT(GeneticCode(0))
     lin = Lineage()
-    niches = [Niche(i, (op,), rng, lin, codeT, mode=mode) for i, op in enumerate(MAIN_NICHES)]
+    niches = [make_niche(i, (op,), rng, lin, codeT, mode) for i, op in enumerate(MAIN_NICHES)]
     log = dict(mode=mode, seed=seed, niche_hist=[], polymer=[], solved_gen={})
     t0, polymer_evals = time.time(), 0
     for cyc in range(cycles):
@@ -106,7 +114,7 @@ def exp_main(mode, seed, cycles=8, gens=10, pool_k=3):
 CURRICULUM = ("A", "Ainv", "B", "succ", "Binv")
 
 
-def exp_curriculum(improver, seed, max_gens=60):
+def exp_curriculum(improver, seed, max_gens=90):
     """Learn skills one after another. 'inherit': each new niche is seeded with the
     improver genes (sigma, m, a, b, lr) that the previous niches evolved - the system's
     accumulated know-how about *how to improve*. Weights always start from scratch.
@@ -121,7 +129,7 @@ def exp_curriculum(improver, seed, max_gens=60):
         init = None
         if improver == "inherit" and genes is not None:
             init = {k: genes[k] for k in GENES}
-        n = Niche(i, (op,), rng, lin, codeT, mode=mode, init=init)
+        n = make_niche(i, (op,), rng, lin, codeT, mode, init=init)
         solved = None
         for g in range(max_gens):
             r = n.step()
@@ -142,11 +150,12 @@ def exp_scale(seed=0, max_n=12):
     mods = torch.load(os.path.join(OUT, f"modules_main_steered_s{seed}.pt"))
     # grow the community: train the held-out skill (Binv) as a new monomer species
     lin = Lineage()
-    n = Niche(9, ("Binv",), rng, lin, codeT, mode="steered")
-    for g in range(80):
+    n = IslandNiche(9, ("Binv",), rng, lin, codeT)
+    for g in range(120):
         if n.step()["mean_acc"] >= 0.99:
             break
     mods["Binv"] = n.elites(3)[0]
+    torch.save(mods, os.path.join(OUT, "modules_scale.pt"))
     names = list(mods)
     pool = torch.cat([mods[k] for k in names])
     owner = sum([[k] * len(mods[k]) for k in names], [])
@@ -172,9 +181,56 @@ def exp_scale(seed=0, max_n=12):
     jdump(res, "scale.json")
 
 
+# ============================================================================ Exp 4
+def exp_grow(hier=True, seed=0, cycles=10, per_cycle=4, budget=6000, modules=None):
+    """Compounding growth. Each cycle the environment poses `per_cycle` new problems, each a
+    concatenation of 2-3 problems of the previous level. hier=True: solved polymers are
+    frozen into macros and join the pool. hier=False (control): the pool stays the 5
+    monomers, polymers stay <= 5 units. Same search budget per problem in both."""
+    from modrsi import hierarchy as Hy
+    rng = np.random.default_rng(100 + seed)
+    codeT = CodeT(GeneticCode(0))
+    mods = torch.load(modules or os.path.join(OUT, "modules_scale.pt"))
+    units = [Hy.Unit("monomer", mods[k][0], name=k) for k in PRIMITIVES]
+    solved = {0: [((k,), i) for i, k in enumerate(PRIMITIVES)]}   # level -> [(program, unit idx)]
+    log, total_evals = [], 0
+    for cyc in range(1, cycles + 1):
+        prev = solved.get(cyc - 1) or []
+        if not prev:
+            break
+        solved[cyc] = []
+        for _ in range(per_cycle):
+            parts = [prev[rng.integers(0, len(prev))] for _ in range(rng.integers(2, 4))]
+            program = tuple(op for p, _ in parts for op in p)
+            # lineage-memory prior: units formed in the latest cycle are favoured
+            w = np.array([10.0 if (u.cycle == cyc - 1 and u.kind == "macro") or (cyc == 1) else 1.0
+                          for u in units])
+            chain, fit, ev = Hy.search(units, codeT, program, rng, w / w.sum(), budget=budget)
+            total_evals += ev
+            vctx = sample_contexts(rng, 256)
+            T = Hy.unit_tables(units, codeT, vctx)
+            val = float((Hy.compose(T, chain, 256) == Hy.target_table(vctx, program)).mean())
+            rec = dict(cycle=cyc, length=len(program), evals=ev, search_fit=fit, val_acc=val,
+                       chain=[units[c].name for c in chain if c >= 0])
+            if val >= 0.95 and not hier:      # control: solved, but the solution is not reusable
+                solved[cyc].append((program, None))
+            elif val >= 0.95:
+                units.append(Hy.Unit("macro", children=[int(c) for c in chain],
+                                     name=f"M{cyc}.{len(solved[cyc])}", length=len(program), cycle=cyc))
+                solved[cyc].append((program, len(units) - 1))
+                acc_exec, n_exec = Hy.verify_by_execution(units, len(units) - 1, codeT,
+                                                          sample_contexts(rng, 64), program)
+                rec.update(exec_acc=acc_exec, exec_len=n_exec)
+            log.append(rec)
+            print(f"[grow hier={hier}] cycle {cyc} L={len(program)} solved={val >= 0.95} val={val:.3f} "
+                  f"evals={ev} chain={rec['chain']} exec={rec.get('exec_acc')}", flush=True)
+    jdump(dict(hier=hier, seed=seed, log=log, total_evals=total_evals), f"grow_{'hier' if hier else 'flat'}_s{seed}.json")
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("exp", choices=["main", "curriculum", "scale", "report"])
+    ap.add_argument("exp", choices=["main", "curriculum", "scale", "grow", "report"])
+    ap.add_argument("--flat", action="store_true")
     ap.add_argument("--mode", default="steered")
     ap.add_argument("--improver", default="inherit")
     ap.add_argument("--seed", type=int, default=0)
@@ -185,6 +241,8 @@ if __name__ == "__main__":
         exp_curriculum(a.improver, a.seed)
     elif a.exp == "scale":
         exp_scale(a.seed)
+    elif a.exp == "grow":
+        exp_grow(hier=not a.flat, seed=a.seed)
     else:
         from report import report
         report()

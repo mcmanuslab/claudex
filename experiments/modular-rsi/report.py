@@ -49,7 +49,7 @@ def fig_main(summary):
         summary.setdefault("main", {})[m] = dict(
             seeds=len(rs),
             gens_to_solve_lookup=solved,
-            mean_gens_to_solve=float(np.mean([g if g else 80 for s in solved for g in s])),
+            mean_gens_to_solve=float(np.mean([g if g else 100 for s in solved for g in s])),
             final_success_frac=float(np.mean([s[-1] for s in succ])),
             mean_success_frac_all_gens=float(np.mean(succ)),
             variants=int(np.sum([r["variants"] for r in rs])),
@@ -112,7 +112,7 @@ def fig_curriculum(summary):
     x = np.arange(len(skills))
     out = {}
     for m, rs in res.items():
-        g = np.array([[s["gens_to_solve"] or 60 for s in r["skills"]] for r in rs], float)
+        g = np.array([[s["gens_to_solve"] or 90 for s in r["skills"]] for r in rs], float)
         out[m] = dict(per_skill_mean=g.mean(0).tolist(), per_seed=g.tolist(),
                       total_mean=float(g.sum(1).mean()), lookups_after_first=float(g[:, 1:].mean()))
         lab = {"inherit": "steered, inherits evolved improver", "fresh": "steered, default improver",
@@ -179,10 +179,70 @@ def fig_lineage(summary):
     summary["lineage_lengths"] = {k: len(v) for k, v in rs[0]["champion_lineages"].items()}
 
 
+def fig_grow(summary):
+    runs = {m: load(f"grow_{m}_s*.json") for m in ("hier", "flat")}
+    if not runs["hier"]:
+        return
+    fig, axs = plt.subplots(1, 2, figsize=(11, 4.2))
+    out = {}
+    for m, rs in runs.items():
+        if not rs:
+            continue
+        col = C["steered"] if m == "hier" else C["blind"]
+        lab = "hierarchical (solved polymers become units)" if m == "hier" else "flat control (monomers only, ≤5 per polymer)"
+        cyc = sorted({r["cycle"] for r in rs[0]["log"]} | set(range(1, 11)))
+        maxlen = []
+        for r in rs:
+            best, cur = [], 1
+            for c in range(1, 11):
+                L = [x["length"] for x in r["log"] if x["cycle"] == c and x["val_acc"] >= 0.95]
+                cur = max([cur] + L)
+                best.append(cur)
+            maxlen.append(best)
+        maxlen = np.array(maxlen, float)
+        x = np.arange(1, 11)
+        for row in maxlen:
+            axs[0].plot(x, row, color=col, alpha=0.25, linewidth=1)
+        gm = np.exp(np.log(maxlen).mean(0))
+        axs[0].plot(x, gm, color=col, marker="o", markersize=6, label=lab)
+        ev = [[x_["evals"] for x_ in r["log"] if x_["cycle"] == c] for r in rs for c in range(1, 11)]
+        solved = [x_ for r in rs for x_ in r["log"] if x_["val_acc"] >= 0.95]
+        if m == "hier":
+            axs[1].scatter([x_["length"] for x_ in solved], [x_["evals"] for x_ in solved], s=22,
+                           color=col, label="solved problems", zorder=3)
+            fails = [x_ for r in rs for x_ in r["log"] if x_["val_acc"] < 0.95]
+            axs[1].scatter([x_["length"] for x_ in fails], [x_["evals"] for x_ in fails], s=22,
+                           facecolors="none", edgecolors=C["ink2"], label="not found within budget", zorder=3)
+        # growth rate: slope of log2(max length) vs cycle
+        slope = np.polyfit(x, np.log2(gm), 1)[0]
+        execs = [x_.get("exec_acc") for x_ in solved if x_.get("exec_acc") is not None]
+        out[m] = dict(max_len_by_cycle_geomean=gm.tolist(), max_len_per_seed=maxlen.tolist(),
+                      doublings_per_cycle=float(slope), growth_factor_per_cycle=float(2 ** slope),
+                      solved=len(solved), attempted=sum(len(r["log"]) for r in rs),
+                      mean_evals_per_problem=float(np.mean([x_["evals"] for r in rs for x_ in r["log"]])),
+                      exec_verified=len(execs), exec_acc_min=float(min(execs)) if execs else None,
+                      longest_exec_verified=max([x_.get("exec_len") or 0 for x_ in solved if x_.get("exec_acc") is not None] or [0]))
+    axs[0].set_yscale("log", base=2)
+    axs[0].set_xlabel("cycle")
+    axs[0].set_ylabel("longest problem solved (primitive steps, log₂)")
+    axs[0].set_title("Capability: longest multi-step problem solved", loc="left", fontsize=11)
+    axs[0].legend(fontsize=9, loc="upper left")
+    axs[1].set_xscale("log"); axs[1].set_yscale("log")
+    axs[1].axhline(6000, color=C["ink2"], linestyle=":", linewidth=1)
+    axs[1].text(1.1, 6600, "search budget", color=C["ink2"], fontsize=9)
+    axs[1].set_xlabel("problem length (primitive steps)")
+    axs[1].set_ylabel("polymer evaluations to solve")
+    axs[1].set_title("Cost stays flat while length explodes (hierarchical)", loc="left", fontsize=11)
+    axs[1].legend(fontsize=9, loc="lower right")
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG, "6_exponential_growth.png"), dpi=150)
+    summary["grow"] = out
+
+
 def report():
     os.makedirs(FIG, exist_ok=True)
     summary = {}
-    for f in (fig_main, fig_polymer, fig_curriculum, fig_scale, fig_lineage):
+    for f in (fig_main, fig_polymer, fig_curriculum, fig_scale, fig_lineage, fig_grow):
         f(summary)
     with open(os.path.join(OUT, "summary.json"), "w") as fh:
         json.dump(summary, fh, indent=1)
