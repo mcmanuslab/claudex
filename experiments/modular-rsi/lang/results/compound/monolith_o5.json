@@ -1,0 +1,92 @@
+{
+ "arm": "monolith",
+ "order": 5,
+ "domains": [
+  "markdown",
+  "french",
+  "shakespeare",
+  "legal",
+  "python",
+  "javascript",
+  "alice",
+  "latex"
+ ],
+ "target_key": "T2",
+ "log": [
+  {
+   "k": 0,
+   "domain": "markdown",
+   "target": 2.4032814502716064,
+   "cost": null,
+   "cost_censored": true,
+   "cand_steps": 11998
+  },
+  {
+   "k": 1,
+   "domain": "french",
+   "target": 3.0857834815979004,
+   "cost": null,
+   "cost_censored": true,
+   "cand_steps": 11998
+  },
+  {
+   "k": 2,
+   "domain": "shakespeare",
+   "target": 3.031052827835083,
+   "cost": null,
+   "cost_censored": true,
+   "cand_steps": 11998
+  },
+  {
+   "k": 3,
+   "domain": "legal",
+   "target": 3.002431869506836,
+   "cost": 6219,
+   "cost_censored": false,
+   "cand_steps": 6219
+  },
+  {
+   "k": 4,
+   "domain": "python",
+   "target": 3.338701009750366,
+   "cost": 3957,
+   "cost_censored": false,
+   "cand_steps": 3957
+  },
+  {
+   "k": 5,
+   "domain": "javascript",
+   "target": 2.3653008937835693,
+   "cost": 8198,
+   "cost_censored": false,
+   "cand_steps": 8198
+  },
+  {
+   "k": 6,
+   "domain": "alice",
+   "target": 3.0186593532562256,
+   "cost": 7632,
+   "cost_censored": false,
+   "cand_steps": 7632
+  },
+  {
+   "k": 7,
+   "domain": "latex",
+   "target": 2.899245023727417,
+   "cost": 5748,
+   "cost_censored": false,
+   "cand_steps": 5748
+  }
+ ],
+ "final_test": {
+  "markdown": 3.9139766693115234,
+  "french": 4.479002952575684,
+  "shakespeare": 3.9296350479125977,
+  "legal": 3.413332462310791,
+  "python": 3.904116153717041,
+  "javascript": 3.643218994140625,
+  "alice": 3.7570273876190186,
+  "latex": 3.0306332111358643
+ },
+ "params": 11936
+}

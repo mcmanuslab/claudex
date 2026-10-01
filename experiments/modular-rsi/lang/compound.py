@@ -159,7 +159,9 @@ def run(arm, o, target_key="T2"):
                 par = -1
             cands = [lib[par].clone() if par >= 0 else lm.init(1, rng)[0]]
             lrs, pars, cg = [0.01], [par], [dict(lr=0.01, sigma=0.0)]
-        if arm == "fresh":
+        if arm.startswith("freshlr"):          # exploratory control: fresh module, fixed higher lr
+            lrs = [float(arm[len("freshlr"):])]
+        if arm == "fresh" or arm.startswith("freshlr"):
             dom.top, dom.lib_tr = [], None
             dom.lib_se = dom.lib_te = None
         res, G, gates = train_domain(lm, dom, cands, lrs, target, rng)
