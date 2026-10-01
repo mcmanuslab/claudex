@@ -248,6 +248,64 @@ retrained and nothing is forgotten. Modules vote by summing their logits. Each c
 
 ![language](figures/8_language_community.png)
 
+
+### Phase 0: does the RSI outer loop add anything? (`lang/phase0.py`, 4 paired seeds)
+Level 1 growth was rerun with the review's fixes: candidates are selected on a selection
+split and reported on an untouched test split; int8 storage is real; real-word rates come
+from 5 samples. Every arm gets the same newcomer-training budget per cycle.
+
+| arm (32 modules, 10,880 params) | test bpc ↓ | int8 test bpc | real words ≥3 letters |
+|---|---|---|---|
+| full RSI loop (mutated duplicates, lineage credit, evolved lr/σ, 12 candidates) | 2.944 ± 0.033 | 2.947 | 0.38 |
+| fixed improver genes | 2.913 ± 0.021 | 2.916 | 0.36 |
+| no lineage credit | 2.945 ± 0.034 | 2.949 | 0.40 |
+| **copy the latest module, 1 candidate, 12× steps** | **2.882 ± 0.052** | 2.915 | 0.44 |
+| fresh modules only | 3.125 ± 0.016 | 3.125 | 0.25 |
+| *tuned single model, 1,288 params* | *2.857* | *2.861* | *0.42* |
+
+**Pre-registered verdict: the RSI outer loop fails.** It does not beat copy-and-train,
+which is in fact slightly better. Reusing modules beats fresh-only by about 0.18 bpc
+(more than 2 paired SDs). A tuned single model with about 8× fewer parameters beats
+every community.
+
+### Compounding continual-acquisition test (`lang/compound.py`, pre-registered in `lang/compound_prereg.md`)
+A library of tiny modules (1,520 params each) learns 8 pre-registered text domains in
+sequence: Shakespeare, Alice, Python, JavaScript, LaTeX, Markdown, legal licenses and
+French. There are 10 domain orders and 6 compute-matched arms.
+
+| Pre-registered hypothesis | Verdict |
+|---|---|
+| Cost to reach the target falls as the library grows | **Inconclusive (ceiling).** 100% of module runs hit the compute cap before the primary target (the level of a fresh 3,968-param model). |
+| The RSI loop beats "probe the library, copy the best, fine-tune" | **Fail** (untestable: all censored at the cap) |
+| Final library quality is within 0.05 bpc of a continually fine-tuned single model | **Pass, but uninformative.** 3.33 vs 3.83: the single model forgets earlier domains, while the library is told which domain each test is from. This mostly shows that frozen modules do not forget. |
+
+**Exploratory follow-up (not pre-registered), on the easier target T1:**
+* The full system's cost to T1 falls from 10,960 to 3,720 candidate-steps across the 8
+  domains (slope −0.16/domain, 95% CI excludes 0). Probe-best and copy-latest show no
+  significant trend. Copying a module from a different domain is slightly *worse* than
+  starting fresh.
+* The cause is the evolved learning rate, which the winners carry forward and which
+  rises from 0.010 to 0.031. It is not reused weights: the winner is often the fresh
+  candidate.
+* **The control settles it.** A fresh module with a *fixed* learning rate of 0.03 beats
+  the full system in all 10 orders (paired p = 0.001). It reaches T1 sooner at every
+  library size (1,830 vs 3,720 candidate-steps at the 8th domain), with better test bpc
+  (3.295 vs 3.326). The apparent compounding was evolution slowly rediscovering a better
+  hyperparameter. It was not the system getting smarter as it grew.
+
+### Conclusion of the language track so far
+On real text, at this scale, the evidence is against the modular-RSI thesis:
+* Frozen tiny modules are about 8× less parameter-efficient than one small model.
+* The evolutionary outer loop does not beat simple heuristics: copy-and-train, or a
+  fresh module with a tuned learning rate.
+* No genuine compounding was observed. The one apparent case was explained by
+  learning-rate tuning.
+
+What does hold: **reuse within a domain** helps (Phase 0), and **frozen modules do not
+forget**. Per the judge's pre-agreed decision rule, the next step for the language goal
+is a jointly trained hierarchy (tokens learned from a char model, or amplify-and-distill),
+not more modular RSI on language.
+
 ---
 
 ## What went wrong along the way (kept on purpose)
@@ -294,10 +352,10 @@ from an adversary and a scientific director, and a judge's verdict).
   * **That ~100-byte modules are useful.** For language they are not; about 1 KB is the
     minimum.
 
-**Next (per the review):** Phase 0 tests whether the RSI outer loop adds anything beyond
-"copy a module and train it longer". Then comes a pre-registered compounding test: does
-a library of tiny modules get cheaper to extend across 8 text domains, compared with a
-probe-the-library-then-fine-tune heuristic and a continually fine-tuned single model?
+**Update after Phase 0 and the compounding test:** both came back negative for the RSI
+loop on text (see the language track). The outer loop does not beat copy-and-train or a
+tuned fixed learning rate, and the one apparent compounding effect turned out to be
+learning-rate tuning.
 
 ## Next steps toward large n
 * Learned error correction / redundancy between modules (majority-vote polymers) to stop
