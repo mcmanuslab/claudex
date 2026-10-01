@@ -1,0 +1,76 @@
+[
+ {
+  "name": "unigram table",
+  "params": 27,
+  "bpc": 4.107832107209237
+ },
+ {
+  "name": "bigram table",
+  "params": 756,
+  "bpc": 3.23799759633866
+ },
+ {
+  "name": "transformer d=2 mlp=0 ctx=8",
+  "params": 116,
+  "bytes_int8": 116,
+  "bpc": 3.9005090793631116,
+  "valid_word_rate": 0.2537313432835821,
+  "sample": " gdo pn aeli jedeve c ntsethl a wotohihr tloeiah a titthwhn c bh ataihietnee w tn gtt g w awih iee b lelbtu cen beltso wi fihhroen whu wio oe atoadar wu sen mge"
+ },
+ {
+  "name": "transformer d=3 mlp=0 ctx=8",
+  "params": 172,
+  "bytes_int8": 172,
+  "bpc": 3.8081908561717666,
+  "valid_word_rate": 0.3333333333333333,
+  "sample": " afp rg  fek nlisthe inthaveib doror nns thinike a satil.eoid ce  t nlliwheefudeh gos g t  y h lem cef sauw dat ceiuth ye elinsioteweu teoaof  th eet wt sas nge"
+ },
+ {
+  "name": "transformer d=4 mlp=0 ctx=8",
+  "params": 236,
+  "bytes_int8": 236,
+  "bpc": 3.552459877610106,
+  "valid_word_rate": 0.23170731707317074,
+  "sample": " fes or aell hlely haed thren adtfin lot tisan le aolthey the ci  taheed tincucil hor has  yhe hee bae sett ann chiuvl yi fied thnay wat sal a wle is x. sep hin"
+ },
+ {
+  "name": "transformer d=4 mlp=8 ctx=16",
+  "params": 340,
+  "bytes_int8": 340,
+  "bpc": 3.4459723477794757,
+  "valid_word_rate": 0.4722222222222222,
+  "sample": " g t sid he being. id nthethe afrmoomekr thing oe aresolwhin bee at lhe wlirewase hos h t ay h ind be he ut den celtou wicef lounley wathe oid the ls wt s t mhe"
+ },
+ {
+  "name": "transformer d=8 mlp=0 ctx=16",
+  "params": 636,
+  "bytes_int8": 636,
+  "bpc": 3.197733621420003,
+  "valid_word_rate": 0.3902439024390244,
+  "sample": " ghe rob gon lolit id out whe afser lnountat she a this whe char at linfus shrein hot hat ay hand ad lindgh che chesir wialle tope wit the se athaimk wo she oon"
+ },
+ {
+  "name": "transformer d=8 mlp=16 ctx=16",
+  "params": 908,
+  "bytes_int8": 908,
+  "bpc": 3.0304230512505335,
+  "valid_word_rate": 0.49411764705882355,
+  "sample": " f the d fou is sthe kesecled a the mins the the cas timy the doaar len whe qu shaly aias aved igh cand how cou berthic. aeor the mury the she wif no won is not"
+ },
+ {
+  "name": "transformer d=16 mlp=32 ctx=16",
+  "params": 2812,
+  "bytes_int8": 2812,
+  "bpc": 2.686711079969637,
+  "valid_word_rate": 0.5662650602409639,
+  "sample": " gin the griing sure hat hoon all the sonself it a shirey the cha the shing ound amut hat at hand alice gry couch toon whas inch thout the of as camomst said sh"
+ },
+ {
+  "name": "transformer d=24 mlp=48 ctx=24",
+  "params": 5932,
+  "bytes_int8": 5932,
+  "bpc": 2.4874120807049866,
+  "valid_word_rate": 0.6867469879518072,
+  "sample": " her sife she saing dory hould down noterself it a she hower begain she with was all ald a wel if a don it. ent begoth what inging why the of as cemphroself oh "
+ }
+]
