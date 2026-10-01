@@ -27,7 +27,7 @@ class TinyLM:
         self.L, self.n = layout(d, C, mlp)
         sc = np.empty(self.n, np.float32)
         for k, (a, b, s) in self.L.items():
-            sc[a:b] = (1 / np.sqrt(s[0])) if k[0] == "W" else (0.3 if k in ("emb", "pos") else 0.0)
+            sc[a:b] = (1 / np.sqrt(s[0])) if k[0] == "W" else (0.3 if k in ("emb", "pos") else 0.1)
         self.scale = torch.from_numpy(sc)
 
     def init(self, P, rng):

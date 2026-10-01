@@ -74,6 +74,10 @@ three versions, and the failures are part of the result (see *What went wrong*):
   (figure above, panel b). There is **no final plateau**.
 * The evolved learning rate climbs from 0.02 to about 0.06 (panel d): the improver
   learns to learn faster.
+* **Caveat:** "steered" and "blind" differ in several ways at once (islands with
+  PBT-selected improvers, lineage-path mutation, evolved learning rate, restarts). No
+  ablation here isolates the lineage-path steering itself, and lifetime learning (Adam)
+  does most of the weight learning. The mutation-only version could not learn lookup at all.
 * **Polymers solve what monomers can't.** On the four hidden multi-step problems
   (`A→B`, `B→succ→Ainv`, `A→succ→A→B`, `Ainv→B→succ→A→Ainv`), evolved polymers reach
   **1.00** accuracy in every seed. The best single monomer scores **0.14**, which is
@@ -138,6 +142,14 @@ Every problem gets the same search budget (6,000 polymer evaluations).
 * **Caveat:** accuracy does erode with depth. The minimum re-run accuracy was 0.89, and
   validation accuracy at 10k+ steps is 0.95–0.98, because rare per-step errors compound.
   Error correction will matter at larger scales.
+* **Caveat, and the most important one:** the exponential comes mostly from the
+  **curriculum**. The environment hands out problems built from previous ones, and their
+  length grows geometrically. With 8 symbols, every unit is one of at most 8⁸ maps per
+  context, so the *function class* does not grow; only the length of the description does.
+  What the experiment shows is that a modular system with reuse keeps up at constant cost
+  where flat search does not. It does not show capability growing exponentially. Macros
+  are evaluated by composing lookup tables, which was checked against real execution only
+  up to 1,771 steps.
 
 ![growth](figures/6_exponential_growth.png)
 
@@ -173,6 +185,8 @@ measured as **the cost of each new skill**:
   those skills were learned in 12–45 generations (median 19.5) instead of about 60.
   The other seeds are often unrelated (`succ`, `pred`): screening by loss on the new
   skill is only a rough similarity measure.
+* **Metric caveat:** "generations to master" is floored at 1 (the arithmetic skills) and
+  capped at 80 (unsolved runs count as 80), so it is a coarse, censored measure.
 * **Honest caveat:** most of the gain arrives as soon as the library is non-empty. After
   that, the cost per new skill falls only slightly (smart: about 32 for the first
   lookups, about 30 for the last five). The system is clearly smarter than scratch, but
@@ -191,6 +205,8 @@ generated words (≥2 letters) found in a 10k common-English list plus the corpu
 **Size probe** (`lang/probe_size.py`): a single 1-layer char transformer needs about 1 KB
 to spell common words and about 6 KB to produce 69% real words. At 116 bytes it produces
 letter soup (25% real words, mostly "a"/"he"-type short words). The bigram table scores 34%.
+**A ~100-byte module cannot spell**, because its embedding table alone uses most of the
+budget. About 1 KB is the practical minimum for a useful character-level module.
 
 **Growing community** (`lang/grow_spell.py`). The community starts as one 340-byte module
 and adds one module per cycle, up to 32 (≈11 KB). Old modules are frozen: nothing is
@@ -213,8 +229,22 @@ retrained and nothing is forgotten. Modules vote by summing their logits. Each c
   build on another's internal representation. Spelling needs that composition.
 * This is the same lesson as the lookup experiments: modules gain power by **chaining**
   (polymers: one module's output is another's input), not by voting side by side.
-  Level 1b will let each newcomer read the frozen community's hidden state and add to
-  it (a stacked polymer), so new modules build on old ones.
+
+**Corrections to this section (found in review, see `debate/`):**
+* **"Bytes" here are parameter counts.** Nothing in Level 1 was quantized. Phase 0
+  measures real int8 size and int8 accuracy.
+* **Winner's curse.** `grow_spell.py` picks the winning candidate and reports its bpc on
+  the same 8,192-character batch, so the reported bpc is slightly optimistic. Phase 0
+  selects on a selection split and reports only on an untouched test split.
+* **"RSI beats fresh" is confounded.** The RSI arm reuses modules (warm start) *and*
+  evolves its learning rate, while the fresh arm does neither. Late in growth, the 12
+  candidates differ by only about 0.003 bpc, less than the noise. Phase 0 separates
+  these effects with compute-matched ablations.
+* **The real-word metric came from a single 1,500-character sample** whose dictionary
+  includes the corpus's own words. Phase 0 averages several samples and also reports
+  words of ≥3 letters.
+* **The single-model baseline was not tuned.** Phase 0 sweeps its learning rate.
+* **Bias parameters in `tinylm.py` could not learn** (scale 0). This is fixed for Phase 0.
 
 ![language](figures/8_language_community.png)
 
@@ -238,17 +268,36 @@ retrained and nothing is forgotten. Modules vote by summing their logits. Each c
    duplication + path credit did (Exp 5).
 
 ## What this does and does not show
-* **Shows:** tiny modules that evolve, that improve their own improvement process
-  (learning-rate genes, mutation steering, island selection), that learn new skills about
-  twice as fast once they have a library to draw on (Exp 5), and that compose into
-  polymers and communities solving problems far beyond any single module. Through
-  hierarchical reuse, problem size grows **exponentially at roughly constant cost per
-  cycle**.
-* **Does not show:** exponential growth of general intelligence. The exponential in
-  Exp 4 is in *problem size reachable*, and the environment poses geometrically growing,
-  compositional problems. What is tested is whether a modular system keeps up at
-  constant cost by reusing what it built. A monolithic search does not keep up (flat
-  control). The domain is small and synthetic (8 symbols, permutation tables).
+This section was revised after an adversarial review (`debate/`: brief, two rounds each
+from an adversary and a scientific director, and a judge's verdict).
+
+* **Shows:**
+  * On a symbolic toy domain, tiny modules can be evolved (with lifetime learning
+    doing most of the weight learning).
+  * Evolved improver settings (learning rate, island-selected improvers) speed this up
+    compared with a blind baseline.
+  * Polymers and communities of modules solve multi-step problems that no single module
+    can.
+  * Reusing a library (duplication + path credit) halves the cost of new skills compared
+    with learning from scratch.
+  * With macro reuse, a modular system keeps up with a geometrically growing curriculum
+    at roughly constant search cost.
+* **Does not show:**
+  * **Recursive self-improvement in the strong sense.** Nothing shows the improver
+    improving its own ability to improve in a compounding way. Inheriting the improver
+    did not help (Exp 2), and the Exp 5 gain arrives once and then flattens.
+  * **Exponential growth of capability.** Exp 4's exponential comes from the curriculum,
+    inside a fixed 8-symbol function space.
+  * **That modularity is efficient on real data.** On text, the voting community needs
+    about 8× more parameters than one ordinary small model for the same quality.
+  * **Any path to 1B+ parameters.** That remains an extrapolation, not a result.
+  * **That ~100-byte modules are useful.** For language they are not; about 1 KB is the
+    minimum.
+
+**Next (per the review):** Phase 0 tests whether the RSI outer loop adds anything beyond
+"copy a module and train it longer". Then comes a pre-registered compounding test: does
+a library of tiny modules get cheaper to extend across 8 text domains, compared with a
+probe-the-library-then-fine-tune heuristic and a continually fine-tuned single model?
 
 ## Next steps toward large n
 * Learned error correction / redundancy between modules (majority-vote polymers) to stop

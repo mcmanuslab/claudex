@@ -36,6 +36,17 @@ def corpus():
     return t, ids[:n], ids[n:]
 
 
+def splits():
+    """Three disjoint contiguous splits: train 80% / selection 10% / test 10%.
+    Selection is used only by the outer loop to choose among candidates; test is
+    used only for reporting (fixes the winner's-curse bias of selecting and
+    reporting on the same batch)."""
+    t, tr, va = corpus()
+    ids = np.concatenate([tr, va])
+    a, b = int(len(ids) * 0.8), int(len(ids) * 0.9)
+    return ids[:a], ids[a:b], ids[b:]
+
+
 def dictionary():
     words = set(_get("words10k.txt").split())
     t, _, _ = corpus()
