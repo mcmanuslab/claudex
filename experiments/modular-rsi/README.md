@@ -168,8 +168,11 @@ measured as **the cost of each new skill**:
   (30 vs 60 generations) and it reaches all 12 skills with **43% less compute**.
 * Duplication alone delivers most of the gain. Path credit + edit memory add more and
   make it more consistent: smart is better than or equal to dup on 5 of 7 lookups.
-* Gene duplication finds sensible ancestors: `Cinv` is typically seeded from `Ainv`
-  or `Binv`, and is learned in 12–25 generations instead of about 64.
+* Duplication tends to pick relevant ancestors, but crudely. For `Binv` and `Cinv`, the
+  same table's forward module (`B`, `C`) was among the 3 seeds in 10 of 12 runs, and
+  those skills were learned in 12–45 generations (median 19.5) instead of about 60.
+  The other seeds are often unrelated (`succ`, `pred`): screening by loss on the new
+  skill is only a rough similarity measure.
 * **Honest caveat:** most of the gain arrives as soon as the library is non-empty. After
   that, the cost per new skill falls only slightly (smart: about 32 for the first
   lookups, about 30 for the last five). The system is clearly smarter than scratch, but
