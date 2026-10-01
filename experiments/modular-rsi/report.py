@@ -239,10 +239,47 @@ def fig_grow(summary):
     summary["grow"] = out
 
 
+def fig_acquire(summary):
+    runs = {m: load(f"acquire_{m}_s*.json") for m in ("scratch", "dup", "smart")}
+    if not all(runs.values()):
+        return
+    fig, axs = plt.subplots(1, 2, figsize=(11, 4.2))
+    cols = {"scratch": C["blind"], "dup": C["fresh"], "smart": C["steered"]}
+    labs = {"scratch": "from scratch (control)", "dup": "gene duplication",
+            "smart": "duplication + path credit + edit memory"}
+    out = {}
+    for m, rs in runs.items():
+        skills = [s["skill"] for s in rs[0]["skills"]]
+        g = np.array([[s["gens"] or 80 for s in r["skills"]] for r in rs], float)
+        ev = np.array([np.cumsum([s["evals"] for s in r["skills"]]) for r in rs], float)
+        x = np.arange(len(skills))
+        axs[0].plot(x, g.mean(0), marker="o", markersize=6, color=cols[m], label=labs[m])
+        axs[0].fill_between(x, g.min(0), g.max(0), color=cols[m], alpha=0.12, linewidth=0)
+        axs[1].plot(ev.mean(0), np.arange(1, len(skills) + 1), marker="o", markersize=5,
+                    color=cols[m], label=labs[m])
+        half = len(skills) // 2
+        out[m] = dict(gens_per_skill_mean=g.mean(0).tolist(), per_seed=g.tolist(),
+                      first_half_mean=float(g[:, 1:half].mean()), second_half_mean=float(g[:, half:].mean()),
+                      total_evals_mean=float(ev[:, -1].mean()),
+                      unsolved=int(sum(s["gens"] is None for r in rs for s in r["skills"])))
+    axs[0].set_xticks(x, skills, fontsize=8)
+    axs[0].set_ylabel("generations to master (mean, band = min–max)")
+    axs[0].set_xlabel("skill, acquired in this order (library grows →)")
+    axs[0].set_title("Cost of each new skill as the library grows", loc="left", fontsize=11)
+    axs[0].legend(fontsize=9)
+    axs[1].set_xlabel("cumulative evaluations (compute)")
+    axs[1].set_ylabel("skills mastered")
+    axs[1].set_title("Capability per unit of compute", loc="left", fontsize=11)
+    axs[1].legend(fontsize=9, loc="lower right")
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG, "7_smarter_as_it_grows.png"), dpi=150)
+    summary["acquire"] = dict(skills=skills, **out)
+
+
 def report():
     os.makedirs(FIG, exist_ok=True)
     summary = {}
-    for f in (fig_main, fig_polymer, fig_curriculum, fig_scale, fig_lineage, fig_grow):
+    for f in (fig_main, fig_polymer, fig_curriculum, fig_scale, fig_lineage, fig_grow, fig_acquire):
         f(summary)
     with open(os.path.join(OUT, "summary.json"), "w") as fh:
         json.dump(summary, fh, indent=1)
