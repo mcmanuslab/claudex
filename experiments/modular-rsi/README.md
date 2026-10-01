@@ -183,6 +183,43 @@ measured as **the cost of each new skill**:
 
 ---
 
+## Language track (`lang/`), Level 1: spelling with a community of tiny modules
+
+Corpus: *Alice in Wonderland* (public domain), 28 characters. "Real words" = the share of
+generated words (≥2 letters) found in a 10k common-English list plus the corpus vocabulary.
+
+**Size probe** (`lang/probe_size.py`): a single 1-layer char transformer needs about 1 KB
+to spell common words and about 6 KB to produce 69% real words. At 116 bytes it produces
+letter soup (25% real words, mostly "a"/"he"-type short words). The bigram table scores 34%.
+
+**Growing community** (`lang/grow_spell.py`). The community starts as one 340-byte module
+and adds one module per cycle, up to 32 (≈11 KB). Old modules are frozen: nothing is
+retrained and nothing is forgotten. Modules vote by summing their logits. Each cycle,
+12 candidate newcomers train against the frozen community and the best joins.
+
+| at ≈11 KB (32 modules or equivalent) | bits/char ↓ | real words ↑ |
+|---|---|---|
+| community, RSI growth (lineage-credited duplicates + mutation + evolved lr), 2 seeds | 2.87 | 0.50 |
+| community, fresh modules only (ablation), 2 seeds | 3.10 | 0.44 |
+| single model trained from scratch, same total steps | **2.39** | **0.82** |
+| single model, 8,000 steps | 2.41 | 0.76 |
+
+* **RSI growth beats fresh-only growth** at every size. 97% of winning newcomers were
+  mutated duplicates of existing modules: copying and editing what works beats
+  starting from nothing.
+* **But a voting community loses clearly to a single model of the same size.** Real-word
+  rate plateaus at about 0.5 while the single model reaches 0.82. Voting only adds
+  independent opinions (width); it cannot *combine* features, because no module can
+  build on another's internal representation. Spelling needs that composition.
+* This is the same lesson as the lookup experiments: modules gain power by **chaining**
+  (polymers: one module's output is another's input), not by voting side by side.
+  Level 1b will let each newcomer read the frozen community's hidden state and add to
+  it (a stacked polymer), so new modules build on old ones.
+
+![language](figures/8_language_community.png)
+
+---
+
 ## What went wrong along the way (kept on purpose)
 1. **Pure mutation could not learn lookup.** Evolution strategies on 3.9k parameters sat
    at chance for 300+ generations. Attention-based lookup has a plateau: query/key
