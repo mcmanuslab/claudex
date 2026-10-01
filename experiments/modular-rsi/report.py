@@ -99,7 +99,7 @@ def fig_polymer(summary):
     fig.savefig(os.path.join(FIG, "2_polymers.png"), dpi=150)
     summary["polymer"] = dict(targets=["→".join(t) for t in tg], polymer_acc=poly.mean(0).tolist(),
                               monomer_acc=mono.mean(0).tolist(), chains_seed0=chains[0],
-                              correct_assembly=[[list(c) == list(t) for c, t in zip(ch, tg)] for ch in chains],
+                              literal_match=[[list(c) == list(t) for c, t in zip(ch, tg)] for ch in chains],
                               polymer_acc_by_cycle=over.mean(0).tolist())
 
 
