@@ -10,7 +10,7 @@ import torch
 V = 28
 
 
-def layout(d, C, mlp):
+def layout(d, C, mlp, V=V):
     segs = [("emb", (V, d)), ("pos", (C, d)), ("Wq", (d, d)), ("Wk", (d, d)), ("Wv", (d, d)), ("Wo", (d, d))]
     if mlp:
         segs += [("W1", (d, mlp)), ("b1", (mlp,)), ("W2", (mlp, d))]
@@ -22,9 +22,9 @@ def layout(d, C, mlp):
 
 
 class TinyLM:
-    def __init__(self, d=8, C=16, mlp=0):
-        self.d, self.C, self.mlp = d, C, mlp
-        self.L, self.n = layout(d, C, mlp)
+    def __init__(self, d=8, C=16, mlp=0, V=V):
+        self.d, self.C, self.mlp, self.V = d, C, mlp, V
+        self.L, self.n = layout(d, C, mlp, V)
         sc = np.empty(self.n, np.float32)
         for k, (a, b, s) in self.L.items():
             sc[a:b] = (1 / np.sqrt(s[0])) if k[0] == "W" else (0.3 if k in ("emb", "pos") else 0.1)
@@ -55,7 +55,7 @@ class TinyLM:
 
     def loss(self, G, x, y):
         lg = self.logits(G, x)
-        return torch.nn.functional.cross_entropy(lg.reshape(-1, V), y.repeat(len(G), 1, 1).reshape(-1),
+        return torch.nn.functional.cross_entropy(lg.reshape(-1, self.V), y.repeat(len(G), 1, 1).reshape(-1),
                                                  reduction="none").reshape(len(G), -1).mean(1)
 
     @torch.no_grad()
@@ -64,7 +64,7 @@ class TinyLM:
         for _ in range(n):
             x = torch.tensor([ids[-self.C:]])
             p = torch.softmax(self.logits(G1[None], x)[0, 0, -1] / temp, -1).numpy()
-            ids.append(int(rng.choice(V, p=p / p.sum())))
+            ids.append(int(rng.choice(self.V, p=p / p.sum())))
         return ids
 
 

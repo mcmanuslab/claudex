@@ -77,10 +77,16 @@ def run(arm, seed, cycles=32, M=12, S=400, B=64, d=4, mlp=8, C=16):
         P = torch.stack(cand).requires_grad_(True)
         lr = torch.tensor([g["lr"] for g in cg])[:, None]
         m = torch.zeros_like(P); v = torch.zeros_like(P)
+        # frozen-community logits cached once per cycle on an aligned window grid
+        # (random offset each cycle); every arm samples training data this same way
+        xs, ys = windows(tr[int(rng.integers(0, C)):], C)
+        with torch.no_grad():
+            base_all = (torch.cat([lm.logits(G, xs[i:i + 512]).sum(0) for i in range(0, len(xs), 512)])
+                        if K else None)
         for s in range(steps):
-            x, y = batches(tr, B, C, rng)
-            with torch.no_grad():
-                base = lm.logits(G, x).sum(0) if K else 0.0
+            idx = torch.from_numpy(rng.integers(0, len(xs), B))
+            x, y = xs[idx], ys[idx]
+            base = base_all[idx] if K else 0.0
             lg = lm.logits(P, x) + base
             l = torch.nn.functional.cross_entropy(lg.reshape(-1, V), y.repeat(nC, 1, 1).reshape(-1),
                                                   reduction="none").reshape(nC, -1).mean(1)
