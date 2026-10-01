@@ -1,0 +1,15 @@
+{
+ "K_equiv": 4,
+ "d": 10,
+ "params": 1288,
+ "lr": 0.03,
+ "steps": 12800,
+ "sel_bpc": 2.8691472044269064,
+ "test_bpc": 2.85684109031986,
+ "test_bpc_int8": 2.8605301471125286,
+ "real2_mean": 0.5137534651297341,
+ "real2_std": 0.04304359365793942,
+ "real3_mean": 0.41951003245120894,
+ "real3_std": 0.05411466788864214,
+ "sample": " on and the fexiiing was aliish hig her mobe over it you hike she wenk shal to of to with onled heme and to cont it offfich here led said the son she veron the off was it the the beat sher the sher do"
+}

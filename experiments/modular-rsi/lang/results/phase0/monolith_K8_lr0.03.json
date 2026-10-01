@@ -1,0 +1,15 @@
+{
+ "K_equiv": 8,
+ "d": 16,
+ "params": 2812,
+ "lr": 0.03,
+ "steps": 12800,
+ "sel_bpc": 2.6758402993130876,
+ "test_bpc": 2.672690065772887,
+ "test_bpc_int8": 2.6802671263170383,
+ "real2_mean": 0.655688291940816,
+ "real2_std": 0.03588413443907134,
+ "real3_mean": 0.5453255737126705,
+ "real3_std": 0.040229504667819396,
+ "sample": " one of the eause shis seain wing a her libight the sut ber a tip welice a bout dowt withe so to in nited the foome of on wand i land a said to plih to on it and thich here fithe call she it about aga"
+}

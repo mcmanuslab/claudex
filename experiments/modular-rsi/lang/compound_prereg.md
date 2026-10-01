@@ -56,3 +56,13 @@ by the system; test is used only for reporting.
 ## Phase 0 link
 If Phase 0 shows that the `full` outer loop does not beat the `inherit` ablation by more
 than 2 paired SDs, H-rsi enters this test with a stated prior of about 10%.
+
+## Amendment (before any main result)
+The first launch was stopped after the first domain of the first orders. It revealed
+that the hand-written optimizer in `train_domain` lacked Adam's bias correction, so it
+learned more slowly than the calibration runs (`torch.optim.Adam`), which biases
+cost-to-target upward. It now matches `torch.optim.Adam` (β = 0.9/0.999, bias-corrected).
+No hypothesis, target, threshold or arm changed. Partial outputs were discarded.
+Observation only: within a domain the test split can be harder than the selection split
+(python: 3.97 vs 3.62 bpc for the same model). Targets are defined on the selection
+split, so cost-to-target is unaffected.

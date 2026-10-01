@@ -1,0 +1,15 @@
+{
+ "K_equiv": 4,
+ "d": 10,
+ "params": 1288,
+ "lr": 0.003,
+ "steps": 12800,
+ "sel_bpc": 2.9557660768708494,
+ "test_bpc": 2.9409850584814206,
+ "test_bpc_int8": 2.9537382374710988,
+ "real2_mean": 0.5021616292667123,
+ "real2_std": 0.023273309175421097,
+ "real3_mean": 0.4120080023721916,
+ "real3_std": 0.02029680331657333,
+ "sample": " or do herss at hanjut thall wigee alis mi hanthing tut ding eres wen hen a to of to wit she bourgand pely i ser in rat sauling and sid rat sing mind up shed and tho she the iten be ver it the shen do"
+}

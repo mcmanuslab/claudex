@@ -1,0 +1,15 @@
+{
+ "K_equiv": 4,
+ "d": 10,
+ "params": 1288,
+ "lr": 0.01,
+ "steps": 12800,
+ "sel_bpc": 2.8928570734255263,
+ "test_bpc": 2.8925398281199493,
+ "test_bpc_int8": 2.9005832927547246,
+ "real2_mean": 0.5418875138137006,
+ "real2_std": 0.04620986533829722,
+ "real3_mean": 0.4226066031158881,
+ "real3_std": 0.04622904094813343,
+ "sample": " old paming eay gerer. shaid whand alit in gary the tuse hom fors when re a to of to whing side in in of to cimle mar the wance and she of ondoupire to on it and thofne sor her the curr it the shen al"
+}

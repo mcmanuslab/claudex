@@ -99,11 +99,12 @@ def train_domain(lm, dom, cands, lrs, target, rng):
         l = torch.nn.functional.cross_entropy(lg.reshape(-1, V), dom.ys[idx].repeat(nC, 1, 1).reshape(-1),
                                               reduction="none").reshape(nC, -1).mean(1)
         grads = torch.autograd.grad(l.sum(), params)
-        with torch.no_grad():
-            for t, g, s in zip(params, grads, st):
-                s["m"].mul_(0.9).add_(0.1 * g); s["v"].mul_(0.99).add_(0.01 * g * g)
-                t -= (lr if t is P else lr[:, :1]) * s["m"] / (s["v"].sqrt() + 1e-6)
         steps += 1
+        with torch.no_grad():                       # Adam with bias correction (matches torch.optim.Adam)
+            for t, g, s in zip(params, grads, st):
+                s["m"].mul_(0.9).add_(0.1 * g); s["v"].mul_(0.999).add_(0.001 * g * g)
+                mh, vh = s["m"] / (1 - 0.9 ** steps), s["v"] / (1 - 0.999 ** steps)
+                t -= (lr if t is P else lr[:, :1]) * mh / (vh.sqrt() + 1e-8)
         if steps % every == 0:
             with torch.no_grad():
                 sel = ce_bits(dom.mix(logits_all(lm, P, dom.xse), gates, "se"), dom.yse).numpy()
