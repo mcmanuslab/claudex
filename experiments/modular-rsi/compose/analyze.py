@@ -7,8 +7,10 @@ OUT = os.path.join(HERE, "results")
 LENS = (1, 2, 3, 4, 6, 8, 12, 16)
 
 
-def load():
-    rows = [json.load(open(f)) for f in glob.glob(os.path.join(OUT, "*.json")) if "analysis" not in f]
+def load(part="A"):
+    files = [f for f in glob.glob(os.path.join(OUT, "*.json")) if "analysis" not in f]
+    files = [f for f in files if ("_st30000" in f) == (part == "B")]
+    rows = [json.load(open(f)) for f in files]
     best = {}
     for sysname in ("modular", "looped", "transformer"):
         R = [r for r in rows if r["system"] == sysname]
@@ -25,8 +27,8 @@ def paired(a, b, key):
     return float(d.mean()), float(d.std(ddof=1)) if len(d) > 1 else 0.0, len(s)
 
 
-def main():
-    best = load()
+def main(part="A"):
+    best = load(part)
     table = {k: {L: float(np.mean([r[f"hard_{L}"] for r in v.values()])) for L in LENS} for k, v in best.items() if v}
     res = dict(lr={k: v[next(iter(v))].get("lr") for k, v in best.items() if v}, hard_acc=table)
     m, l, t = best["modular"], best["looped"], best["transformer"]
@@ -38,9 +40,18 @@ def main():
     if best["evolved"]:
         de, se, n = paired(best["evolved"], m, "hard_12")
         res["H3"] = dict(evolved_minus_modular=de, sd=se, n=n, verdict="PASS" if (de > 0 and de > 2 * se) else "FAIL")
-    json.dump(res, open(os.path.join(OUT, "analysis.json"), "w"), indent=1)
+    conv = {k: [s for s, r in v.items() if r["val"] >= 0.95] for k, v in best.items() if v}
+    res["converged_seeds"] = {k: f"{len(c)}/{len(best[k])}" for k, c in conv.items()}
+    cm = [s for s in conv.get("modular", []) if s in conv.get("looped", [])]
+    if cm:
+        res["H1_converged_only_descriptive"] = dict(
+            seeds=cm, modular_12=float(np.mean([m[s]["hard_12"] for s in cm])),
+            looped_12=float(np.mean([l[s]["hard_12"] for s in cm])))
+    res["per_seed_12"] = {k: {s: round(r["hard_12"], 3) for s, r in v.items()} for k, v in best.items() if v}
+    json.dump(res, open(os.path.join(OUT, f"analysis{'' if part == 'A' else '_B'}.json"), "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    main(sys.argv[1] if len(sys.argv) > 1 else "A")

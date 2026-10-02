@@ -54,3 +54,19 @@ A, B, C, D, their inverses, succ, pred, neg, triple; 8 symbols).
   paired SDs. Otherwise fail.
 
 All lengths are reported, with both soft and hard interfaces for the chained systems.
+
+## Part A result (6,000 steps): all three hypotheses FAIL
+modular / looped / transformer / evolved at length 12 (hard interface):
+0.24 / 0.50 / 0.13 / 0.13. Not even the *trained* lengths were learned (validation on
+lengths 1–3: 0.70 modular, 0.77 looped), and seeds were bimodal: one looped seed reached
+1.00 at lengths 12 and 16, while others stayed near chance. The test was underpowered by
+the training budget.
+
+## Part B (pre-registered after Part A, before running it): train to convergence
+Same systems, data, test sets, hypotheses (H1–H3) and decision rules. Changes:
+* **30,000 steps.** Learning rates are fixed to Part A's selections (modular 3e-3,
+  looped 3e-3, transformer 1e-3). No new selection is made.
+* `evolved` gets 3 × 30,000 total steps across 6 individuals.
+* 5 new seeds (10–14).
+* **Also reported:** the fraction of seeds whose validation accuracy on lengths 1–3
+  reaches ≥ 0.95 ("converged"), and H1 restricted to converged seeds (descriptive only).

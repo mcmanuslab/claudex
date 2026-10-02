@@ -88,10 +88,10 @@ def run(system, lr, seed, steps=STEPS):
     res = dict(system=system, lr=lr, seed=seed, params=n_params(model), steps=steps,
                seconds=time.time() - t0, **evaluate(model, val, tests))
     print(json.dumps(res), flush=True)
-    json.dump(res, open(os.path.join(OUT, f"{system}_lr{lr}_s{seed}.json"), "w"), indent=1)
+    json.dump(res, open(os.path.join(OUT, f"{system}_lr{lr}_s{seed}{'_st' + str(steps) if steps != STEPS else ''}.json"), "w"), indent=1)
 
 
-def run_evolved(seed, pop=6, gen_steps=250, total=3 * STEPS):
+def run_evolved(seed, pop=6, gen_steps=250, total=3 * STEPS, tag=""):
     """PBT-style evolution of the modular architecture: same total gradient steps as one
     system's lr grid (3 x STEPS), split across the population."""
     code = GeneticCode(0); val, tests = fixed_sets()
@@ -127,7 +127,7 @@ def run_evolved(seed, pop=6, gen_steps=250, total=3 * STEPS):
                final_lr=best["lr"], final_sigma=best["sigma"], seconds=time.time() - t0,
                **evaluate(best["model"], val, tests))
     print(json.dumps(res), flush=True)
-    json.dump(res, open(os.path.join(OUT, f"evolved_s{seed}.json"), "w"), indent=1)
+    json.dump(res, open(os.path.join(OUT, f"evolved_s{seed}{tag}.json"), "w"), indent=1)
 
 
 if __name__ == "__main__":
@@ -135,4 +135,7 @@ if __name__ == "__main__":
     ap.add_argument("--system", default="modular"); ap.add_argument("--lr", type=float, default=3e-3)
     ap.add_argument("--seed", type=int, default=0); ap.add_argument("--steps", type=int, default=STEPS)
     a = ap.parse_args()
-    run_evolved(a.seed) if a.system == "evolved" else run(a.system, a.lr, a.seed, a.steps)
+    if a.system == "evolved":
+        run_evolved(a.seed, total=3 * a.steps, tag="" if a.steps == STEPS else f"_st{a.steps}")
+    else:
+        run(a.system, a.lr, a.seed, a.steps)
