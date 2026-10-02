@@ -306,6 +306,61 @@ forget**. Per the judge's pre-agreed decision rule, the next step for the langua
 is a jointly trained hierarchy (tokens learned from a char model, or amplify-and-distill),
 not more modular RSI on language.
 
+
+---
+
+## Composition track (`compose/`, pre-registered in `compose/PREREG.md`)
+
+**Question:** in a domain where success *requires* composing learned skills, do chained
+modules beat monolithic models with the same number of parameters? And does evolution
+add anything?
+
+**Domain:** executing instructed programs over relational contexts (4 tables, 12
+operations). Systems train **only on programs of length 1–3**, with **final answers
+only** (no intermediate labels), and are tested on lengths 4–16, which they never saw.
+Every system has 46–51k parameters and the same training steps:
+
+| System | What it is |
+|---|---|
+| modular | 12 small blocks, one per operation, chained through the symbol interface |
+| looped | one large shared block applied once per step, same interface |
+| transformer | standard 4-layer transformer that reads the whole program at once |
+| evolved | the modular architecture trained by a population (PBT-style), total compute matched |
+
+| Length-12 accuracy, hard interface (5 seeds) | Part A: 6,000 steps | Part B: 30,000 steps |
+|---|---|---|
+| modular | 0.24 | **0.97** (0.97 at length 16) |
+| looped | 0.50 | **1.00** (1.00 at length 16) |
+| transformer | 0.13 | 0.12 (chance beyond length 3) |
+| evolved | 0.13 | 0.73 |
+
+![composition](figures/9_composition.png)
+
+**Pre-registered verdicts.**
+* **Part A** (undertrained: even the trained lengths were not learned): H1, H2 and H3
+  all fail.
+* **Part B** (pre-registered after Part A, trained to convergence):
+
+| Hypothesis | Verdict |
+|---|---|
+| H1: chained modules beat both monoliths by ≥ 0.15 | **Fail.** Modular beats the transformer by **+0.85** (> 2 SD), but is no better than the looped shared block (−0.03). |
+| H2: modular ≥ 0.80 at length 16 | **Pass** (0.97) |
+| H3: evolution beats gradient training | **Fail** (−0.24; 3 of 5 evolved seeds converged) |
+
+**What this shows.**
+* **Step-by-step composition through a discrete symbol interface is what makes
+  generalization work.** Trained only on 1–3-step programs, both chained systems execute
+  16-step programs essentially perfectly. A standard transformer of the same size, which
+  reads the whole program at once, never generalizes past the training lengths, even
+  when it masters 1-step programs. This is the polymer idea, and it holds up.
+* **Splitting the parameters into separate modules adds nothing over one shared block**
+  run the same way. The shared block was slightly better, likely because it learns from
+  every example, while each of the 12 modules sees only about 1/12 of them. The active
+  ingredient is the *interface and the iteration*, not separate modules.
+* **The evolutionary outer loop again adds nothing** (it is worse at equal compute).
+  That is now four tests where evolution or RSI selection does not beat plain gradient
+  training or a simple heuristic.
+
 ---
 
 ## What went wrong along the way (kept on purpose)
@@ -340,6 +395,10 @@ from an adversary and a scientific director, and a judge's verdict).
     with learning from scratch.
   * With macro reuse, a modular system keeps up with a geometrically growing curriculum
     at roughly constant search cost.
+  * **Composition test:** trained on 1–3-step programs, chained systems (modular *or*
+    one shared looped block) run 16-step programs at 0.97–1.00, while a same-size
+    transformer stays at chance beyond length 3. Separate modules give no advantage
+    over a shared block, and evolution gives no advantage over gradient training.
 * **Does not show:**
   * **Recursive self-improvement in the strong sense.** Nothing shows the improver
     improving its own ability to improve in a compounding way. Inheriting the improver
