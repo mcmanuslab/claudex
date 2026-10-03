@@ -43,9 +43,13 @@ class Mutator(nn.Module):
         self.enc = nn.TransformerEncoder(layer, 2, enable_nested_tensor=False)
         self.score, self.value = nn.Linear(d, 1), nn.Linear(d, 1)
 
-    def forward(self, f):
-        h = self.enc(self.inp(f)[None])[0]
-        return self.score(h)[:, 0], self.value(h)[:, 0]
+    def forward(self, f, pad=None):
+        """f (C,F) for one decision, or (N,Cmax,F) with pad (N,Cmax) True = padding."""
+        if f.dim() == 2:
+            h = self.enc(self.inp(f)[None])[0]
+            return self.score(h)[:, 0], self.value(h)[:, 0]
+        h = self.enc(self.inp(f), src_key_padding_mask=pad)
+        return self.score(h)[..., 0], self.value(h)[..., 0]
 
 
 def train_student(train, val, seed, epochs=200):
@@ -57,14 +61,21 @@ def train_student(train, val, seed, epochs=200):
     vdata = [prep(d, mu, sd) + (d["best"],) for d in val]
     m = Mutator(allf.shape[1])
     opt = torch.optim.Adam(m.parameters(), lr=1e-3, weight_decay=1e-4)
+    Cmax = max(len(f) for f, _, _ in data)
+    F_ = data[0][0].shape[1]
+    X = torch.zeros(len(data), Cmax, F_); PAD = torch.ones(len(data), Cmax, dtype=torch.bool)
+    NORM = torch.zeros(len(data), Cmax); Y = torch.tensor([y for _, _, y in data])
+    for n, (f, norm, _) in enumerate(data):
+        X[n, : len(f)] = torch.from_numpy(f); PAD[n, : len(f)] = False; NORM[n, : len(f)] = torch.from_numpy(norm)
     best, best_state = 1e9, None
     for ep in range(epochs):
         m.train()
-        for i in rng.permutation(len(data)):
-            f, norm, y = data[i]
-            s, v = m(torch.from_numpy(f))
-            loss = nn.functional.cross_entropy(s[None], torch.tensor([y])) + \
-                nn.functional.mse_loss(torch.sigmoid(v), torch.from_numpy(norm))
+        for idx in np.array_split(rng.permutation(len(data)), max(1, len(data) // 16)):
+            idx = torch.from_numpy(idx)
+            s, v = m(X[idx], PAD[idx])
+            s = s.masked_fill(PAD[idx], -1e9)
+            mse = ((torch.sigmoid(v) - NORM[idx]) ** 2).masked_fill(PAD[idx], 0).sum() / (~PAD[idx]).sum()
+            loss = nn.functional.cross_entropy(s, Y[idx]) + mse
             opt.zero_grad(); loss.backward(); opt.step()
         m.eval()
         with torch.no_grad():
@@ -155,7 +166,10 @@ def main():
     val_ids = set(range(40, 48))
     train = [d for d in train_all if d["uid"] not in val_ids]; val = [d for d in train_all if d["uid"] in val_ids]
     print(f"train {len(train)} val {len(val)} test {len(test)} decisions", flush=True)
-    models = [train_student(train, val, seed) for seed in range(5)]
+    models = []
+    for seed in range(5):
+        models.append(train_student(train, val, seed))
+        print(f"student seed {seed} trained", flush=True)
     rows = evaluate(models, test)
     res = dict(all=summarize(rows, "all"),
                held_out_families=summarize([r for r in rows if r["op"] in HELD_OUT], "held"),

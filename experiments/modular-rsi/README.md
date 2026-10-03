@@ -363,6 +363,71 @@ Every system has 46–51k parameters and the same training steps:
   That is now four tests where evolution or RSI selection does not beat plain gradient
   training or a simple heuristic.
 
+
+---
+
+## Parenting track, Stage 1: can a tiny mutator learn from a parent? (`parenting/`, pre-registered in `parenting/PREREG.md`)
+
+This is the first stage of a 4-stage plan:
+1. **Infant:** the child imitates the parent.
+2. **Supervised child:** the child proposes and the parent corrects.
+3. **Adolescent:** the child acts and self-corrects.
+4. **Parent:** the child becomes the parent, which is the recursion test.
+
+**Testbed.** A register machine with 3 registers. A skill is an opcode (lookups,
+inverse lookups, double lookup, affine maps, add/sub/mul/max/min, swap); operands come
+with each instruction.
+* **Hybrid model:** a shared 2-layer transformer core (38.6k params), pretrained on 6
+  base opcodes to 100% and then frozen, plus a small adapter per skill. Adapters also
+  apply low-rank updates to the core's attention.
+* **The decision:** when a new opcode arrives, choose the adapter's source (fresh, or a
+  copy of any existing skill's adapter) and its rank (4 or 16).
+* **Parent:** trains every candidate for 150 steps and picks the best on validation.
+* **Child ("infant mutator"):** a tiny transformer over the set of candidates. It sees
+  only cheap clues: a zero-shot probe of the copied adapter, lineage, and how the new
+  opcode changes the registers compared with the source skill. It is trained to imitate
+  the parent.
+* **Data:** 48 training universes and 12 test universes, 6 arrivals each. Two opcode
+  families (`invB`, `min`) never arrive in training universes.
+
+| Held-out test decisions (n = 72) | Child | Probe-best heuristic | Default (fresh) | Random |
+|---|---|---|---|---|
+| Agrees with the parent | **0.67** | 0.26 | 0.17 | 0.05 |
+| Normalised regret (0 = parent's pick, 1 = worst) | **0.10** | 0.34 | 0.41 | 0.54 |
+
+| Gate | Result | Verdict |
+|---|---|---|
+| G1, imitation | 0.67 vs heuristic 0.26 + 0.10, and ≥ 2 × chance | **pass** |
+| G2, decision quality | regret 0.10 ≤ 0.5 × 0.34; p < 10⁻⁴ against the heuristic and against random | **pass** |
+| G3, calibration | Spearman of predicted vs actual outcomes = 0.586 (threshold 0.6) | **fail** (narrowly) |
+| G4, efficiency | child uses 7% of the parent's compute | pass |
+
+**Pre-registered verdict: Stage 1 fails** (G3, by 0.014).
+
+**The more important findings.**
+* **The child does not generalise to unseen kinds of skill.** On familiar families it
+  is excellent: agreement 0.80, regret 0.02. On the two held-out families (n = 18) it
+  falls to agreement 0.27 and regret 0.34, *worse* than the simple probe heuristic
+  (0.21), though still better than random (0.56). It learned "which source works for
+  this kind of skill" rather than a transferable understanding of what makes a source
+  good.
+* **The parent itself is only borderline reliable.** Its 150-step rankings correlate
+  only 0.49 with 1,500-step rankings (pre-registered reliability threshold: 0.5). Its
+  pick is in the true top 2 only 62% of the time. Part of this is benign: for easy
+  opcodes every candidate reaches 100%, so the ranking among ties is noise. But it
+  means the child is partly learning to imitate noise.
+
+**What this means for the plan.**
+* **Stage 2 (parent corrects the child) is not the next step.** Corrections would not
+  fix generalisation to new kinds of skill, and a noisy parent would correct noisily.
+* **First fix the parent:** longer or repeated trials, and scoring that treats ties as
+  ties.
+* **Then give the child clues that transfer across skill types:** for example a
+  "few-shot probe" (a handful of training steps per candidate, still far cheaper than
+  the parent) and behavioural similarity measured on matched inputs.
+* **Train on more skill families,** so "unseen kind of skill" is a meaningful test
+  rather than 2 families.
+
 ---
 
 ## What went wrong along the way (kept on purpose)
