@@ -1,0 +1,15 @@
+{
+ "K_equiv": 16,
+ "d": 23,
+ "params": 5318,
+ "lr": 0.01,
+ "steps": 12800,
+ "sel_bpc": 2.5455147139383083,
+ "test_bpc": 2.5423228188064226,
+ "test_bpc_int8": 2.5500072736758077,
+ "real2_mean": 0.7110738642238011,
+ "real2_std": 0.022894694992158647,
+ "real3_mean": 0.6535489675606284,
+ "real3_std": 0.026578612500524745,
+ "sample": " she of the fext and was after a that talk gettion thoughted for cuppent a and of to which sides know s ittell the cons thing mice its and one the ratter into she duch lown her she duch it the she cap"
+}

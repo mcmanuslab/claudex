@@ -1,0 +1,15 @@
+{
+ "K_equiv": 16,
+ "d": 23,
+ "params": 5318,
+ "lr": 0.003,
+ "steps": 12800,
+ "sel_bpc": 2.612099915660348,
+ "test_bpc": 2.611435696160313,
+ "test_bpc_int8": 2.619878906339015,
+ "real2_mean": 0.682111938016166,
+ "real2_std": 0.029241916463546215,
+ "real3_mean": 0.608152780306403,
+ "real3_std": 0.03062780440304903,
+ "sample": " not of the fetthen voing heate it alice pam othe it you head she was hep a to of to whing so the gold down and be and on was lid bees and one the saut on it and thich ith dided had the it that mat ci"
+}

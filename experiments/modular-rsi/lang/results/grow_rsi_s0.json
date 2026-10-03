@@ -1,0 +1,935 @@
+{
+ "mode": "rsi",
+ "seed": 0,
+ "module_params": 340,
+ "log": [
+  {
+   "cycle": 0,
+   "K": 1,
+   "bytes": 340,
+   "bpc": 3.5017803740191553,
+   "bpc_cands": [
+    3.58,
+    3.502,
+    3.521,
+    3.513,
+    3.645,
+    3.568,
+    3.504,
+    3.652,
+    3.502,
+    3.595,
+    3.637,
+    3.612
+   ],
+   "winner_parent": -1,
+   "winner_fresh": true,
+   "genes": {
+    "lr": 0.03676560629738772,
+    "sigma": 0.48748202658070816
+   },
+   "valid": 0.43795620437956206,
+   "sample": " se asongeti t t the a she yye thase ouu san lqe ather i ng al an s we solud s.x thelefet tru tyu wotheit r w th t tho t ilud hobafe the thu shocer tho i s ts t le woceron y courtshog shamr s pe yd tt",
+   "steps_total": 400
+  },
+  {
+   "cycle": 1,
+   "K": 2,
+   "bytes": 680,
+   "bpc": 3.318889895508024,
+   "bpc_cands": [
+    3.385,
+    3.403,
+    3.358,
+    3.322,
+    3.359,
+    3.34,
+    3.371,
+    3.338,
+    3.374,
+    3.349,
+    3.319,
+    3.352
+   ],
+   "winner_parent": 0,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.049921881328418446,
+    "sigma": 0.55214380166718
+   },
+   "valid": 0.40604026845637586,
+   "sample": " lo wedlee then lan goin. she wharirt on sooit otaten te toud arer cos. lrar sottgep tdran sec ef shireser oe. gaise ing othe ice heey thethe nad thin we the igomy she we. ir in mud iet hyathed t led ",
+   "steps_total": 800
+  },
+  {
+   "cycle": 2,
+   "K": 3,
+   "bytes": 1020,
+   "bpc": 3.2386142414953945,
+   "bpc_cands": [
+    3.239,
+    3.288,
+    3.253,
+    3.283,
+    3.291,
+    3.286,
+    3.274,
+    3.288,
+    3.256,
+    3.262,
+    3.304,
+    3.284
+   ],
+   "winner_parent": -1,
+   "winner_fresh": true,
+   "genes": {
+    "lr": 0.03564099507909373,
+    "sigma": 0.7172798556475152
+   },
+   "valid": 0.4215686274509804,
+   "sample": " ges pid doo in sos ceder whe agrere oouls the pe aresley the do at mindoted ware hit i te we ale ad men to fou chessi wh he noulle. watem om at canidt. sep mores ameushuce iry pedher fery tholle tar ",
+   "steps_total": 1200
+  },
+  {
+   "cycle": 3,
+   "K": 4,
+   "bytes": 1360,
+   "bpc": 3.2029398802269218,
+   "bpc_cands": [
+    3.218,
+    3.229,
+    3.221,
+    3.219,
+    3.218,
+    3.227,
+    3.216,
+    3.222,
+    3.221,
+    3.209,
+    3.203,
+    3.22
+   ],
+   "winner_parent": 0,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.02791349593587836,
+    "sigma": 0.7523488979044393
+   },
+   "valid": 0.40789473684210525,
+   "sample": " ais and te onely she we then thart sheld shingh the thiind cashes thordtis ice te ouve otar rend cid oth pas it ilichlinwoute ond ing mer and idid he rpange. ou rerth anof lele the cithu ise sos rill",
+   "steps_total": 1600
+  },
+  {
+   "cycle": 4,
+   "K": 5,
+   "bytes": 1700,
+   "bpc": 3.188327890244316,
+   "bpc_cands": [
+    3.192,
+    3.205,
+    3.205,
+    3.195,
+    3.197,
+    3.206,
+    3.194,
+    3.188,
+    3.203,
+    3.194,
+    3.19,
+    3.194
+   ],
+   "winner_parent": 2,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.0349198621195844,
+    "sigma": 0.5443080710855102
+   },
+   "valid": 0.4401294498381877,
+   "sample": " who ser thooouy wu sith oont fott hope frid id wong vere it owpe thert ase o the she she game thedlicee then he tith her song ore toulll tet wed whing wing utherer in nourith t tunt wat ld tharer ron",
+   "steps_total": 2000
+  },
+  {
+   "cycle": 5,
+   "K": 6,
+   "bytes": 2040,
+   "bpc": 3.1654005390924933,
+   "bpc_cands": [
+    3.187,
+    3.175,
+    3.182,
+    3.185,
+    3.174,
+    3.18,
+    3.179,
+    3.165,
+    3.166,
+    3.174,
+    3.182,
+    3.174
+   ],
+   "winner_parent": 2,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.06772139846528054,
+    "sigma": 0.5585672805992896
+   },
+   "valid": 0.5032051282051282,
+   "sample": " the ale a. dowoughe per soitl t on he aren he od wat wethasean sard thend sowis tlindome kitt y the than oo the  cesse soming nor ad bains ing wen the the a ono red oone re yowan a fuche cing hes the",
+   "steps_total": 2400
+  },
+  {
+   "cycle": 6,
+   "K": 7,
+   "bytes": 2380,
+   "bpc": 3.1368844397182327,
+   "bpc_cands": [
+    3.165,
+    3.161,
+    3.165,
+    3.154,
+    3.137,
+    3.14,
+    3.139,
+    3.149,
+    3.151,
+    3.164,
+    3.153,
+    3.161
+   ],
+   "winner_parent": 5,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.0594134134447621,
+    "sigma": 0.46510457200691435
+   },
+   "valid": 0.46078431372549017,
+   "sample": " red yoren as wko fred fosade oraly srer it tou he arit it ine theaid. thed san towl thine coway arlde fe the cit wan yousaitise he sped toun athelee t me hin thetherlime to song the bmig meland on in",
+   "steps_total": 2800
+  },
+  {
+   "cycle": 7,
+   "K": 8,
+   "bytes": 2720,
+   "bpc": 3.1238110065302456,
+   "bpc_cands": [
+    3.125,
+    3.132,
+    3.132,
+    3.13,
+    3.131,
+    3.124,
+    3.125,
+    3.138,
+    3.137,
+    3.143,
+    3.139,
+    3.13
+   ],
+   "winner_parent": 5,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.03915675932793186,
+    "sigma": 0.3931223680315973
+   },
+   "valid": 0.44089456869009586,
+   "sample": " sor he the ind sushy cibanded re cike thererel she sale thoore ce lay thed toupe ve the me the tal buseas singer w thang song ce ithe wey qure thichet thedt ma fut shee weed allll tithe a he san tait",
+   "steps_total": 3200
+  },
+  {
+   "cycle": 8,
+   "K": 9,
+   "bytes": 3060,
+   "bpc": 3.1019956951989016,
+   "bpc_cands": [
+    3.12,
+    3.118,
+    3.107,
+    3.125,
+    3.117,
+    3.115,
+    3.114,
+    3.116,
+    3.102,
+    3.116,
+    3.109,
+    3.102
+   ],
+   "winner_parent": 7,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.05204158861512301,
+    "sigma": 0.3921523941930624
+   },
+   "valid": 0.43478260869565216,
+   "sample": " hokis on que fre shes le ding se id mou whud polike sing shal lin thered de ighutally gle thedke se thig otth re thed there a o shougis adler ser wit ing be. in ase ulis as frerth re moureshe win u a",
+   "steps_total": 3600
+  },
+  {
+   "cycle": 9,
+   "K": 10,
+   "bytes": 3400,
+   "bpc": 3.0935716409943397,
+   "bpc_cands": [
+    3.101,
+    3.094,
+    3.097,
+    3.104,
+    3.095,
+    3.104,
+    3.099,
+    3.099,
+    3.104,
+    3.101,
+    3.104,
+    3.097
+   ],
+   "winner_parent": 3,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.06581539536469304,
+    "sigma": 0.17885037118186325
+   },
+   "valid": 0.4682274247491639,
+   "sample": " therlyly in atwing ser.. whet iong aco dell veaid herep sa dot shem maithe sot she ling ast son tin th dee ole she. owave the quer alle cice saletaid saliconl oupthe so thait bmone wor. lithes. mok a",
+   "steps_total": 4000
+  },
+  {
+   "cycle": 10,
+   "K": 11,
+   "bytes": 3740,
+   "bpc": 3.075306051576804,
+   "bpc_cands": [
+    3.086,
+    3.078,
+    3.086,
+    3.075,
+    3.077,
+    3.076,
+    3.077,
+    3.084,
+    3.077,
+    3.082,
+    3.078,
+    3.077
+   ],
+   "winner_parent": 0,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.05821986233502863,
+    "sigma": 0.08408829914879673
+   },
+   "valid": 0.3931034482758621,
+   "sample": " was o tonte sout thils whe selcese bbed thaghed thas. thellikl tong re iling oon he sad mand there alof con hin the sre ston n tong mowwe tooknng mach ais free s thind neweat but whe sen the beve se ",
+   "steps_total": 4400
+  },
+  {
+   "cycle": 11,
+   "K": 12,
+   "bytes": 4080,
+   "bpc": 3.049468410007081,
+   "bpc_cands": [
+    3.071,
+    3.069,
+    3.049,
+    3.075,
+    3.071,
+    3.07,
+    3.072,
+    3.062,
+    3.077,
+    3.075,
+    3.069,
+    3.074
+   ],
+   "winner_parent": 8,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.05606179158694107,
+    "sigma": 0.06469661230456036
+   },
+   "valid": 0.4681528662420382,
+   "sample": " and buleve pon there. ond hit of ve sat agherin byou asld be that anl tha imen iky. mer ancoureitt r mous if. he than sa bit se ins antoo than the he che sharat the pexcea cousth rene the the sother ",
+   "steps_total": 4800
+  },
+  {
+   "cycle": 12,
+   "K": 13,
+   "bytes": 4420,
+   "bpc": 3.0287455324740176,
+   "bpc_cands": [
+    3.045,
+    3.03,
+    3.044,
+    3.038,
+    3.036,
+    3.039,
+    3.036,
+    3.029,
+    3.04,
+    3.041,
+    3.037,
+    3.043
+   ],
+   "winner_parent": 1,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.0718569152304772,
+    "sigma": 0.08116108907111784
+   },
+   "valid": 0.44983818770226536,
+   "sample": " euce foers of ingh gowtr whoncing at wand couseng thaut tho the shath louu thaid sem the mat of soous thaf bou soung it at e adike thin as challe. hing long ad ashe all sile re gey mos. ai cimmucke. ",
+   "steps_total": 5200
+  },
+  {
+   "cycle": 13,
+   "K": 14,
+   "bytes": 4760,
+   "bpc": 3.019300245288632,
+   "bpc_cands": [
+    3.029,
+    3.029,
+    3.019,
+    3.032,
+    3.03,
+    3.023,
+    3.021,
+    3.025,
+    3.027,
+    3.02,
+    3.02,
+    3.029
+   ],
+   "winner_parent": 2,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.12386023968527103,
+    "sigma": 0.07497301469258597
+   },
+   "valid": 0.45161290322580644,
+   "sample": " ton at  wodi nond thely tt spaid shase wing bitherye dlland ont wor the kin ith re yot wereliss the it dondore sthe he ve remetghe was af the be aital te bou she thoxr her iss she wic he ithed souppt",
+   "steps_total": 5600
+  },
+  {
+   "cycle": 14,
+   "K": 15,
+   "bytes": 5100,
+   "bpc": 3.0114633398541155,
+   "bpc_cands": [
+    3.014,
+    3.014,
+    3.017,
+    3.015,
+    3.02,
+    3.011,
+    3.016,
+    3.012,
+    3.016,
+    3.014,
+    3.012,
+    3.017
+   ],
+   "winner_parent": 0,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.06976722044541939,
+    "sigma": 0.058755189772264176
+   },
+   "valid": 0.4630225080385852,
+   "sample": " then sin ri she eit noome co at wit the caas ise yon hast we swo the cat crine maid lllle alld en aice ay bed oter ary son the aer a ond it s abe heingh the iws loughe ast to and there lan beas cas y",
+   "steps_total": 6000
+  },
+  {
+   "cycle": 15,
+   "K": 16,
+   "bytes": 5440,
+   "bpc": 3.0021810922217482,
+   "bpc_cands": [
+    3.015,
+    3.013,
+    3.012,
+    3.012,
+    3.002,
+    3.005,
+    3.01,
+    3.013,
+    3.01,
+    3.005,
+    3.014,
+    3.013
+   ],
+   "winner_parent": 13,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.0630943327684369,
+    "sigma": 0.04283144076491431
+   },
+   "valid": 0.471875,
+   "sample": " sif ras ithe wat hesat wit sen saf ee aid te i thoure thit so. de an nyo id fin so mot fuy roure ond thared aithed ing ush sot iw the thits e ift san he the iofiff oft walikice ondoe nte ond thing fo",
+   "steps_total": 6400
+  },
+  {
+   "cycle": 16,
+   "K": 17,
+   "bytes": 5780,
+   "bpc": 2.995920923730342,
+   "bpc_cands": [
+    3.001,
+    2.996,
+    3.001,
+    3.0,
+    2.997,
+    3.004,
+    2.997,
+    3.0,
+    3.001,
+    2.997,
+    2.999,
+    2.998
+   ],
+   "winner_parent": 11,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.0776854776221519,
+    "sigma": 0.034237813674401714
+   },
+   "valid": 0.429042904290429,
+   "sample": " oi ll to the towid it se it shasppawitur ased thay oung it de shet co safle thang say the thend wing in ion re shonghang. rent toedlin. is a ree psaith ring condd alain the be tond at aice sal sal sa",
+   "steps_total": 6800
+  },
+  {
+   "cycle": 17,
+   "K": 18,
+   "bytes": 6120,
+   "bpc": 2.9856573430921514,
+   "bpc_cands": [
+    2.994,
+    2.993,
+    2.996,
+    2.995,
+    2.986,
+    2.998,
+    2.997,
+    2.992,
+    2.996,
+    2.99,
+    2.989,
+    2.99
+   ],
+   "winner_parent": 13,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.10455783523674281,
+    "sigma": 0.03340159690178973
+   },
+   "valid": 0.468944099378882,
+   "sample": " the dond ake yod s cand uthe thoond of ore wan it the plaice gher shaing soo li f and fre there sther there lit thar me the tha min at tonit  she the dichin pea wen butenthe e an thally. must to int ",
+   "steps_total": 7200
+  },
+  {
+   "cycle": 18,
+   "K": 19,
+   "bytes": 6460,
+   "bpc": 2.977027597637157,
+   "bpc_cands": [
+    2.987,
+    2.977,
+    2.977,
+    2.983,
+    2.987,
+    2.982,
+    2.982,
+    2.986,
+    2.98,
+    2.985,
+    2.985,
+    2.982
+   ],
+   "winner_parent": 15,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.06841303443991557,
+    "sigma": 0.060759370030432885
+   },
+   "valid": 0.45483870967741935,
+   "sample": " he buthe catser soon so the sher wass co aid the ade in woureeasd theed bereddo no sa fan severy doxin. at inge mase tay tirind aaly dly ilalatalid n y he quid tow inery at mand off le. pot it. matth",
+   "steps_total": 7600
+  },
+  {
+   "cycle": 19,
+   "K": 20,
+   "bytes": 6800,
+   "bpc": 2.9730878190711922,
+   "bpc_cands": [
+    2.978,
+    2.975,
+    2.977,
+    2.977,
+    2.976,
+    2.976,
+    2.973,
+    2.98,
+    2.975,
+    2.978,
+    2.977,
+    2.976
+   ],
+   "winner_parent": 18,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.0747728859831186,
+    "sigma": 0.07001632734355012
+   },
+   "valid": 0.44155844155844154,
+   "sample": " hok groumouoorrng st as therean at shelk the an at the can a sth reicklawen mouse ing o wther adery fou ase mar wik thede touge cinded and tho ad ad n calikes ant se ige thing as aaicomers. toous tor",
+   "steps_total": 8000
+  },
+  {
+   "cycle": 20,
+   "K": 21,
+   "bytes": 7140,
+   "bpc": 2.97201705508692,
+   "bpc_cands": [
+    2.974,
+    2.977,
+    2.974,
+    2.975,
+    2.977,
+    2.98,
+    2.977,
+    2.979,
+    2.972,
+    2.976,
+    2.975,
+    2.972
+   ],
+   "winner_parent": 13,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.04642509271047316,
+    "sigma": 0.09436072763408754
+   },
+   "valid": 0.5,
+   "sample": " bid mady ou hacki if that mer ald the the te rid. me can was itse be n and. onod noppled the itlly the he dald u she you leshat lo bedrth clitet the sa aice mers wher sed the duckin were sine was tho",
+   "steps_total": 8400
+  },
+  {
+   "cycle": 21,
+   "K": 22,
+   "bytes": 7480,
+   "bpc": 2.9612210161616583,
+   "bpc_cands": [
+    2.971,
+    2.967,
+    2.973,
+    2.964,
+    2.971,
+    2.966,
+    2.968,
+    2.97,
+    2.969,
+    2.97,
+    2.961,
+    2.968
+   ],
+   "winner_parent": 11,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.03355734756598618,
+    "sigma": 0.07214052899133493
+   },
+   "valid": 0.4219269102990033,
+   "sample": " the sup whas. the wede  here bscone capbaite it t sus ofi a it s ceare beathe t colned wlay hithe gry thin cllle he shater knthe oupt sthe at so dis i ms say done hale a thing the be mer. ousalt sen ",
+   "steps_total": 8800
+  },
+  {
+   "cycle": 22,
+   "K": 23,
+   "bytes": 7820,
+   "bpc": 2.9545264194941727,
+   "bpc_cands": [
+    2.96,
+    2.963,
+    2.964,
+    2.962,
+    2.973,
+    2.961,
+    2.958,
+    2.961,
+    2.961,
+    2.961,
+    2.961,
+    2.955
+   ],
+   "winner_parent": 8,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.03448359681064593,
+    "sigma": 0.061629578250251046
+   },
+   "valid": 0.49044585987261147,
+   "sample": " fferey te oche thant gane the re sore ben whith gouttery ou le fiss mily the was hell wher gang then eleay re asly ing to se bme ar it of the jut. raled sthen to mugre at i e thar occede mousome dou ",
+   "steps_total": 9200
+  },
+  {
+   "cycle": 23,
+   "K": 24,
+   "bytes": 8160,
+   "bpc": 2.950111968811826,
+   "bpc_cands": [
+    2.951,
+    2.951,
+    2.953,
+    2.953,
+    2.951,
+    2.951,
+    2.95,
+    2.951,
+    2.953,
+    2.95,
+    2.95,
+    2.952
+   ],
+   "winner_parent": 2,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.03964862064611114,
+    "sigma": 0.06045016461384444
+   },
+   "valid": 0.4820846905537459,
+   "sample": " shad the ond re orei repy theenthing ouor werde and you se ithe p cis wat that mowend by te than withe ae the whe the thing ay to the n fo mo uther as shicke ha salld the se in. the ay bous. ofais it",
+   "steps_total": 9600
+  },
+  {
+   "cycle": 24,
+   "K": 25,
+   "bytes": 8500,
+   "bpc": 2.9444361973680517,
+   "bpc_cands": [
+    2.946,
+    2.946,
+    2.948,
+    2.944,
+    2.949,
+    2.945,
+    2.945,
+    2.948,
+    2.945,
+    2.945,
+    2.947,
+    2.945
+   ],
+   "winner_parent": 1,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.026618395936740886,
+    "sigma": 0.040685737341614736
+   },
+   "valid": 0.4401294498381877,
+   "sample": " che orr the wat and the ast mlot the der bat dot igasoo the donit the the ad fory rou athe at she he coured fond if serped anot mis of aye and sat a bond uthe wokised sheat lof lall the calk har athe",
+   "steps_total": 10000
+  },
+  {
+   "cycle": 25,
+   "K": 26,
+   "bytes": 8840,
+   "bpc": 2.941735725784204,
+   "bpc_cands": [
+    2.946,
+    2.943,
+    2.944,
+    2.945,
+    2.945,
+    2.943,
+    2.943,
+    2.946,
+    2.942,
+    2.946,
+    2.944,
+    2.943
+   ],
+   "winner_parent": 8,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.04469331388599954,
+    "sigma": 0.03536282322071727
+   },
+   "valid": 0.49517684887459806,
+   "sample": " a el byot to the the coond ale the ad at son the a whe wardid ar sepoun whoted thar are ond that rer and vene mockires. and cat ido whand the aule glit the she was shalle. had pedeveng. she songey ph",
+   "steps_total": 10400
+  },
+  {
+   "cycle": 26,
+   "K": 27,
+   "bytes": 9180,
+   "bpc": 2.9367213996156476,
+   "bpc_cands": [
+    2.94,
+    2.942,
+    2.94,
+    2.943,
+    2.941,
+    2.941,
+    2.943,
+    2.942,
+    2.939,
+    2.937,
+    2.943,
+    2.941
+   ],
+   "winner_parent": 10,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.033089777533686214,
+    "sigma": 0.0412266847203169
+   },
+   "valid": 0.4953271028037383,
+   "sample": " le the cod hougher watery seing anere nof ase sof sher you no funscke alf ger roou ins fit se toul gayn the ad aled thing tof the thong wton aind tont no whe what pust llit. ingetth ron mon hlous igh",
+   "steps_total": 10800
+  },
+  {
+   "cycle": 27,
+   "K": 28,
+   "bytes": 9520,
+   "bpc": 2.927741841448799,
+   "bpc_cands": [
+    2.94,
+    2.936,
+    2.934,
+    2.932,
+    2.933,
+    2.936,
+    2.938,
+    2.935,
+    2.934,
+    2.936,
+    2.928,
+    2.933
+   ],
+   "winner_parent": 26,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.02519123130196951,
+    "sigma": 0.03104331660276529
+   },
+   "valid": 0.43870967741935485,
+   "sample": " se his dit but loff ro helatl net that r you tite bart lou mupleaard and to she thing ay seey youn moower she gain se so ond ro the taid andely theing rangs anis. i het remely shate. makang gabepes y",
+   "steps_total": 11200
+  },
+  {
+   "cycle": 28,
+   "K": 29,
+   "bytes": 9860,
+   "bpc": 2.9194529656078148,
+   "bpc_cands": [
+    2.929,
+    2.921,
+    2.93,
+    2.93,
+    2.926,
+    2.927,
+    2.927,
+    2.928,
+    2.929,
+    2.929,
+    2.929,
+    2.919
+   ],
+   "winner_parent": 16,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.030804268313462717,
+    "sigma": 0.021933327121262364
+   },
+   "valid": 0.49843260188087773,
+   "sample": " to a hever to we shad go theryit illy wift off ther suthong stithe cono dover it waich ouseles ceed ther her ald thing ily se of. the wthit rate aid lit ten they whit. you ikl the with ma gid and the",
+   "steps_total": 11600
+  },
+  {
+   "cycle": 29,
+   "K": 30,
+   "bytes": 10200,
+   "bpc": 2.9148163133405536,
+   "bpc_cands": [
+    2.922,
+    2.919,
+    2.918,
+    2.916,
+    2.915,
+    2.919,
+    2.915,
+    2.918,
+    2.916,
+    2.918,
+    2.917,
+    2.915
+   ],
+   "winner_parent": 8,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.03672746063519442,
+    "sigma": 0.02
+   },
+   "valid": 0.4937106918238994,
+   "sample": " and a id hep. sare wond tone heme sthe was wnoso dand town in ame wang had sourele the set of ppea you athe toor sof ar lo and aly and the medese sh fat the wane th mep sher thing the towimy cith min",
+   "steps_total": 12000
+  },
+  {
+   "cycle": 30,
+   "K": 31,
+   "bytes": 10540,
+   "bpc": 2.9108699994338556,
+   "bpc_cands": [
+    2.914,
+    2.914,
+    2.913,
+    2.912,
+    2.915,
+    2.916,
+    2.914,
+    2.916,
+    2.911,
+    2.915,
+    2.914,
+    2.913
+   ],
+   "winner_parent": 15,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.026165325463167792,
+    "sigma": 0.024927713719581846
+   },
+   "valid": 0.4483870967741935,
+   "sample": " biddes alicey loundd thor won beis gait toon comnte ling the he. se sen whored. se illit le dne wes tooreaily wand aching se dof to in the woupttured and asthe bre of salaickilid. saice me uthod you ",
+   "steps_total": 12400
+  },
+  {
+   "cycle": 31,
+   "K": 32,
+   "bytes": 10880,
+   "bpc": 2.90686039591164,
+   "bpc_cands": [
+    2.911,
+    2.909,
+    2.911,
+    2.908,
+    2.91,
+    2.911,
+    2.908,
+    2.91,
+    2.909,
+    2.911,
+    2.907,
+    2.909
+   ],
+   "winner_parent": 5,
+   "winner_fresh": false,
+   "genes": {
+    "lr": 0.020904391228258552,
+    "sigma": 0.030937287305856143
+   },
+   "valid": 0.5015974440894568,
+   "sample": " the sa dod whed in to one. buten and the me way en te the torst ion shoour gashe rou rreps haree wat a bave and lo toughe che sinve vens pe to so fay it rshe sede tpr the wit ling te but dore rtou sa",
+   "steps_total": 12800
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "K_equiv": 8,
+ "d": 16,
+ "params": 2812,
+ "lr": 0.01,
+ "steps": 12800,
+ "sel_bpc": 2.7155671472544767,
+ "test_bpc": 2.698866815339935,
+ "test_bpc_int8": 2.7065762671643316,
+ "real2_mean": 0.6099868225946724,
+ "real2_std": 0.02077914731333071,
+ "real3_mean": 0.5231005943757948,
+ "real3_std": 0.011701980216604993,
+ "sample": " on doing to cure show se hees all a loariad surtle turpain ching wen her a stele vo whing so to in man it hat ware rat s wan mid che ban the sill sanked intle she was know ding headd she it a she cer"
+}

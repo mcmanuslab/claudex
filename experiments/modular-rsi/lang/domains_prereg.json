@@ -1,0 +1,90 @@
+{
+ "shakespeare": {
+  "urls": [
+   "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt"
+  ],
+  "sha256": {
+   "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed"
+  },
+  "n_chars": 150000
+ },
+ "alice": {
+  "urls": [
+   "https://raw.githubusercontent.com/GITenberg/Alice-s-Adventures-in-Wonderland_11/master/11.txt"
+  ],
+  "sha256": {
+   "https://raw.githubusercontent.com/GITenberg/Alice-s-Adventures-in-Wonderland_11/master/11.txt": "0f9ea0b148d553177962a25edd2f56d36342c22576a3253a127b4fbeffa5687d"
+  },
+  "n_chars": 144275
+ },
+ "python": {
+  "urls": [
+   "https://raw.githubusercontent.com/python/cpython/main/Lib/argparse.py",
+   "https://raw.githubusercontent.com/python/cpython/main/Lib/typing.py"
+  ],
+  "sha256": {
+   "https://raw.githubusercontent.com/python/cpython/main/Lib/argparse.py": "44a0380866275d5a2fded6b0aa81ef61375beeabe46e07031b2ebda9bf112042",
+   "https://raw.githubusercontent.com/python/cpython/main/Lib/typing.py": "b7b9d7ca89c9ec582c3e8f49be44d99a487971770c8f9f872e8a234062937964"
+  },
+  "n_chars": 150000
+ },
+ "javascript": {
+  "urls": [
+   "https://raw.githubusercontent.com/lodash/lodash/4.17.21/lodash.js"
+  ],
+  "sha256": {
+   "https://raw.githubusercontent.com/lodash/lodash/4.17.21/lodash.js": "4c04561befdf653aef017a42ac5addf68ea943cdfca6bdee5ce04e04e8139f54"
+  },
+  "n_chars": 150000
+ },
+ "latex": {
+  "urls": [
+   "https://raw.githubusercontent.com/latex3/latex2e/develop/required/amsmath/amsmath.dtx"
+  ],
+  "sha256": {
+   "https://raw.githubusercontent.com/latex3/latex2e/develop/required/amsmath/amsmath.dtx": "679738608517dcdfbe4c404745e5fd1afb32f7bd614e7d7be205be07e303fd46"
+  },
+  "n_chars": 150000
+ },
+ "markdown": {
+  "urls": [
+   "https://raw.githubusercontent.com/facebook/react/main/CHANGELOG.md"
+  ],
+  "sha256": {
+   "https://raw.githubusercontent.com/facebook/react/main/CHANGELOG.md": "955b00cb0eb7571147f9f1fa6d53e5fa987e71effdc601e3424e510a94596075"
+  },
+  "n_chars": 150000
+ },
+ "legal": {
+  "urls": [
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/GPL-3.0-only.txt",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/AGPL-3.0-only.txt",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/LGPL-2.1-only.txt",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/MPL-2.0.txt",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/Apache-2.0.txt",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/EPL-2.0.txt",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/CC-BY-SA-4.0.txt",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/GPL-2.0-only.txt"
+  ],
+  "sha256": {
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/GPL-3.0-only.txt": "fb981668c18a279e285fc4d83fba1e836cc84dd4daa73c9697d3cfd2d8aca6e0",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/AGPL-3.0-only.txt": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/LGPL-2.1-only.txt": "5749785c8bdefafcb5d798270ed0a967036fe2ca63dcedade1627565dfef81d2",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/MPL-2.0.txt": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/Apache-2.0.txt": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/EPL-2.0.txt": "61616a4066701bc7888ad910de1633dbc55eb4d4d30d930feef55afb9492e33c",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/CC-BY-SA-4.0.txt": "cde7883b9050a1104f4ac19a1572aafd6e5d7323b68351aaf51fbf4beba54966",
+   "https://raw.githubusercontent.com/spdx/license-list-data/main/text/GPL-2.0-only.txt": "aaf135472f81c5b4a0dca9367e5bb5e9750032b5bebe5442b36e4c0a47430df3"
+  },
+  "n_chars": 150000
+ },
+ "french": {
+  "urls": [
+   "https://raw.githubusercontent.com/GITenberg/Candide_4650/master/4650-8.txt"
+  ],
+  "sha256": {
+   "https://raw.githubusercontent.com/GITenberg/Candide_4650/master/4650-8.txt": "7c5056e6e6804f8a7f71f2eb2156918f77e0afd80104237f95a205eb056075a8"
+  },
+  "n_chars": 150000
+ }
+}

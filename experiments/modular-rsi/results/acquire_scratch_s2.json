@@ -1,0 +1,163 @@
+{
+ "mode": "scratch",
+ "seed": 2,
+ "skills": [
+  {
+   "skill": "A",
+   "k": 0,
+   "gens": null,
+   "evals": 10880,
+   "final_acc": 0.7265625,
+   "branch_len": 52,
+   "screen": [],
+   "improver": {
+    "lr": 0.024000000208616257,
+    "sigma": 0.009273828938603401
+   }
+  },
+  {
+   "skill": "B",
+   "k": 1,
+   "gens": 31,
+   "evals": 4216,
+   "final_acc": 0.984375,
+   "branch_len": 23,
+   "screen": [],
+   "improver": {
+    "lr": 0.024000000208616257,
+    "sigma": 0.048432301729917526
+   }
+  },
+  {
+   "skill": "Ainv",
+   "k": 2,
+   "gens": 68,
+   "evals": 9248,
+   "final_acc": 0.984375,
+   "branch_len": 39,
+   "screen": [],
+   "improver": {
+    "lr": 0.05692321062088013,
+    "sigma": 0.02918669581413269
+   }
+  },
+  {
+   "skill": "succ",
+   "k": 3,
+   "gens": 1,
+   "evals": 136,
+   "final_acc": 1.0,
+   "branch_len": 1,
+   "screen": [],
+   "improver": {
+    "lr": 0.023934831842780113,
+    "sigma": 0.01842726394534111
+   }
+  },
+  {
+   "skill": "Binv",
+   "k": 4,
+   "gens": 48,
+   "evals": 6528,
+   "final_acc": 0.96875,
+   "branch_len": 31,
+   "screen": [],
+   "improver": {
+    "lr": 0.024000000208616257,
+    "sigma": 0.015067849308252335
+   }
+  },
+  {
+   "skill": "C",
+   "k": 5,
+   "gens": 71,
+   "evals": 9656,
+   "final_acc": 1.0,
+   "branch_len": 49,
+   "screen": [],
+   "improver": {
+    "lr": 0.027719996869564056,
+    "sigma": 0.007253421936184168
+   }
+  },
+  {
+   "skill": "Cinv",
+   "k": 6,
+   "gens": 68,
+   "evals": 9248,
+   "final_acc": 0.9765625,
+   "branch_len": 31,
+   "screen": [],
+   "improver": {
+    "lr": 0.019999999552965164,
+    "sigma": 0.031466249376535416
+   }
+  },
+  {
+   "skill": "pred",
+   "k": 7,
+   "gens": 1,
+   "evals": 136,
+   "final_acc": 1.0,
+   "branch_len": 1,
+   "screen": [],
+   "improver": {
+    "lr": 0.026224277913570404,
+    "sigma": 0.0233119148761034
+   }
+  },
+  {
+   "skill": "D",
+   "k": 8,
+   "gens": 49,
+   "evals": 6664,
+   "final_acc": 0.9765625,
+   "branch_len": 27,
+   "screen": [],
+   "improver": {
+    "lr": 0.03331999480724335,
+    "sigma": 0.03921664506196976
+   }
+  },
+  {
+   "skill": "Dinv",
+   "k": 9,
+   "gens": 50,
+   "evals": 6800,
+   "final_acc": 0.96875,
+   "branch_len": 33,
+   "screen": [],
+   "improver": {
+    "lr": 0.06025783717632294,
+    "sigma": 0.02616598643362522
+   }
+  },
+  {
+   "skill": "neg",
+   "k": 10,
+   "gens": 1,
+   "evals": 136,
+   "final_acc": 1.0,
+   "branch_len": 1,
+   "screen": [],
+   "improver": {
+    "lr": 0.03327399864792824,
+    "sigma": 0.015687212347984314
+   }
+  },
+  {
+   "skill": "triple",
+   "k": 11,
+   "gens": 1,
+   "evals": 136,
+   "final_acc": 1.0,
+   "branch_len": 1,
+   "screen": [],
+   "improver": {
+    "lr": 0.025413986295461655,
+    "sigma": 0.015275483950972557
+   }
+  }
+ ],
+ "total_evals": 63784
+}

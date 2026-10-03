@@ -1,0 +1,20 @@
+[
+ {
+  "d": 4,
+  "params": 340,
+  "steps": 400,
+  "bpc": 3.5461113100361565,
+  "valid": 0.391304347826087,
+  "sample": " s a treletl t t the ache i.ye te tf outed sans s tihl id ta ig s t we sr whe yu te teiss tst twt woun ts pes th t tes t iny her ale the thpe so lo teo i tart t indyl hjuhe. courtsitadas ithe ne wh tu",
+  "K_equiv": 1
+ },
+ {
+  "d": 4,
+  "params": 340,
+  "steps": 8000,
+  "bpc": 3.43715686106155,
+  "valid": 0.41825095057034223,
+  "sample": " s a torinth t t the ache i. the bor outche int s then id t an ar t we sonthe yrele telou tow t. buthe toe mr th t tho t inthe t alinre korulins it ten i s tp t ineve hound. coustout bir ithe pe wh t.",
+  "K_equiv": 1
+ }
+]

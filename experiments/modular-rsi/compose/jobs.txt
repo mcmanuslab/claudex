@@ -1,0 +1,50 @@
+--system modular --lr 0.001 --seed 0
+--system modular --lr 0.003 --seed 0
+--system modular --lr 0.01 --seed 0
+--system looped --lr 0.001 --seed 0
+--system looped --lr 0.003 --seed 0
+--system looped --lr 0.01 --seed 0
+--system transformer --lr 0.001 --seed 0
+--system transformer --lr 0.003 --seed 0
+--system transformer --lr 0.01 --seed 0
+--system evolved --seed 0
+--system modular --lr 0.001 --seed 1
+--system modular --lr 0.003 --seed 1
+--system modular --lr 0.01 --seed 1
+--system looped --lr 0.001 --seed 1
+--system looped --lr 0.003 --seed 1
+--system looped --lr 0.01 --seed 1
+--system transformer --lr 0.001 --seed 1
+--system transformer --lr 0.003 --seed 1
+--system transformer --lr 0.01 --seed 1
+--system evolved --seed 1
+--system modular --lr 0.001 --seed 2
+--system modular --lr 0.003 --seed 2
+--system modular --lr 0.01 --seed 2
+--system looped --lr 0.001 --seed 2
+--system looped --lr 0.003 --seed 2
+--system looped --lr 0.01 --seed 2
+--system transformer --lr 0.001 --seed 2
+--system transformer --lr 0.003 --seed 2
+--system transformer --lr 0.01 --seed 2
+--system evolved --seed 2
+--system modular --lr 0.001 --seed 3
+--system modular --lr 0.003 --seed 3
+--system modular --lr 0.01 --seed 3
+--system looped --lr 0.001 --seed 3
+--system looped --lr 0.003 --seed 3
+--system looped --lr 0.01 --seed 3
+--system transformer --lr 0.001 --seed 3
+--system transformer --lr 0.003 --seed 3
+--system transformer --lr 0.01 --seed 3
+--system evolved --seed 3
+--system modular --lr 0.001 --seed 4
+--system modular --lr 0.003 --seed 4
+--system modular --lr 0.01 --seed 4
+--system looped --lr 0.001 --seed 4
+--system looped --lr 0.003 --seed 4
+--system looped --lr 0.01 --seed 4
+--system transformer --lr 0.001 --seed 4
+--system transformer --lr 0.003 --seed 4
+--system transformer --lr 0.01 --seed 4
+--system evolved --seed 4

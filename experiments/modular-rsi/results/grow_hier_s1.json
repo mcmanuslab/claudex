@@ -1,0 +1,551 @@
+{
+ "hier": true,
+ "seed": 1,
+ "log": [
+  {
+   "cycle": 1,
+   "length": 2,
+   "evals": 535,
+   "search_fit": 1.0,
+   "val_acc": 0.9892578125,
+   "chain": [
+    "B",
+    "Binv",
+    "succ",
+    "Binv"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 4
+  },
+  {
+   "cycle": 1,
+   "length": 2,
+   "evals": 133,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "A",
+    "succ"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 2
+  },
+  {
+   "cycle": 1,
+   "length": 2,
+   "evals": 439,
+   "search_fit": 1.0,
+   "val_acc": 0.99609375,
+   "chain": [
+    "A",
+    "Ainv",
+    "Ainv",
+    "Binv"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 4
+  },
+  {
+   "cycle": 1,
+   "length": 3,
+   "evals": 1615,
+   "search_fit": 1.0,
+   "val_acc": 0.986328125,
+   "chain": [
+    "A",
+    "Ainv",
+    "Ainv",
+    "M1.0"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 7
+  },
+  {
+   "cycle": 2,
+   "length": 6,
+   "evals": 1230,
+   "search_fit": 1.0,
+   "val_acc": 0.9921875,
+   "chain": [
+    "M1.1",
+    "M1.1",
+    "M1.0"
+   ],
+   "exec_acc": 0.984375,
+   "exec_len": 8
+  },
+  {
+   "cycle": 2,
+   "length": 7,
+   "evals": 2801,
+   "search_fit": 1.0,
+   "val_acc": 0.9853515625,
+   "chain": [
+    "A",
+    "M1.3",
+    "M1.3",
+    "M1.1"
+   ],
+   "exec_acc": 0.984375,
+   "exec_len": 17
+  },
+  {
+   "cycle": 2,
+   "length": 4,
+   "evals": 136,
+   "search_fit": 1.0,
+   "val_acc": 0.9912109375,
+   "chain": [
+    "M1.1",
+    "M1.0"
+   ],
+   "exec_acc": 0.984375,
+   "exec_len": 6
+  },
+  {
+   "cycle": 2,
+   "length": 4,
+   "evals": 4697,
+   "search_fit": 1.0,
+   "val_acc": 0.990234375,
+   "chain": [
+    "M1.1",
+    "M1.0"
+   ],
+   "exec_acc": 0.984375,
+   "exec_len": 6
+  },
+  {
+   "cycle": 3,
+   "length": 17,
+   "evals": 1807,
+   "search_fit": 1.0,
+   "val_acc": 0.982421875,
+   "chain": [
+    "M2.1",
+    "M2.3",
+    "M2.0"
+   ],
+   "exec_acc": 0.953125,
+   "exec_len": 31
+  },
+  {
+   "cycle": 3,
+   "length": 15,
+   "evals": 845,
+   "search_fit": 1.0,
+   "val_acc": 0.96826171875,
+   "chain": [
+    "M2.1",
+    "M1.1",
+    "M1.0",
+    "M2.2"
+   ],
+   "exec_acc": 0.984375,
+   "exec_len": 29
+  },
+  {
+   "cycle": 3,
+   "length": 8,
+   "evals": 1964,
+   "search_fit": 1.0,
+   "val_acc": 0.98291015625,
+   "chain": [
+    "M2.2",
+    "M2.2"
+   ],
+   "exec_acc": 0.984375,
+   "exec_len": 12
+  },
+  {
+   "cycle": 3,
+   "length": 8,
+   "evals": 126,
+   "search_fit": 1.0,
+   "val_acc": 0.9833984375,
+   "chain": [
+    "M3.2"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 12
+  },
+  {
+   "cycle": 4,
+   "length": 16,
+   "evals": 412,
+   "search_fit": 1.0,
+   "val_acc": 0.97509765625,
+   "chain": [
+    "M3.3",
+    "M3.2"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 24
+  },
+  {
+   "cycle": 4,
+   "length": 16,
+   "evals": 306,
+   "search_fit": 1.0,
+   "val_acc": 0.9638671875,
+   "chain": [
+    "M2.2",
+    "M2.3",
+    "M3.2"
+   ],
+   "exec_acc": 0.984375,
+   "exec_len": 24
+  },
+  {
+   "cycle": 4,
+   "length": 16,
+   "evals": 1499,
+   "search_fit": 1.0,
+   "val_acc": 0.9638671875,
+   "chain": [
+    "M2.2",
+    "M2.2",
+    "M3.2"
+   ],
+   "exec_acc": 0.953125,
+   "exec_len": 24
+  },
+  {
+   "cycle": 4,
+   "length": 42,
+   "evals": 1711,
+   "search_fit": 1.0,
+   "val_acc": 0.96533203125,
+   "chain": [
+    "M3.0",
+    "M3.2",
+    "M3.0"
+   ],
+   "exec_acc": 0.953125,
+   "exec_len": 74
+  },
+  {
+   "cycle": 5,
+   "length": 58,
+   "evals": 437,
+   "search_fit": 1.0,
+   "val_acc": 0.94384765625,
+   "chain": [
+    "M4.0",
+    "M4.3"
+   ]
+  },
+  {
+   "cycle": 5,
+   "length": 100,
+   "evals": 1118,
+   "search_fit": 1.0,
+   "val_acc": 0.97265625,
+   "chain": [
+    "M4.0",
+    "M4.3",
+    "M4.3"
+   ],
+   "exec_acc": 0.984375,
+   "exec_len": 172
+  },
+  {
+   "cycle": 5,
+   "length": 74,
+   "evals": 1326,
+   "search_fit": 1.0,
+   "val_acc": 0.9638671875,
+   "chain": [
+    "M4.0",
+    "M4.1",
+    "M4.3"
+   ],
+   "exec_acc": 0.953125,
+   "exec_len": 122
+  },
+  {
+   "cycle": 5,
+   "length": 100,
+   "evals": 2021,
+   "search_fit": 1.0,
+   "val_acc": 0.97314453125,
+   "chain": [
+    "M4.3",
+    "M4.1",
+    "M4.3"
+   ],
+   "exec_acc": 0.96875,
+   "exec_len": 172
+  },
+  {
+   "cycle": 6,
+   "length": 300,
+   "evals": 2423,
+   "search_fit": 1.0,
+   "val_acc": 0.9765625,
+   "chain": [
+    "M5.0",
+    "M5.0",
+    "M5.2"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 516
+  },
+  {
+   "cycle": 6,
+   "length": 274,
+   "evals": 1721,
+   "search_fit": 1.0,
+   "val_acc": 0.96044921875,
+   "chain": [
+    "M5.0",
+    "M5.2",
+    "M5.1"
+   ],
+   "exec_acc": 0.984375,
+   "exec_len": 466
+  },
+  {
+   "cycle": 6,
+   "length": 148,
+   "evals": 1949,
+   "search_fit": 1.0,
+   "val_acc": 0.94921875,
+   "chain": [
+    "M5.1",
+    "M5.1"
+   ]
+  },
+  {
+   "cycle": 6,
+   "length": 300,
+   "evals": 3097,
+   "search_fit": 1.0,
+   "val_acc": 0.96875,
+   "chain": [
+    "M5.2",
+    "M5.0",
+    "M5.0"
+   ],
+   "exec_acc": 0.890625,
+   "exec_len": 516
+  },
+  {
+   "cycle": 7,
+   "length": 900,
+   "evals": 1115,
+   "search_fit": 1.0,
+   "val_acc": 0.9736328125,
+   "chain": [
+    "M6.0",
+    "M6.0",
+    "M6.2"
+   ],
+   "exec_acc": 0.9375,
+   "exec_len": 1548
+  },
+  {
+   "cycle": 7,
+   "length": 600,
+   "evals": 1829,
+   "search_fit": 1.0,
+   "val_acc": 0.94970703125,
+   "chain": [
+    "B",
+    "Binv",
+    "M6.2",
+    "M6.2"
+   ]
+  },
+  {
+   "cycle": 7,
+   "length": 574,
+   "evals": 1123,
+   "search_fit": 1.0,
+   "val_acc": 0.9599609375,
+   "chain": [
+    "M6.1",
+    "M6.0"
+   ],
+   "exec_acc": 0.953125,
+   "exec_len": 982
+  },
+  {
+   "cycle": 7,
+   "length": 574,
+   "evals": 156,
+   "search_fit": 1.0,
+   "val_acc": 0.96923828125,
+   "chain": [
+    "M6.1",
+    "M6.2"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 982
+  },
+  {
+   "cycle": 8,
+   "length": 1722,
+   "evals": 631,
+   "search_fit": 1.0,
+   "val_acc": 0.97265625,
+   "chain": [
+    "M7.1",
+    "M7.1",
+    "M7.1"
+   ],
+   "exec_acc": null,
+   "exec_len": 2946
+  },
+  {
+   "cycle": 8,
+   "length": 2048,
+   "evals": 776,
+   "search_fit": 1.0,
+   "val_acc": 0.95654296875,
+   "chain": [
+    "M7.0",
+    "M7.2",
+    "M7.1"
+   ],
+   "exec_acc": null,
+   "exec_len": 3512
+  },
+  {
+   "cycle": 8,
+   "length": 1800,
+   "evals": 774,
+   "search_fit": 1.0,
+   "val_acc": 0.96337890625,
+   "chain": [
+    "M7.0",
+    "M7.0"
+   ],
+   "exec_acc": null,
+   "exec_len": 3096
+  },
+  {
+   "cycle": 8,
+   "length": 1722,
+   "evals": 319,
+   "search_fit": 1.0,
+   "val_acc": 0.95654296875,
+   "chain": [
+    "M7.1",
+    "M7.1",
+    "M7.1"
+   ],
+   "exec_acc": null,
+   "exec_len": 2946
+  },
+  {
+   "cycle": 9,
+   "length": 3522,
+   "evals": 449,
+   "search_fit": 1.0,
+   "val_acc": 0.9609375,
+   "chain": [
+    "M8.0",
+    "M8.2"
+   ],
+   "exec_acc": null,
+   "exec_len": 6042
+  },
+  {
+   "cycle": 9,
+   "length": 5492,
+   "evals": 1420,
+   "search_fit": 1.0,
+   "val_acc": 0.9736328125,
+   "chain": [
+    "M8.0",
+    "M8.3",
+    "M8.1"
+   ],
+   "exec_acc": null,
+   "exec_len": 9404
+  },
+  {
+   "cycle": 9,
+   "length": 5492,
+   "evals": 1427,
+   "search_fit": 1.0,
+   "val_acc": 0.95263671875,
+   "chain": [
+    "M8.1",
+    "M8.0",
+    "M8.0"
+   ],
+   "exec_acc": null,
+   "exec_len": 9404
+  },
+  {
+   "cycle": 9,
+   "length": 3770,
+   "evals": 4031,
+   "search_fit": 1.0,
+   "val_acc": 0.94873046875,
+   "chain": [
+    "M8.1",
+    "M8.3"
+   ]
+  },
+  {
+   "cycle": 10,
+   "length": 14506,
+   "evals": 944,
+   "search_fit": 1.0,
+   "val_acc": 0.97998046875,
+   "chain": [
+    "M9.2",
+    "M9.1",
+    "M9.0"
+   ],
+   "exec_acc": null,
+   "exec_len": 24850
+  },
+  {
+   "cycle": 10,
+   "length": 10984,
+   "evals": 1953,
+   "search_fit": 1.0,
+   "val_acc": 0.96630859375,
+   "chain": [
+    "M8.1",
+    "M8.3",
+    "M8.0",
+    "M9.1"
+   ],
+   "exec_acc": null,
+   "exec_len": 18808
+  },
+  {
+   "cycle": 10,
+   "length": 9014,
+   "evals": 2362,
+   "search_fit": 1.0,
+   "val_acc": 0.96923828125,
+   "chain": [
+    "M9.1",
+    "M9.0"
+   ],
+   "exec_acc": null,
+   "exec_len": 15446
+  },
+  {
+   "cycle": 10,
+   "length": 12536,
+   "evals": 1633,
+   "search_fit": 1.0,
+   "val_acc": 0.97314453125,
+   "chain": [
+    "M9.0",
+    "M9.1",
+    "M9.0"
+   ],
+   "exec_acc": null,
+   "exec_len": 21488
+  }
+ ],
+ "total_evals": 55290
+}
