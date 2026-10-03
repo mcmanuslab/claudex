@@ -1,0 +1,15 @@
+{
+ "K_equiv": 32,
+ "d": 34,
+ "params": 10840,
+ "lr": 0.03,
+ "steps": 12800,
+ "sel_bpc": 2.421353706847346,
+ "test_bpc": 2.443225939614182,
+ "test_bpc_int8": 2.4457707942233453,
+ "real2_mean": 0.8220324773316481,
+ "real2_std": 0.018353825635977844,
+ "real3_mean": 0.7797214952781676,
+ "real3_std": 0.024846841304684925,
+ "sample": " not make to cut and was alice alice lock and with shought a for at like a bround to which so the going its and don t the was like it a mark the more was i well on was look ching alice senter and was "
+}

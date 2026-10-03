@@ -1,0 +1,15 @@
+{
+ "K_equiv": 8,
+ "d": 16,
+ "params": 2812,
+ "lr": 0.003,
+ "steps": 12800,
+ "sel_bpc": 2.7885431342729663,
+ "test_bpc": 2.7630602302267078,
+ "test_bpc_int8": 2.7675880737319805,
+ "real2_mean": 0.562470424744804,
+ "real2_std": 0.02242181561335962,
+ "real3_mean": 0.4586991943324873,
+ "real3_std": 0.011951068503136025,
+ "sample": " on domenhis cuse sout than hould a fou mo hatter it you gre fore welf she bow of to whing so the her of to dons in sall at her and thad borche pled to planke she duch lousaid pon hat sher the seat do"
+}

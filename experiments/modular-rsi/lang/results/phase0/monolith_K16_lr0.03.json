@@ -1,0 +1,15 @@
+{
+ "K_equiv": 16,
+ "d": 23,
+ "params": 5318,
+ "lr": 0.03,
+ "steps": 12800,
+ "sel_bpc": 2.5462248126232616,
+ "test_bpc": 2.553683677688779,
+ "test_bpc_int8": 2.553143208546269,
+ "real2_mean": 0.6902033676573955,
+ "real2_std": 0.016726680051102942,
+ "real3_mean": 0.6158578979239401,
+ "real3_std": 0.020402764022007365,
+ "sample": " one of the geting tor shangethe that take ganting sizen hirce opever her a sole sor whingirs the half enture grand of on was in neeth and nother reatter inded plies she the it seaid she were for up l"
+}

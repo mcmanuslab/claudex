@@ -1,0 +1,15 @@
+{
+ "K_equiv": 32,
+ "d": 34,
+ "params": 10840,
+ "lr": 0.003,
+ "steps": 12800,
+ "sel_bpc": 2.4914115308215434,
+ "test_bpc": 2.4938989850154956,
+ "test_bpc_int8": 2.501041119116074,
+ "real2_mean": 0.7295547779332335,
+ "real2_std": 0.028927534444840027,
+ "real3_mean": 0.6799892031054201,
+ "real3_std": 0.04156106175764317,
+ "sample": " on don then curned to shaid what be lobst fantly it you gre ever was her a ster sorown reming the mome mouse footmarch say ham alice a marchater she was if the on was just eggen a door it that let ch"
+}

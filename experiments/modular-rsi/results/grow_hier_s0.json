@@ -1,0 +1,553 @@
+{
+ "hier": true,
+ "seed": 0,
+ "log": [
+  {
+   "cycle": 1,
+   "length": 3,
+   "evals": 130,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "succ"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 1
+  },
+  {
+   "cycle": 1,
+   "length": 2,
+   "evals": 143,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "succ",
+    "Ainv"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 2
+  },
+  {
+   "cycle": 1,
+   "length": 2,
+   "evals": 140,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "Ainv",
+    "A",
+    "A",
+    "Ainv"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 4
+  },
+  {
+   "cycle": 1,
+   "length": 3,
+   "evals": 2339,
+   "search_fit": 1.0,
+   "val_acc": 0.99560546875,
+   "chain": [
+    "A",
+    "Ainv",
+    "M1.2",
+    "Binv"
+   ],
+   "exec_acc": 0.984375,
+   "exec_len": 7
+  },
+  {
+   "cycle": 2,
+   "length": 4,
+   "evals": 136,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M1.1"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 2
+  },
+  {
+   "cycle": 2,
+   "length": 4,
+   "evals": 136,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M1.1",
+    "M1.2"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 6
+  },
+  {
+   "cycle": 2,
+   "length": 5,
+   "evals": 134,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M1.0",
+    "M2.1"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 7
+  },
+  {
+   "cycle": 2,
+   "length": 9,
+   "evals": 135,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M1.0",
+    "succ",
+    "M1.2",
+    "M1.0"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 7
+  },
+  {
+   "cycle": 3,
+   "length": 13,
+   "evals": 127,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M2.0",
+    "M2.3"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 9
+  },
+  {
+   "cycle": 3,
+   "length": 13,
+   "evals": 141,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M2.3",
+    "M2.0"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 9
+  },
+  {
+   "cycle": 3,
+   "length": 13,
+   "evals": 294,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M2.1",
+    "M1.2",
+    "M2.1",
+    "M2.2"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 23
+  },
+  {
+   "cycle": 3,
+   "length": 14,
+   "evals": 127,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M1.1",
+    "M1.0",
+    "M2.0",
+    "M2.2"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 12
+  },
+  {
+   "cycle": 4,
+   "length": 39,
+   "evals": 152,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M3.1",
+    "M3.0",
+    "M3.2"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 41
+  },
+  {
+   "cycle": 4,
+   "length": 26,
+   "evals": 153,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M3.1",
+    "M3.1"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 18
+  },
+  {
+   "cycle": 4,
+   "length": 27,
+   "evals": 150,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M3.3",
+    "M3.1",
+    "M1.2"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 25
+  },
+  {
+   "cycle": 4,
+   "length": 39,
+   "evals": 956,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M3.1",
+    "M3.0",
+    "M3.0"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 27
+  },
+  {
+   "cycle": 5,
+   "length": 93,
+   "evals": 744,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M4.2",
+    "M4.2",
+    "M4.3"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 77
+  },
+  {
+   "cycle": 5,
+   "length": 65,
+   "evals": 305,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M4.0",
+    "M1.2",
+    "M4.1"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 63
+  },
+  {
+   "cycle": 5,
+   "length": 93,
+   "evals": 147,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M4.2",
+    "M4.2",
+    "M4.0"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 91
+  },
+  {
+   "cycle": 5,
+   "length": 92,
+   "evals": 289,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M4.0",
+    "M4.2",
+    "M4.1"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 84
+  },
+  {
+   "cycle": 6,
+   "length": 223,
+   "evals": 305,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M5.0",
+    "M5.1",
+    "M5.1"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 203
+  },
+  {
+   "cycle": 6,
+   "length": 250,
+   "evals": 492,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M5.0",
+    "M5.1",
+    "M5.3"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 224
+  },
+  {
+   "cycle": 6,
+   "length": 278,
+   "evals": 1150,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M5.2",
+    "M5.0",
+    "M5.3"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 252
+  },
+  {
+   "cycle": 6,
+   "length": 249,
+   "evals": 3484,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M5.3",
+    "M5.1",
+    "M5.3"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 231
+  },
+  {
+   "cycle": 7,
+   "length": 528,
+   "evals": 159,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M6.2",
+    "M6.1"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 476
+  },
+  {
+   "cycle": 7,
+   "length": 527,
+   "evals": 162,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M6.2",
+    "M6.3"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 483
+  },
+  {
+   "cycle": 7,
+   "length": 472,
+   "evals": 1192,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M6.0",
+    "M6.3"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 434
+  },
+  {
+   "cycle": 7,
+   "length": 473,
+   "evals": 354,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M6.0",
+    "M6.1"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 427
+  },
+  {
+   "cycle": 8,
+   "length": 1526,
+   "evals": 2546,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M7.1",
+    "M7.2",
+    "M7.1"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 1400
+  },
+  {
+   "cycle": 8,
+   "length": 1001,
+   "evals": 157,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M7.0",
+    "M7.3"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 903
+  },
+  {
+   "cycle": 8,
+   "length": 944,
+   "evals": 321,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M7.2",
+    "M7.2"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 868
+  },
+  {
+   "cycle": 8,
+   "length": 1582,
+   "evals": 3296,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M7.1",
+    "M7.1",
+    "M7.0"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 1442
+  },
+  {
+   "cycle": 9,
+   "length": 2946,
+   "evals": 1777,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M8.1",
+    "M8.1",
+    "M8.2"
+   ],
+   "exec_acc": null,
+   "exec_len": 2674
+  },
+  {
+   "cycle": 9,
+   "length": 2470,
+   "evals": 331,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M8.0",
+    "M8.2"
+   ],
+   "exec_acc": null,
+   "exec_len": 2268
+  },
+  {
+   "cycle": 9,
+   "length": 1945,
+   "evals": 1045,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M8.2",
+    "M8.1"
+   ],
+   "exec_acc": 1.0,
+   "exec_len": 1771
+  },
+  {
+   "cycle": 9,
+   "length": 3996,
+   "evals": 867,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M8.2",
+    "M8.0",
+    "M8.0"
+   ],
+   "exec_acc": null,
+   "exec_len": 3668
+  },
+  {
+   "cycle": 10,
+   "length": 4891,
+   "evals": 504,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M1.2",
+    "M9.0",
+    "M9.2"
+   ],
+   "exec_acc": null,
+   "exec_len": 4449
+  },
+  {
+   "cycle": 10,
+   "length": 6836,
+   "evals": 1251,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M9.2",
+    "M9.2",
+    "M9.0"
+   ],
+   "exec_acc": null,
+   "exec_len": 6216
+  },
+  {
+   "cycle": 10,
+   "length": 4940,
+   "evals": 168,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M9.1",
+    "M9.1"
+   ],
+   "exec_acc": null,
+   "exec_len": 4536
+  },
+  {
+   "cycle": 10,
+   "length": 7361,
+   "evals": 1894,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "M9.2",
+    "M9.1",
+    "M9.0"
+   ],
+   "exec_acc": null,
+   "exec_len": 6713
+  }
+ ],
+ "total_evals": 28333
+}

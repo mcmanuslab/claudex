@@ -1,0 +1,496 @@
+{
+ "arm": "inherit",
+ "seed": 2,
+ "module_params": 340,
+ "log": [
+  {
+   "cycle": 0,
+   "K": 1,
+   "params": 340,
+   "sel_bpc": 3.376438617706299,
+   "test_bpc": 3.3496105906569458,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": -1,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 4800
+  },
+  {
+   "cycle": 1,
+   "K": 2,
+   "params": 680,
+   "sel_bpc": 3.247664213180542,
+   "test_bpc": 3.228303145426131,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 0,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 9600
+  },
+  {
+   "cycle": 2,
+   "K": 3,
+   "params": 1020,
+   "sel_bpc": 3.175636053085327,
+   "test_bpc": 3.1460999902283557,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 1,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 14400
+  },
+  {
+   "cycle": 3,
+   "K": 4,
+   "params": 1360,
+   "sel_bpc": 3.1465275287628174,
+   "test_bpc": 3.1199396995617263,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 2,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 19200
+  },
+  {
+   "cycle": 4,
+   "K": 5,
+   "params": 1700,
+   "sel_bpc": 3.0947697162628174,
+   "test_bpc": 3.0800421933966176,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 3,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 24000
+  },
+  {
+   "cycle": 5,
+   "K": 6,
+   "params": 2040,
+   "sel_bpc": 3.0705208778381348,
+   "test_bpc": 3.0546983670589,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 4,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 28800
+  },
+  {
+   "cycle": 6,
+   "K": 7,
+   "params": 2380,
+   "sel_bpc": 3.0512232780456543,
+   "test_bpc": 3.0369620502311085,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 5,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 33600
+  },
+  {
+   "cycle": 7,
+   "K": 8,
+   "params": 2720,
+   "sel_bpc": 3.028346061706543,
+   "test_bpc": 3.02027756000822,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 6,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 38400
+  },
+  {
+   "cycle": 8,
+   "K": 9,
+   "params": 3060,
+   "sel_bpc": 3.006837844848633,
+   "test_bpc": 2.996027118998964,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 7,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 43200
+  },
+  {
+   "cycle": 9,
+   "K": 10,
+   "params": 3400,
+   "sel_bpc": 2.998997449874878,
+   "test_bpc": 2.9856943241840304,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 8,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 48000
+  },
+  {
+   "cycle": 10,
+   "K": 11,
+   "params": 3740,
+   "sel_bpc": 2.982562303543091,
+   "test_bpc": 2.971062978920287,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 9,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 52800
+  },
+  {
+   "cycle": 11,
+   "K": 12,
+   "params": 4080,
+   "sel_bpc": 2.9644792079925537,
+   "test_bpc": 2.9588695054129834,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 10,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 57600
+  },
+  {
+   "cycle": 12,
+   "K": 13,
+   "params": 4420,
+   "sel_bpc": 2.956164598464966,
+   "test_bpc": 2.9520973879674504,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 11,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 62400
+  },
+  {
+   "cycle": 13,
+   "K": 14,
+   "params": 4760,
+   "sel_bpc": 2.9450786113739014,
+   "test_bpc": 2.9379219542453137,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 12,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 67200
+  },
+  {
+   "cycle": 14,
+   "K": 15,
+   "params": 5100,
+   "sel_bpc": 2.942659854888916,
+   "test_bpc": 2.9305270731551754,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 13,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 72000
+  },
+  {
+   "cycle": 15,
+   "K": 16,
+   "params": 5440,
+   "sel_bpc": 2.9393982887268066,
+   "test_bpc": 2.9280177080500405,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 14,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 76800
+  },
+  {
+   "cycle": 16,
+   "K": 17,
+   "params": 5780,
+   "sel_bpc": 2.925305128097534,
+   "test_bpc": 2.915146539317984,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 15,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 81600
+  },
+  {
+   "cycle": 17,
+   "K": 18,
+   "params": 6120,
+   "sel_bpc": 2.9198625087738037,
+   "test_bpc": 2.9108845070544787,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 16,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 86400
+  },
+  {
+   "cycle": 18,
+   "K": 19,
+   "params": 6460,
+   "sel_bpc": 2.910752296447754,
+   "test_bpc": 2.9039359707700787,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 17,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 91200
+  },
+  {
+   "cycle": 19,
+   "K": 20,
+   "params": 6800,
+   "sel_bpc": 2.9023854732513428,
+   "test_bpc": 2.897472149103019,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 18,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 96000
+  },
+  {
+   "cycle": 20,
+   "K": 21,
+   "params": 7140,
+   "sel_bpc": 2.8872759342193604,
+   "test_bpc": 2.889998882499635,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 19,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 100800
+  },
+  {
+   "cycle": 21,
+   "K": 22,
+   "params": 7480,
+   "sel_bpc": 2.8741800785064697,
+   "test_bpc": 2.8811949137973736,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 20,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 105600
+  },
+  {
+   "cycle": 22,
+   "K": 23,
+   "params": 7820,
+   "sel_bpc": 2.8630423545837402,
+   "test_bpc": 2.8675714704480404,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 21,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 110400
+  },
+  {
+   "cycle": 23,
+   "K": 24,
+   "params": 8160,
+   "sel_bpc": 2.86141300201416,
+   "test_bpc": 2.861342085243824,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 22,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 115200
+  },
+  {
+   "cycle": 24,
+   "K": 25,
+   "params": 8500,
+   "sel_bpc": 2.8544540405273438,
+   "test_bpc": 2.856445768105421,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 23,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 120000
+  },
+  {
+   "cycle": 25,
+   "K": 26,
+   "params": 8840,
+   "sel_bpc": 2.8443870544433594,
+   "test_bpc": 2.8467464352203646,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 24,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 124800
+  },
+  {
+   "cycle": 26,
+   "K": 27,
+   "params": 9180,
+   "sel_bpc": 2.842139482498169,
+   "test_bpc": 2.8450044663472664,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 25,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 129600
+  },
+  {
+   "cycle": 27,
+   "K": 28,
+   "params": 9520,
+   "sel_bpc": 2.8352112770080566,
+   "test_bpc": 2.83891981659861,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 26,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 134400
+  },
+  {
+   "cycle": 28,
+   "K": 29,
+   "params": 9860,
+   "sel_bpc": 2.8306798934936523,
+   "test_bpc": 2.8352730386063936,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 27,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 139200
+  },
+  {
+   "cycle": 29,
+   "K": 30,
+   "params": 10200,
+   "sel_bpc": 2.828016519546509,
+   "test_bpc": 2.8330643570382885,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 28,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 144000
+  },
+  {
+   "cycle": 30,
+   "K": 31,
+   "params": 10540,
+   "sel_bpc": 2.824152946472168,
+   "test_bpc": 2.831604555439249,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 29,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 148800
+  },
+  {
+   "cycle": 31,
+   "K": 32,
+   "params": 10880,
+   "sel_bpc": 2.8239715099334717,
+   "test_bpc": 2.8279741334793234,
+   "spread": 0.0,
+   "sel_noise_se": 0.0,
+   "winner_parent": 30,
+   "genes": {
+    "lr": 0.03,
+    "sigma": 0.0
+   },
+   "cand_steps": 153600
+  }
+ ],
+ "final": {
+  "test_bpc": 2.8279741334793234,
+  "test_bpc_int8": 2.86362287736939,
+  "real2_mean": 0.5381420845800204,
+  "real2_std": 0.01566804278296295,
+  "real3_mean": 0.4163495011623527,
+  "real3_std": 0.015451501633002207,
+  "sample": " ighe of thing. a the thae a catt jusesame the boock ill eaches. to ther make llow theach is ther if so but be s a teun it f ime of t to again will to saind ant buch atherin dole. she a ther oupling h"
+ }
+}

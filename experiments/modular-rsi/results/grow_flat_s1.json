@@ -1,0 +1,160 @@
+{
+ "hier": false,
+ "seed": 1,
+ "log": [
+  {
+   "cycle": 1,
+   "length": 2,
+   "evals": 535,
+   "search_fit": 1.0,
+   "val_acc": 0.9892578125,
+   "chain": [
+    "B",
+    "Binv",
+    "succ",
+    "Binv"
+   ]
+  },
+  {
+   "cycle": 1,
+   "length": 3,
+   "evals": 525,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "succ",
+    "B",
+    "Ainv"
+   ]
+  },
+  {
+   "cycle": 1,
+   "length": 2,
+   "evals": 1420,
+   "search_fit": 1.0,
+   "val_acc": 0.9970703125,
+   "chain": [
+    "Ainv",
+    "A",
+    "Binv",
+    "succ"
+   ]
+  },
+  {
+   "cycle": 1,
+   "length": 2,
+   "evals": 122,
+   "search_fit": 1.0,
+   "val_acc": 1.0,
+   "chain": [
+    "succ",
+    "A",
+    "Ainv",
+    "Ainv"
+   ]
+  },
+  {
+   "cycle": 2,
+   "length": 4,
+   "evals": 1106,
+   "search_fit": 1.0,
+   "val_acc": 0.98388671875,
+   "chain": [
+    "Binv",
+    "succ",
+    "succ",
+    "Binv"
+   ]
+  },
+  {
+   "cycle": 2,
+   "length": 7,
+   "evals": 6078,
+   "search_fit": 0.171875,
+   "val_acc": 0.1533203125,
+   "chain": [
+    "B",
+    "Binv",
+    "Binv",
+    "Ainv"
+   ]
+  },
+  {
+   "cycle": 2,
+   "length": 6,
+   "evals": 6101,
+   "search_fit": 0.25,
+   "val_acc": 0.25390625,
+   "chain": [
+    "B",
+    "Ainv",
+    "Binv",
+    "succ"
+   ]
+  },
+  {
+   "cycle": 2,
+   "length": 6,
+   "evals": 6113,
+   "search_fit": 0.265625,
+   "val_acc": 0.25537109375,
+   "chain": [
+    "A",
+    "A",
+    "Ainv",
+    "Ainv"
+   ]
+  },
+  {
+   "cycle": 3,
+   "length": 8,
+   "evals": 6007,
+   "search_fit": 0.2578125,
+   "val_acc": 0.216796875,
+   "chain": [
+    "A",
+    "Ainv"
+   ]
+  },
+  {
+   "cycle": 3,
+   "length": 12,
+   "evals": 6027,
+   "search_fit": 0.19270833333333334,
+   "val_acc": 0.21875,
+   "chain": [
+    "A",
+    "Ainv",
+    "Binv",
+    "B"
+   ]
+  },
+  {
+   "cycle": 3,
+   "length": 8,
+   "evals": 6118,
+   "search_fit": 0.2578125,
+   "val_acc": 0.22021484375,
+   "chain": [
+    "A",
+    "Ainv",
+    "Binv",
+    "B"
+   ]
+  },
+  {
+   "cycle": 3,
+   "length": 8,
+   "evals": 6131,
+   "search_fit": 0.2552083333333333,
+   "val_acc": 0.1962890625,
+   "chain": [
+    "A",
+    "A",
+    "Ainv",
+    "Ainv"
+   ]
+  }
+ ],
+ "total_evals": 46283
+}

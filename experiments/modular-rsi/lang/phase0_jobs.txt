@@ -1,0 +1,32 @@
+phase0.py --arm full --seed 0
+phase0.py --arm inherit --seed 0
+phase0.py --arm fixedgenes --seed 0
+phase0.py --arm nocredit --seed 0
+phase0.py --arm fresh --seed 0
+phase0.py --arm full --seed 1
+phase0.py --arm inherit --seed 1
+phase0.py --arm fixedgenes --seed 1
+phase0.py --arm nocredit --seed 1
+phase0.py --arm fresh --seed 1
+phase0.py --arm full --seed 2
+phase0.py --arm inherit --seed 2
+phase0.py --arm fixedgenes --seed 2
+phase0.py --arm nocredit --seed 2
+phase0.py --arm fresh --seed 2
+phase0.py --arm full --seed 3
+phase0.py --arm inherit --seed 3
+phase0.py --arm fixedgenes --seed 3
+phase0.py --arm nocredit --seed 3
+phase0.py --arm fresh --seed 3
+monolith_tuned.py 4 0.003
+monolith_tuned.py 4 0.01
+monolith_tuned.py 4 0.03
+monolith_tuned.py 8 0.003
+monolith_tuned.py 8 0.01
+monolith_tuned.py 8 0.03
+monolith_tuned.py 16 0.003
+monolith_tuned.py 16 0.01
+monolith_tuned.py 16 0.03
+monolith_tuned.py 32 0.003
+monolith_tuned.py 32 0.01
+monolith_tuned.py 32 0.03

@@ -1,0 +1,15 @@
+{
+ "K_equiv": 32,
+ "d": 34,
+ "params": 10840,
+ "lr": 0.01,
+ "steps": 12800,
+ "sel_bpc": 2.4187929076784016,
+ "test_bpc": 2.4423966167693183,
+ "test_bpc_int8": 2.442591037530518,
+ "real2_mean": 0.7715903822267931,
+ "real2_std": 0.024316942635603602,
+ "real3_mean": 0.7125429238887815,
+ "real3_std": 0.028789174913940584,
+ "sample": " no chand to curightions air what be juing feet the surnack again when the and of to which to the going itle say ll rened was in of the of the she of the hatter on was it said the gittle was a no the "
+}

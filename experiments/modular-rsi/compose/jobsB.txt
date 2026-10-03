@@ -1,0 +1,20 @@
+--system modular --lr 0.003 --seed 10 --steps 30000
+--system looped --lr 0.003 --seed 10 --steps 30000
+--system transformer --lr 0.001 --seed 10 --steps 30000
+--system evolved --seed 10 --steps 30000
+--system modular --lr 0.003 --seed 11 --steps 30000
+--system looped --lr 0.003 --seed 11 --steps 30000
+--system transformer --lr 0.001 --seed 11 --steps 30000
+--system evolved --seed 11 --steps 30000
+--system modular --lr 0.003 --seed 12 --steps 30000
+--system looped --lr 0.003 --seed 12 --steps 30000
+--system transformer --lr 0.001 --seed 12 --steps 30000
+--system evolved --seed 12 --steps 30000
+--system modular --lr 0.003 --seed 13 --steps 30000
+--system looped --lr 0.003 --seed 13 --steps 30000
+--system transformer --lr 0.001 --seed 13 --steps 30000
+--system evolved --seed 13 --steps 30000
+--system modular --lr 0.003 --seed 14 --steps 30000
+--system looped --lr 0.003 --seed 14 --steps 30000
+--system transformer --lr 0.001 --seed 14 --steps 30000
+--system evolved --seed 14 --steps 30000
