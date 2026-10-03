@@ -334,6 +334,8 @@ Every system has 46–51k parameters and the same training steps:
 | transformer | 0.13 | 0.12 (chance beyond length 3) |
 | evolved | 0.13 | 0.73 |
 
+![composition schematic](figures/10_composition_schematic.png)
+
 ![composition](figures/9_composition.png)
 
 **Pre-registered verdicts.**
